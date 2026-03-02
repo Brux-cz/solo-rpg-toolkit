@@ -5,6 +5,7 @@ const navItems = [
   { to: "/wiki", label: "📖 Wiki" },
   { to: "/diary", label: "📜 Deník" },
   { to: "/tools", label: "🎲 Nástroje" },
+  { to: "/diagram", label: "🗺 Diagram" },
 ];
 
 export function App() {

@@ -6,6 +6,7 @@ import { HomePage } from "./pages/HomePage";
 import { WikiPage } from "./pages/WikiPage";
 import { DiaryPage } from "./pages/DiaryPage";
 import { ToolsPage } from "./pages/ToolsPage";
+import { DiagramPage } from "./pages/DiagramPage";
 import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="wiki/*" element={<WikiPage />} />
           <Route path="diary" element={<DiaryPage />} />
           <Route path="tools" element={<ToolsPage />} />
+          <Route path="diagram" element={<DiagramPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
