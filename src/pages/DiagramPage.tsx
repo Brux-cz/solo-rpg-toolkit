@@ -67,26 +67,73 @@ INVENTÁŘ (10 slotů, vizuální grid):
 • Tělo: 2 sloty — rychlý přístup, výměna s packami = volná akce
 • Batoh: 6 slotů — vyndání v boji stojí akci!
 • Velké předměty (obouruční zbraně, těžká zbroj) zabírají 2 sloty
-• PODMÍNKY ZABÍRAJÍ SLOT: Hlad, Vyčerpání, Poranění, Vystrašení, Pomatení
-• Přetížení: nemůže běhat, záchrany s nevýhodou
+• PODMÍNKY ZABÍRAJÍ SLOT: Hlad, Vyčerpání, Poranění, Vystrašení, Pomatení — každý stav je "kartička" v inventáři
+• Přetížení (víc věcí než slotů): nemůže běhat, záchrany s nevýhodou
 
-PODMÍNKY (stavy): Hlad, Vyčerpání, Poranění, Vystrašení, Pomatení — každý zabírá slot. Kuráž (od úrovně 2) = speciální sloty kde podmínka nemá negativní efekt.
+PODMÍNKY (stavy):
+• Hlad — nezjedl celý den → zabírá slot → zbavíš se jídlem
+• Vyčerpání — nespal 6 hodin → zbavíš se dlouhým odpočinkem
+• Poranění — kritické zranění v boji → ošetření + krátký odpočinek
+• Vystrašení — neúspěšná záchrana WIL → kouzlo nebo odpočinek
+• Pomatení — neúspěšné kouzlení → odpočinek
+• Úplný odpočinek (týden v bezpečí) odstraní většinu stavů
 
-PENÍZE: Ďobky (Pips). Prvních 250 zdarma, každých dalších 250 zabírá slot.
+KURÁŽ (od úrovně 2):
+• Speciální sloty (1 na úr.2, roste až na 3 na úr.5+)
+• Podmínka v kuráži NEMÁ negativní efekt, ale stále existuje
+• Musíš ji stejně odstranit splněním podmínky
 
-POSTUP: zk. = 1 za každý ďobek pokladu přineseného do bezpečí. Úroveň 2 = 1000, 3 = 3000, 4 = 6000.
+PENÍZE:
+• Ďobky (Pips) — základní a jediná měna
+• Prvních 250 ďobků zdarma (po kapsách)
+• Každých dalších 250 zabírá 1 slot v inventáři
+• Banka v osadě: úschova s 1% poplatkem
 
-LÉČENÍ: Krátký (10 min, d6+1 BO), Dlouhý (6 hod, všechny BO), Úplný (týden, vše).`,
+POSTUP (leveling):
+• zk. = 1 za každý ďobek pokladu přineseného do bezpečí
+• Bonus: 1 zk. za 10 ďobků utracených pro komunitu
+• Úroveň 2 = 1000 zk., úroveň 3 = 3000, úroveň 4 = 6000
+• Při postupu: d20 vs každý atribut (vyšší = +1), nový hod na BO
+
+LÉČENÍ (tři typy odpočinku):
+• Krátký (10 min, voda): obnoví d6+1 BO
+• Dlouhý (6 hod, jídlo + spánek): obnoví všechny BO. Pokud BO plné → d6 bodů jedné vlastnosti.
+• Úplný (týden v bezpečí): obnoví VŠE + odstraní většinu stavů
+
+PROPOJENÍ: aktuální lokace (osada), úkoly, zmínky v deníku, předměty.`,
   },
   pomocnik: {
     title: "Pomocník (Hireling)",
     text: `Najatý spolucestující. V Mausritteru NENÍ overkill — pomocníci slouží jako "nosiči" pro poklady a rozšiřují omezenou kapacitu inventáře.
 
-ATRIBUTY (2d6 na každý): STR, DEX, WIL. BO: d6.
+IDENTITA:
+• Jméno, typ (světlonoš, dělník, zbrojmyš, rytíř, špion...)
 
-INVENTÁŘ (6 slotů): Packy 2, Tělo 2, Batoh 2 (méně než hráč!).
+ATRIBUTY (2d6 na každý, tedy 2-12):
+• STR, DEX, WIL
 
-PLATBA: Denní mzda v ďobcích (světlonoš 1ď, zbrojmyš 10ď, rytíř 25ď). Morálka: stres → záchrana WIL, jinak uteče.
+BODY OCHRANY:
+• BO aktuální / max (d6)
+
+INVENTÁŘ (6 slotů):
+• Packy: 2 sloty
+• Tělo: 2 sloty
+• Batoh: 2 sloty (méně než hráč!)
+• Podmínky zabírají slot stejně jako u hráče
+
+PLATBA A MORÁLKA:
+• Denní mzda v ďobcích (světlonoš 1ď, zbrojmyš 10ď, rytíř 25ď)
+• Morálka: stres, nezaplacení nebo nebezpečí → záchrana WIL, jinak uteče
+• Věrní pomocníci hází s výhodou
+
+VERBOVÁNÍ:
+• Hledání v osadě (1 den)
+• Záchrana na WIL nebo zaplacení 20ď
+• Počet dostupných závisí na typu (d6 světlonošů, d3 rytířů)
+
+POSTUP:
+• zk. = 1 za každý ďobek vyplacený NAD rámec mzdy
+• Úroveň 2 při 1000 zk.
 
 PROČ JE DŮLEŽITÝ: Inventář v Mausritteru je extrémně omezený (10 slotů). Pomocník s 6 sloty výrazně zvyšuje kapacitu — víc pokladů = víc zk. = rychlejší postup.`,
   },
@@ -138,57 +185,165 @@ Pokud je seznam prázdný (začátek hry), mechanika přesměruje na "Current Co
     title: "Osady / Místa",
     text: `Lokace ve světě hry. Od farem po velkoměsta, od jeskyní po hexcrawl body zájmu.
 
-GENEROVÁNÍ OSADY:
-• Velikost (2d6, nižší): 1=Farma, 2=Křižovatka, 3=Víska (50-150), 4=Vesnice (150-300), 5=Město (300-1000), 6=Velkoměsto (1000+)
-• Společenské zřízení (d6 + velikost) — kdo vládne
-• Výrazný prvek, obyvatelé, živnost, událost, hospoda
-• Jména (d12+d12): Dubov, Měsíční Hrob, Černá Lhota...
+STRUKTURA OSADY:
+• Velikost (2d6, použij nižší): 1=Farma (1-3 rodiny), 2=Křižovatka (3-5 rodin), 3=Víska (50-150 myší), 4=Vesnice (150-300), 5=Město (300-1000), 6=Velkoměsto (1000+)
+• Společenské zřízení (d6 + velikost) — kdo vládne (stařešinové, šlechtic, cech)
+• Výrazný prvek — unikátní rys (dům v kravské lebce...)
+• Obyvatelé — zvyklosti (vyšívané oblečení, rituální stříhání ocásků...)
+• Živnost — čím osada obchoduje (uleželý sýr, hedvábí, těžba cínu...)
+• Událost — co se děje při příchodu hráčů (svatba, epidemie, unášení myší...)
+• Hospoda — název a specialita
+• Jména (d12+d12) — kombinace začátků a konců (Dubov, Měsíční Hrob, Černá Lhota...)
 
-SLUŽBY (v ďobcích): Ubytování 1-5ď/noc, jídlo 2ď, léčení (týden) 20ď, banka 1%, verbování 20ď.
+MECHANICKÝ DOPAD VELIKOSTI:
+• Určuje dostupné pomocníky (rytíře ve farmě nenajdeš!)
+• Určuje společenské zřízení
+• Ovlivňuje dostupnost služeb a obchodu
 
-HEXCRAWL MAPA (5×5 hexů, 1 hex = 1 míle): Terén d6, body zájmu d20, detaily d6/d8.
+SLUŽBY A CENÍK (v ďobcích):
+• Ubytování: společná ubikace 1ď/noc, soukromý pokoj 5ď, horká koupel 2ď
+• Jídlo: 1 jídlo 2ď, cestovní zásoby 5ď, hostina 50ď, prohýřená noc 100ď
+• Léčení: úplný odpočinek (týden) 20ď
+• Banka: úschova s 1% poplatkem za výběr
+• Verbování: 20ď nebo záchrana WIL. Mzda: světlonoš 1ď/den, zbrojmyš 10ď, rytíř 25ď
+• Doprava: králičí vůz 5ď/hex, holub 200ď/hex
+• Prodej kouzel: plně nabité kouzlo za d6×100ď
 
-Propojení: NPC obyvatelé, frakce, úkoly, scény z deníku.`,
+HEXCRAWL MAPA (typicky 5×5 hexů, 1 hex = 1 míle):
+• Terén (d6): 1-2 otevřená krajina, 3-4 les, 5 řeka, 6 lidské město
+• Body zájmu (d20 per terén): liščí nora, obličej v prastarém dubu, betonová přehrada, vodopády...
+• Detaily (d6/d8): skrýš loupežníků, vílí kruh, zřícená vzducholoď...
+
+PROPOJENÍ: NPC obyvatelé, frakce, úkoly, scény z deníku, předměty.`,
   },
   frakce: {
     title: "Frakce",
-    text: `Mocné síly ve světě s vlastní MECHANIKOU (progress track).
+    text: `Mocné síly ve světě, které žijí vlastním životem. V Mausritteru NEJSOU jen popisné — mají vlastní MECHANIKU s progress trackem.
 
-STRUKTURA: Název, popis, ZDROJE (bohatství, armáda, magie...), CÍLE (2-5 políček pokroku).
+STRUKTURA FRAKCE:
+• Název (Kočičí pán Baltazar, Cech tunelářů, Krysí loupežníci...)
+• Popis — kdo to je, jak fungují
+• ZDROJE — odrážejí moc a vliv (bohatství, armáda žoldáků, magie, tajná skrýš, solidarita s dělnictvem...). Pokud má frakce 3+ zdroje, může utvořit tlupu (warband).
+• CÍLE — o co frakce usiluje. Každý cíl má 2-5 POLÍČEK POKROKU podle složitosti. Cíle by měly být provázané s jinými frakcemi (soupeření o zdroje).
 
 MECHANIKA MEZI SEZENÍMI (Tah frakcí):
+Po každém herním sezení se vyhodnocuje pokrok frakcí:
 1. Hod 1d6 za každou frakci
-2. +1 za relevantní zdroj, -1 za konkurenční zdroj
-3. Výsledek 4-5 → 1 políčko, 6+ → 2 políčka
-4. Dokončení cíle → nový zdroj (frakce roste!)
+2. Modifikátory: +1 za každý relevantní zdroj, -1 za každý zdroj konkurenční frakce
+3. Výsledek 4-5 → 1 políčko pokroku. Výsledek 6+ → 2 políčka.
+4. Dokončení cíle (všechna políčka) → frakce získá NOVÝ ZDROJ (roste!). Pokud cíl škodil jiné frakci → ta může přijít o zdroj.
 
-ZÁSAHY HRÁČŮ: Pomoc = +1-3 políčka, zdržení = -1-3 políčka. Cíle frakcí se objevují jako zvěsti (hooky!).
+ZÁSAHY HRÁČŮ:
+• Pomoc frakci → Průvodce zaškrtne 1-3 políčka pokroku
+• Zdržení frakce → Průvodce vymaže 1-3 políčka
+• Přímý útok → frakce může přijít o zdroje
+• Cíle frakcí se objevují v tabulce zvěstí (hooky pro hráče!)
 
-Propojení: členové (NPC), sídla (osady), úkoly, konflikty s jinými frakcemi.`,
+PŘÍKLADY:
+• Kočičí pán (hrůzostrašnost + žoldáci) → cíl: vymáhat úplatky
+• Myší šlechtic (rytíři + sklady) → cíl: vybírat daně
+• Krysí loupežníci (gang + skrýš) → cíl: ovládnout obchodní trasu
+• Cech tunelářů (solidarita) → cíl: založit svobodnou obec
+• Kultisti → cíl: přivolat prastarého boha
+
+PROPOJENÍ:
+• Členové (NPC)
+• Sídla (osady)
+• Úkoly / hooky spojené s cíli frakce
+• Konflikty s jinými frakcemi
+
+PRO APPKU: Frakce potřebuje vlastní progress track pro cíle (2-5 políček), seznam zdrojů, a mechaniku hodu d6 + modifikátory. Tohle se vyhodnocuje při bookkeepingu nebo mezi sezeními.`,
   },
   ukoly: {
     title: "Úkoly / Hooky / Dobrodružná místa",
     text: `Aktivní i dokončené úkoly, příběhové hooky a dobrodružná místa.
 
-GENEROVÁNÍ ZÁPLETEK (d66 × 3): Tvor × Problém × Komplikace → "Kočičí pán se chce nechat bavit a uvěznil hráčské myši"
+GENEROVÁNÍ ZÁPLETEK (Semínka dobrodružství):
+Tabulka d66 × 3 hody:
+1. Tvor (d66): Rybář, Kočičí pán, Šlechtic...
+2. Problém (d66): Obviněn ze zločinu, Chce se nechat bavit...
+3. Komplikace (d66): Může za to pomocník, Uvěznil hráče...
+→ Kombinace: "Kočičí pán se chce nechat bavit a uvěznil hráčské myši"
 
-TABULKA ZVĚSTÍ (d6): 1-3 pravdivé, 4-5 částečně, 6 nepravdivé. Propojené s cíli frakcí!
+POČÁTEČNÍ HÁČKY (d6): Pro začátek kampaně:
+• Hledání ztraceného člena rodiny
+• Vyšetřování na příkaz šlechtice
+• Úkryt před bouřkou
+• ... a další
 
-DOBRODRUŽNÁ MÍSTA: Téma → Chátrání → Místnosti (3d6) → Překážky/Pasti/Hlavolamy → Poklady (2d20 + bonus kostky).
+TABULKA ZVĚSTÍ (d6 per oblast):
+• 1-3: PRAVDIVÉ zvěsti
+• 4-5: ČÁSTEČNĚ PRAVDIVÉ
+• 6: NEPRAVDIVÁ
+Propojení s frakcemi: cíle frakcí se objevují jako zvěsti! Hráči se tak dozvídají o plánech frakcí a mohou zasáhnout.
 
-Propojení: zadavatel (NPC), lokace (osada), thread, typ (hook/quest/dungeon/zvěst).`,
+DOBRODRUŽNÁ MÍSTA (dungeony):
+Generování krok za krokem:
+1. Téma: typ budovy (chrám kultu, stoka, čarodějova věž)
+2. Chátrání: zatopení, magická nehoda, plísně
+3. Místnosti (3d6 per místnost):
+   • d6 Typ: prázdná / překážka / past / hlavolam / doupě
+   • d6 Tvor: šance na bytost (liší se podle typu)
+   • d6 Poklad: šance na cennosti
+4. Překážky (d8): zamčené dveře, strmé lezení, zaplavená chodba
+5. Pasti (d8): padající dveře, elektrifikovaná voda, výbušný plyn
+6. Hlavolamy (d6): elektrifikovaná podlaha, míchání tekutin, poklad ve studni
+7. Doupata (d6): dočasný tábor, trvalý domov s mladými
+
+POKLADY (tabulky drobností → cenných → neobvyklých):
+• Drobnosti: zlatý prsten, soudek brandy
+• Cenné: magické předměty
+• Neobvyklé: mapa k dalšímu pokladu
+• Hod 2d20, +kostky za nebezpečnost/šelmu/magii
+
+POLE ÚKOLU V APPCE:
+• Název, popis, stav (otevřený/splněný/neúspěšný)
+• Zadavatel (NPC), lokace (osada), thread (příběhová linka)
+• Typ: hook / quest / dungeon / zvěst
+• Poznámky`,
   },
   predmety: {
     title: "Předměty / Vybavení / Kouzla",
-    text: `Vše co může postava vlastnit. V Mausritteru je inventář JÁDRO hry.
+    text: `Vše co může postava vlastnit, najít nebo koupit. V Mausritteru je inventář JÁDRO hry.
 
-ZBRANĚ: Improvizovaná d6/1slot/1ď, Lehká d6/10ď, Střední d6-d8/20ď, Těžká d10/obě packy/40ď. Střelné: prak d6/10ď, luk d8/40ď.
+ZBRANĚ (kostka zranění / sloty / cena):
+• Improvizovaná: d6, 1 slot, 1ď (škrtá tečku použití!)
+• Lehká (dýka, jehla): d6, 1 slot, 10ď. Dvě najednou → bereš lepší výsledek
+• Střední (meč, sekera): d6 jednou rukou / d8 oběma, 20ď
+• Těžká (kopí, hákopí): d10, obě packy, 40ď
+• Lehká střelná (prak): d6, 1 slot, 10ď
+• Těžká střelná (luk): d8, obě packy, 40ď
 
-ZBROJE: Lehká (-1 zranění, 150ď), Těžká (-1, 500ď, 2 sloty).
+ZBROJE (snižují zranění o 1):
+• Lehká (150ď): 1 slabší packa + 1 tělo
+• Těžká (500ď): 2 sloty těla
 
-KOUZLA — FYZICKÉ PŘEDMĚTY (obsidiánové destičky): Sesílání d6 × moc (1-3). Za každou 4-6 škrtni tečku. Za každou 6 → d6 WIL zranění (Vymknutí). 15 kouzel: Ohnivá koule, Zahojení, Neviditelnost...
+KOUZLA — FYZICKÉ PŘEDMĚTY:
+• Jsou to přírodní duchové uvěznění v runách na OBSIDIÁNOVÝCH DESTIČKÁCH
+• Sesílání: drž v pacce, čti nahlas, zvol moc (1-3)
+• Mechanika: hoď tolik d6 kolik je moc. Za každou 4-6 škrtni tečku použití.
+• Účinek závisí na POČTU kostek a SOUČTU hodnot
+• RIZIKO (Vymknutí): za každou hozenou 6 → d6 zranění do WIL. Neúspěšná záchrana WIL → Pomatení
+• Dobíjení: specifický rituál (Ohnivou kouli péct 3 dny v plamenech)
+• 15 základních kouzel: Ohnivá koule, Zahojení, Kouzelná střela, Strach, Tma, Neviditelnost, Přízračný brouk...
 
-V APPCE: Příběhově důležité předměty (artefakty, quest itemy, kouzla). Ne celý inventář.`,
+MAGICKÉ PŘEDMĚTY:
+• Kouzelné meče: tečka se škrtne jen na 6 (odolnější!). Unikátní schopnosti (Hadí zub → zranění do DEX). Šance 1 ze 6 na PROKLETÍ (d6 tabulka kleteb). Prokletý meč nelze odložit — sňatí vyžaduje splnění úkolu (např. usmířit se s nepřítelem).
+• Artefakty/Drobnosti: Přízračná lucerna, Mluvící ulity, Dýchací slámka...
+• Generování: 2d20, +kostky za nebezpečnost/šelmu/magii
+
+STANDARDNÍ VYBAVENÍ (výběr, ceny v ďobcích):
+• Pochodeň 10, Lucerna 50, Elektrická lampa 200
+• Lano/Motouz 40, Páčidlo 10, Šperháky 100
+• Jehla 20, Rybářský háček 20, Zápalky 80
+• Stan 80, Síť 10, Zámek 20, Jed 100
+• Kniha prázdná 300, Hudební nástroj 200
+
+CO JE V APPCE "PŘEDMĚT":
+• Příběhově důležité předměty (artefakty, quest itemy, kouzla)
+• NE celý inventář (ten je na kartě postavy v 10 slotech)
+• Pole: název, popis, kdo má, kde nalezeno, od koho, k čemu
+• Kouzlo: navíc počet teček, rituál dobíjení, efekt`,
   },
   chaos_val: {
     title: "Chaos Faktor (CF)",
@@ -212,17 +367,23 @@ VARIANTY: Mid-Chaos, Low-Chaos, No-Chaos (alternativní tabulky pro jiný styl h
   },
   denik: {
     title: "Deník kampaně (Scény)",
-    text: `Chronologický záznam všech scén. Páteř příběhu.
+    text: `Chronologický záznam všech scén. Páteř příběhu — "co se stalo a kdy".
 
 KAŽDÁ SCÉNA OBSAHUJE:
 • Číslo scény (automatické)
 • Typ: očekávaná / pozměněná / přerušená
-• CF na začátku a na konci (sledování trendu)
+• CF na začátku a na konci scény (sledování trendu)
 • Shrnutí — heslovité "co se stalo" (povinné)
 • Narativní text — delší popis pro důležité momenty (volitelné)
-• Zmíněné entity — NPC, osady, předměty, úkoly
+• Zmíněné entity — NPC, osady, předměty, úkoly co se ve scéně objevily
 
-PROPOJENÍ: Klikneš na NPC v deníku → detail NPC. Filtr: "scény kde se objevil kupec Hrách". Timeline: vizuální přehled CF a interruptů.`,
+PROPOJENÍ:
+• Klikneš na NPC v deníku → detail NPC
+• Klikneš na osadu → detail osady
+• Filtr: "ukaž mi všechny scény kde se objevil NPC Kupec Hrách"
+• Timeline: vizuální přehled jak se CF vyvíjel, kde byly interrupty
+
+HODNOTA: Bez deníku po 20 scénách nevíš co se stalo ve scéně 3. S deníkem máš kompletní příběh s propojením na vše.`,
   },
   progress_track: {
     title: "Thread Progress Track",
@@ -633,6 +794,148 @@ CF 1 → jen double 11 (11% doubles = event)
 CF 5 → doubles 11-55 (56% doubles = event)
 CF 9 → všechny doubles (100% doubles = event)`,
   },
+
+  // === PRAVIDLA MAUSRITTER (reference) ===
+  boj: {
+    title: "Boj (Mausritter pravidla)",
+    text: `Rychlý a smrtelný. Útoky VŽDY ZASAHUJÍ — žádný hod na zásah!
+
+INICIATIVA:
+• Překvapení → hráči jednají první
+• Jinak: záchrana na DEX. Úspěch = jednáš před nepřítelem.
+• Pořadí zůstává celý boj.
+
+AKCE V KOLE:
+• Pohyb až 30 cm + JEDNA akce (útok, sesílání, vyjednávání, útěk)
+• Výměna předmětu z těla do packy = volná akce
+• Vyndání z batohu = celá akce!
+
+ÚTOK:
+• Hoď kostkou zbraně, odečti zbroj nepřítele, zbytek = zranění
+• Zeslabený (kryt, omezený pohyb): jen d4
+• Zesílený (lest, slabina): d12
+
+ZRANĚNÍ:
+1. Nejdřív se odečítá z BO
+2. Když BO = 0, jde do STR → ZÁCHRANA NA STR
+3. Neúspěch = Poranění + vyřazení z boje
+4. STR = 0 → SMRT
+5. Vyřazená myš bez ošetření do 6 směn (1 hodina) → SMRT
+6. DEX = 0 → nemůže se hýbat. WIL = 0 → nepříčetnost.
+
+MORÁLKA NEPŘÁTEL (NPC):
+• Záchrana na WIL při jasné nevýhodě NEBO prvním kritickém zranění
+• Neúspěch → vzdá se nebo uteče
+• V appce: tlačítko "Morale check" u NPC v boji
+
+ZÁCHRANNÉ HODY:
+• Hoď d20 ≤ hodnota atributu → úspěch
+• Výhoda: 2d20, ber nižší. Nevýhoda: 2d20, ber vyšší.
+• Vzdorovaná záchrana: oba hází, nižší úspěšný hod vyhrává.
+• Používá se i mimo boj (past, lezení, vyjednávání...)
+
+HODY NA ŠTĚSTÍ:
+• Když situaci nepokrývá záchrana → Průvodce určí šanci X ze 6 → hoď d6`,
+  },
+  cas_cestovani: {
+    title: "Čas, Cestování a Počasí",
+    text: `Mausritter striktně sleduje čas ve třech měřítkách.
+
+TŘI MĚŘÍTKA ČASU:
+• KOLO — boj, necelá minuta
+• SMĚNA (Turn) — průzkum dungeonu, 10 minut. Prozkoumání místnosti, boj, past = 1 směna. Každé 3 směny → hod na náhodné setkání.
+• HLÍDKA (Watch) — cestování divočinou, 6 hodin (= 36 směn)
+• DEN = 4 hlídky
+
+CESTOVÁNÍ PO HEXCRAWLU:
+• Rychlost: 1 hex za hlídku (6 hodin)
+• Náročný terén (potoky, skály, kopce): 1 hex za 2 hlídky
+• Povinný odpočinek: minimálně 1 hlídka/den, jinak → Vyčerpání
+• Teoretický max: 3 hexy/den (3 cestování + 1 odpočinek)
+• Hledání potravy: 1 hlídka místo cestování
+
+POČASÍ (2d6 denně, podle ročního období):
+• Výsledek podle tabulky sezóny (jaro/léto/podzim/zima)
+• Nepříznivé počasí (bouřka, vánice, úmorné vedro):
+  → záchrana STR za každou hlídku cestování, jinak Vyčerpání
+
+NÁHODNÁ SETKÁNÍ:
+• Hod d6 na začátku ranní a večerní hlídky
+• 1 = SETKÁNÍ (hoď na encounter tabulku)
+• 2 = PŘEDZVĚST (stopy, zvuky, znamení)
+• 3-6 = nic
+• Čas setkání: d12 (kolik hodin od začátku hlídky)
+• Encounter tabulka (d6 per oblast): 1-3 běžné, 4-5 neobvyklé, 6 nebezpečné
+
+DOPRAVA (cena za hex):
+• Pěšky: zdarma (1 hlídka/hex)
+• Králičí vůz: 5ď/hex
+• Říční vor: 10ď/hex
+• Let na holubovi: 200ď/hex
+
+BUDOVY A KOPÁNÍ:
+• 3 myši vykopou v hlíně 15cm krychli za den
+• Chodba: 10ď, místnosti: 100-2000ď
+• Údržba: 1% měsíčně`,
+  },
+  reakce_npc: {
+    title: "Reakce NPC (2d6)",
+    text: `Když potkáš tvora a není jasné jak se zachová → hoď 2d6:
+
+2: AGRESIVNÍ — okamžitě zaútočí
+3-5: NEPŘÁTELSKÁ — nepřátelský, ale lze zkusit uchlácholit
+6-8: NEJISTÁ — váhá, myši ho mohou přesvědčit
+9-11: POVÍDAVÁ — ochoten mluvit, možná obchod
+12: NÁPOMOCNÁ — přátelský, aktivně pomůže
+
+MORÁLKA (v boji):
+• Záchrana WIL při nevýhodě nebo prvním kritickém zranění
+• Neúspěch → vzdá se / uteče
+
+JAZYKY A KOMUNIKACE:
+• Myš ↔ myš: bez problémů
+• Myš ↔ hlodavec (krysa): s obtížemi
+• Myš ↔ jiný savec (kočka): záchrana WIL
+• Myš ↔ hmyz/plaz: komunikace NEMOŽNÁ
+
+SPOLEČENSKÉ POSTAVENÍ NPC (d6):
+• Určuje jestli je NPC chuďas, měšťan nebo šlechtic
+• Ovlivňuje cenu služeb (od d6ď po d4×1000ď)
+
+PRO APPKU: Reaction roll jako nástroj. Výsledek rovnou zapsat k NPC.`,
+  },
+  bestiar: {
+    title: "Bestiář (Tvorové)",
+    text: `Tvorové mají: BO, STR/DEX/WIL, zbroj, útok(y), kritické zranění a MOTIVACI ("co chce").
+
+PŘÍKLADY:
+• Myš (rival): 3 BO, 9/9/9. Meč d6 nebo luk d6. Chce se cítit bezpečně.
+• Krysa: 3 BO, 12/8/8. Sekáček d6. Chce zbohatnout na úkor slabších.
+• Had: 12 BO, 12/10/10, zbroj 2. Kousnutí d8. Krit: spolkne oběť zaživa.
+• Pavouk: 6 BO, 8/15/10, zbroj 1. Jed d6→DEX. Krit: odnese v kokonu.
+• Kočka: 15 BO, 15/15/10, zbroj 1. Seknutí d6, kousnutí d8. MĚŘÍTKO TLUPY. Vyžaduje dary.
+• Sova: 15 BO, WIL 15. Kousnutí d10. Létá 3× rychleji, 2 kouzla. Čarodějka hledající vědomosti.
+• Duch: 9 BO, 5/10/10. Mrazivý dotyk d8→WIL. Krit: ovládne zasaženého.
+
+DALŠÍ TVOROVÉ: Stonožka (žravá bestie), Vrána (strážkyně tajemství), Víla (podivné plány), Žába (potulný rytíř).
+
+TLUPY V BOJI:
+• 20+ myší, d6 BO, vlastnosti 10, útok d6
+• Tlupa vs jednotlivec: ZESÍLENÝ útok (d12!)
+• Jednotlivec vs tlupa: zranění se IGNORUJE (kromě výjimečných útoků)
+• Tlupa vs tlupa: normální boj
+• Kritické zranění → rozvrácená. Polovina STR → záchrana WIL nebo útěk. STR 0 → pobitá.
+
+TEČKY POUŽITÍ (opotřebení předmětů):
+• Většina předmětů má 3 tečky
+• Po boji: d6, na 4-6 škrtni tečku zbraně/zbroje
+• Oprava jedné tečky = 10% ceny předmětu
+• Pochodeň: 6 teček (1 za setkání/směnu)
+• Elektrická lampa: 6 teček
+• Improvizovaná zbraň: VŽDY škrtá tečku
+
+PRO APPKU: Bestiář jako referenční knihovna. Tvorové se přidávají jako NPC s bojovými statistikami.`,
+  },
 };
 
 interface NodeData {
@@ -646,35 +949,59 @@ interface NodeData {
   bullets?: string[];
 }
 
+interface EdgeData {
+  from: string;
+  to: string;
+  fromSide: string;
+  toSide: string;
+  style: string;
+}
+
+interface StyleDef {
+  fill: string;
+  stroke: string;
+  textFill: string;
+  fontWeight: number;
+  rx: number;
+  fontSize: number;
+}
+
 const NODES: NodeData[] = [
   // === WIKI ===
-  { id: "wiki_bg", x: 270, y: 190, w: 440, h: 410, type: "group", label: "KAMPÁŇOVÁ WIKI" },
+  { id: "wiki_bg", x: 270, y: 190, w: 440, h: 460, type: "group", label: "KAMPÁŇOVÁ WIKI" },
 
   // Mausritter postavy
-  { id: "postavy_label", x: 290, y: 218, w: 180, h: 16, type: "sublabel", label: "postavy (Mausritter)" },
-  { id: "postava", x: 290, y: 236, w: 200, h: 36, type: "core", label: "POSTAVA\nSTR DEX WIL · 10 slotů · BO" },
-  { id: "pomocnik", x: 500, y: 236, w: 190, h: 36, type: "core", label: "POMOCNÍK\n6 slotů · mzda · morálka" },
+  { id: "postavy_label", x: 290, y: 216, w: 180, h: 14, type: "sublabel", label: "postavy (Mausritter)" },
+  { id: "postava", x: 290, y: 234, w: 200, h: 36, type: "core", label: "🐭 POSTAVA\nSTR DEX WIL · 10 slotů · BO" },
+  { id: "pomocnik", x: 500, y: 234, w: 190, h: 36, type: "core", label: "🐭 POMOCNÍK\n6 slotů · mzda · morálka" },
 
   // Svět
-  { id: "svet_label", x: 290, y: 280, w: 180, h: 16, type: "sublabel", label: "svět (wiki entity)" },
-  { id: "osady", x: 290, y: 293, w: 130, h: 38, type: "core", label: "OSADY / MÍSTA\nhex · generátor · služby" },
-  { id: "frakce", x: 430, y: 293, w: 120, h: 38, type: "core", label: "FRAKCE\nzdroje · cíle · d6" },
-  { id: "predmety", x: 560, y: 293, w: 130, h: 38, type: "core", label: "PŘEDMĚTY\nzbraně · kouzla · loot" },
-  { id: "ukoly", x: 290, y: 338, w: 130, h: 32, type: "core", label: "ÚKOLY / HOOKY\nd66 · zvěsti · dungeon" },
-  { id: "denik", x: 430, y: 338, w: 260, h: 32, type: "core", label: "DENÍK — scéna po scéně + propojení" },
+  { id: "svet_label", x: 290, y: 278, w: 180, h: 14, type: "sublabel", label: "svět (wiki entity)" },
+  { id: "osady", x: 290, y: 296, w: 130, h: 36, type: "core", label: "OSADY / MÍSTA\nhex · generátor · služby" },
+  { id: "frakce", x: 430, y: 296, w: 120, h: 36, type: "core", label: "FRAKCE\nzdroje · cíle · d6" },
+  { id: "predmety", x: 560, y: 296, w: 130, h: 36, type: "core", label: "PŘEDMĚTY\nzbraně · kouzla · loot" },
+  { id: "ukoly", x: 290, y: 340, w: 130, h: 30, type: "core", label: "ÚKOLY / HOOKY\nd66 · zvěsti · dungeon" },
+  { id: "denik", x: 430, y: 340, w: 260, h: 30, type: "core", label: "📖 DENÍK — scéna po scéně + propojení entit" },
 
   // Mythic mechaniky — oddělené
-  { id: "mythic_label", x: 290, y: 370, w: 300, h: 16, type: "sublabel", label: "── aktivní mechaniky (Mythic GME) ──" },
-  { id: "npc_seznam", x: 290, y: 390, w: 200, h: 42, type: "mech_list", label: "NPC SEZNAM\n25 řádků · 5 sekcí · váhy" },
-  { id: "thread_seznam", x: 500, y: 390, w: 190, h: 42, type: "mech_list", label: "THREAD SEZNAM\n25 řádků · 5 sekcí · váhy" },
+  { id: "mythic_label", x: 290, y: 380, w: 300, h: 14, type: "sublabel", label: "── aktivní mechaniky (Mythic GME) ──" },
+  { id: "npc_seznam", x: 290, y: 398, w: 200, h: 40, type: "mech_list", label: "📋 NPC SEZNAM\n25 řádků · 5 sekcí · váhy" },
+  { id: "thread_seznam", x: 500, y: 398, w: 190, h: 40, type: "mech_list", label: "📋 THREAD SEZNAM\n25 řádků · 5 sekcí · váhy" },
 
-  { id: "chaos_val", x: 290, y: 445, w: 200, h: 32, type: "core_highlight", label: "CHAOS FAKTOR (1-9)" },
-  { id: "progress_track", x: 500, y: 445, w: 190, h: 32, type: "core_progress", label: "PROGRESS TRACK" },
+  { id: "chaos_val", x: 290, y: 448, w: 200, h: 30, type: "core_highlight", label: "⚡ CHAOS FAKTOR (1-9)" },
+  { id: "progress_track", x: 500, y: 448, w: 190, h: 30, type: "core_progress", label: "⬛⬛⬛⬜⬜ PROGRESS TRACK" },
 
-  { id: "propojeni", x: 350, y: 490, w: 260, h: 22, type: "sublabel", label: "vše propojené · klikni pro detail" },
+  { id: "propojeni", x: 350, y: 488, w: 260, h: 18, type: "sublabel", label: "⟷ vše propojené · klikni pro detail ⟷" },
+
+  // Mausritter pravidla — referenční bloky
+  { id: "pravidla_label", x: 290, y: 514, w: 300, h: 14, type: "sublabel", label: "── pravidla reference (Mausritter) ──" },
+  { id: "boj", x: 290, y: 532, w: 100, h: 36, type: "tool", label: "⚔️ BOJ\niniciativa · smrt" },
+  { id: "cas_cestovani", x: 398, y: 532, w: 112, h: 36, type: "tool", label: "🗺️ ČAS & CESTY\nhex · hlídka · počasí" },
+  { id: "reakce_npc", x: 518, y: 532, w: 85, h: 36, type: "tool", label: "🎭 REAKCE\n2d6 postoj" },
+  { id: "bestiar", x: 611, y: 532, w: 85, h: 36, type: "tool", label: "🐍 BESTIÁŘ\ntvorové" },
 
   // Random event flow annotation
-  { id: "random_event_flow", x: 770, y: 580, w: 200, h: 50, type: "note_alert", label: "RANDOM EVENT\ndoubles ≤ CF → Event Focus\n→ seznam → Meaning Tables" },
+  { id: "random_event_flow", x: 770, y: 640, w: 200, h: 50, type: "note_alert", label: "⚡ RANDOM EVENT\ndoubles ≤ CF → Event Focus\n→ seznam → Meaning Tables" },
 
   // === CYKLUS SCÉNY ===
   { id: "ocekavani", x: 360, y: 40, w: 240, h: 50, type: "cycle", label: "1. OČEKÁVÁNÍ\nco by se mělo stát?" },
@@ -689,20 +1016,20 @@ const NODES: NodeData[] = [
   { id: "scene_meaning", x: 800, y: 350, w: 170, h: 20, type: "sublabel_tool", label: "↳ + Meaning Tables" },
 
   { id: "hrani", x: 750, y: 460, w: 270, h: 60, type: "cycle_active", label: "4. HRANÍ SCÉNY\nFate Q · Meaning · Detail Check\ndoubles → random events!" },
-  { id: "ukonceni", x: 370, y: 650, w: 220, h: 40, type: "cycle", label: "5. SCÉNA VYČERPÁNA" },
+  { id: "ukonceni", x: 370, y: 720, w: 220, h: 40, type: "cycle", label: "5. SCÉNA VYČERPÁNA" },
 
-  { id: "bookkeeping_bg", x: 20, y: 500, w: 215, h: 130, type: "cycle_write", label: "6. BOOKKEEPING\n· NPC seznam (váhy ±)\n· Thread seznam (váhy ±)\n· Chaos faktor ±1\n· Progress Track\n· Deník + Wiki" },
+  { id: "bookkeeping_bg", x: 20, y: 560, w: 215, h: 130, type: "cycle_write", label: "6. BOOKKEEPING\n· NPC seznam (váhy ±)\n· Thread seznam (váhy ±)\n· Chaos faktor ±1\n· Progress Track\n· Deník + Wiki" },
 
   { id: "zpet", x: 30, y: 100, w: 210, h: 50, type: "cycle", label: "→ NOVÁ SCÉNA\nzpět na očekávání" },
 
   // === NÁSTROJE ===
   { id: "nastroje_bg", x: 20, y: 200, w: 215, h: 215, type: "group", label: "PANEL NÁSTROJŮ" },
-  { id: "t_fate", x: 40, y: 228, w: 175, h: 28, type: "tool_primary", label: "Fate Chart (d100)" },
-  { id: "t_meaning", x: 40, y: 262, w: 175, h: 28, type: "tool_primary", label: "Meaning Tables" },
-  { id: "t_detail", x: 40, y: 296, w: 175, h: 24, type: "tool", label: "Detail Check" },
-  { id: "t_npc_behav", x: 40, y: 324, w: 175, h: 24, type: "tool", label: "NPC Behavior" },
-  { id: "t_gen", x: 40, y: 352, w: 110, h: 24, type: "tool", label: "Generátory" },
-  { id: "t_kostky", x: 160, y: 352, w: 55, h: 24, type: "tool", label: "Kostky" },
+  { id: "t_fate", x: 40, y: 228, w: 175, h: 28, type: "tool_primary", label: "◈ Fate Chart (d100)" },
+  { id: "t_meaning", x: 40, y: 262, w: 175, h: 28, type: "tool_primary", label: "◈ Meaning Tables" },
+  { id: "t_detail", x: 40, y: 296, w: 175, h: 24, type: "tool", label: "◇ Detail Check" },
+  { id: "t_npc_behav", x: 40, y: 324, w: 175, h: 24, type: "tool", label: "◇ NPC Behavior" },
+  { id: "t_gen", x: 40, y: 352, w: 110, h: 24, type: "tool", label: "⚄ Generátory" },
+  { id: "t_kostky", x: 160, y: 352, w: 55, h: 24, type: "tool", label: "⚅ Kostky" },
   { id: "nastroje_sub", x: 40, y: 382, w: 175, h: 22, type: "sublabel", label: "použiješ kdy chceš" },
 
   // === PARAMETRY ===
@@ -714,16 +1041,8 @@ const NODES: NodeData[] = [
 
   // === META ===
   { id: "meritko", x: 760, y: 30, w: 230, h: 50, type: "note", label: "MĚŘÍTKO (V HLAVĚ)", bullets: ["architekt ↔ průzkumník"] },
-  { id: "hrac", x: 410, y: 610, w: 140, h: 36, type: "player", label: "TY (hráč + GM)" },
+  { id: "hrac", x: 410, y: 670, w: 140, h: 36, type: "player", label: "TY (hráč + GM)" },
 ];
-
-interface EdgeData {
-  from: string;
-  to: string;
-  fromSide: string;
-  toSide: string;
-  style: string;
-}
 
 const EDGES: EdgeData[] = [
   { from: "ocekavani", to: "test_chaosu", fromSide: "right", toSide: "left", style: "solid" },
@@ -751,17 +1070,6 @@ function getAnchor(node: NodeData, side: string) {
   }
 }
 
-function ArrowHead({ x, y, side, color = "#555" }: { x: number; y: number; side: string; color?: string }) {
-  const s = 6;
-  const pts: Record<string, string> = {
-    left: `${x},${y} ${x+s},${y-s/2} ${x+s},${y+s/2}`,
-    right: `${x},${y} ${x-s},${y-s/2} ${x-s},${y+s/2}`,
-    top: `${x},${y} ${x-s/2},${y+s} ${x+s/2},${y+s}`,
-    bottom: `${x},${y} ${x-s/2},${y-s} ${x+s/2},${y-s}`,
-  };
-  return pts[side] ? <polygon points={pts[side]} fill={color} /> : null;
-}
-
 function EdgePath({ edge, nodes }: { edge: EdgeData; nodes: NodeData[] }) {
   const fromNode = nodes.find(n => n.id === edge.from);
   const toNode = nodes.find(n => n.id === edge.to);
@@ -778,22 +1086,23 @@ function EdgePath({ edge, nodes }: { edge: EdgeData; nodes: NodeData[] }) {
   } else {
     path = `M${a.x},${a.y} L${b.x},${b.y}`;
   }
-  const color = edge.style === "solid" ? "#555" : "#aaa";
   return (
     <g>
-      <path d={path} fill="none" stroke={color} strokeWidth={1.4} strokeDasharray={edge.style === "dashed" ? "6 4" : "none"} />
-      <ArrowHead x={b.x} y={b.y} side={edge.toSide} color={color} />
+      <path d={path} fill="none" stroke={edge.style === "solid" ? "#555" : "#aaa"} strokeWidth={1.4} strokeDasharray={edge.style === "dashed" ? "6 4" : "none"} />
+      <ArrowHead x={b.x} y={b.y} side={edge.toSide} color={edge.style === "solid" ? "#555" : "#aaa"} />
     </g>
   );
 }
 
-interface StyleDef {
-  fill: string;
-  stroke: string;
-  textFill: string;
-  fontWeight: number;
-  rx: number;
-  fontSize: number;
+function ArrowHead({ x, y, side, color }: { x: number; y: number; side: string; color: string }) {
+  const s = 6;
+  const pts: Record<string, string> = {
+    left: `${x},${y} ${x+s},${y-s/2} ${x+s},${y+s/2}`,
+    right: `${x},${y} ${x-s},${y-s/2} ${x-s},${y+s/2}`,
+    top: `${x},${y} ${x-s/2},${y+s} ${x+s/2},${y+s}`,
+    bottom: `${x},${y} ${x-s/2},${y-s} ${x+s/2},${y-s}`,
+  };
+  return pts[side] ? <polygon points={pts[side]} fill={color} /> : null;
 }
 
 const STYLES: Record<string, StyleDef> = {
@@ -837,27 +1146,12 @@ function NodeBox({ node, selected, onSelect }: { node: NodeData; selected: strin
       <g onClick={clickable ? (e) => { e.stopPropagation(); onSelect(node.id); } : undefined} style={{ cursor: clickable ? "pointer" : "default" }}>
         <rect x={node.x} y={node.y} width={node.w} height={node.h}
           fill={isSelected ? "#f0efe8" : s.fill} stroke={isSelected ? "#666" : s.stroke} strokeWidth={isSelected ? 1.5 : 1} rx={s.rx} />
-        {node.type === "note" ? (
-          <>
-            <text x={node.x + 12} y={node.y + 18}
-              style={{ fontSize: s.fontSize, fontFamily: "'IBM Plex Mono', monospace", fill: s.textFill, fontWeight: 600 }}>
-              {node.label}
-            </text>
-            {node.bullets?.map((b, i) => (
-              <text key={i} x={node.x + 14} y={node.y + 36 + i * 16}
-                style={{ fontSize: s.fontSize, fontFamily: "'IBM Plex Mono', monospace", fill: "#999" }}>
-                {b}
-              </text>
-            ))}
-          </>
-        ) : (
-          node.label.split("\n").map((line, i) => (
-            <text key={i} x={node.x + node.w / 2} y={node.y + 14 + i * 13} textAnchor="middle"
-              style={{ fontSize: s.fontSize, fontFamily: "'IBM Plex Mono', monospace", fill: s.textFill, fontWeight: i === 0 ? 700 : 500 }}>
-              {line}
-            </text>
-          ))
-        )}
+        {node.label.split("\n").map((line, i) => (
+          <text key={i} x={node.x + node.w / 2} y={node.y + 14 + i * 13} textAnchor="middle"
+            style={{ fontSize: s.fontSize, fontFamily: "'IBM Plex Mono', monospace", fill: s.textFill, fontWeight: i === 0 ? 700 : 500 }}>
+            {line}
+          </text>
+        ))}
       </g>
     );
   }
@@ -884,10 +1178,6 @@ function NodeBox({ node, selected, onSelect }: { node: NodeData; selected: strin
       ))}
     </g>
   );
-}
-
-function getTouchDist(t1: { clientX: number; clientY: number }, t2: { clientX: number; clientY: number }) {
-  return Math.sqrt((t1.clientX - t2.clientX) ** 2 + (t1.clientY - t2.clientY) ** 2);
 }
 
 function InfoPanel({ descId, onClose }: { descId: string; onClose: () => void }) {
@@ -919,6 +1209,10 @@ function InfoPanel({ descId, onClose }: { descId: string; onClose: () => void })
   );
 }
 
+function getTouchDist(t1: { clientX: number; clientY: number }, t2: { clientX: number; clientY: number }) {
+  return Math.sqrt((t1.clientX - t2.clientX) ** 2 + (t1.clientY - t2.clientY) ** 2);
+}
+
 export function DiagramPage() {
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -935,12 +1229,7 @@ export function DiagramPage() {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const handler = (e: WheelEvent) => {
-      if (e.ctrlKey || e.metaKey) {
-        e.preventDefault();
-        setZoom(z => Math.min(Math.max(z * (e.deltaY > 0 ? 0.92 : 1.08), 0.3), 3));
-      }
-    };
+    const handler = (e: WheelEvent) => { if (e.ctrlKey || e.metaKey) { e.preventDefault(); setZoom(z => Math.min(Math.max(z * (e.deltaY > 0 ? 0.92 : 1.08), 0.3), 3)); } };
     el.addEventListener("wheel", handler, { passive: false });
     return () => el.removeEventListener("wheel", handler);
   }, []);
@@ -955,38 +1244,24 @@ export function DiagramPage() {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setDidMove(false);
-    if (e.touches.length === 1) {
-      setDragging(true);
-      dragStartRef.current = { x: e.touches[0].clientX - panRef.current.x, y: e.touches[0].clientY - panRef.current.y };
-    } else if (e.touches.length === 2) {
-      setDragging(false);
-      pinchRef.current = { dist: getTouchDist(e.touches[0], e.touches[1]), zoom };
-    }
+    if (e.touches.length === 1) { setDragging(true); dragStartRef.current = { x: e.touches[0].clientX - panRef.current.x, y: e.touches[0].clientY - panRef.current.y }; }
+    else if (e.touches.length === 2) { setDragging(false); pinchRef.current = { dist: getTouchDist(e.touches[0], e.touches[1]), zoom }; }
   };
   const handleTouchMove = (e: React.TouchEvent) => {
     setDidMove(true);
-    if (e.touches.length === 1 && dragging) {
-      setPan({ x: e.touches[0].clientX - dragStartRef.current.x, y: e.touches[0].clientY - dragStartRef.current.y });
-    } else if (e.touches.length === 2 && pinchRef.current) {
-      setZoom(Math.min(Math.max(pinchRef.current.zoom * (getTouchDist(e.touches[0], e.touches[1]) / pinchRef.current.dist), 0.3), 3));
-    }
+    if (e.touches.length === 1 && dragging) setPan({ x: e.touches[0].clientX - dragStartRef.current.x, y: e.touches[0].clientY - dragStartRef.current.y });
+    else if (e.touches.length === 2 && pinchRef.current) setZoom(Math.min(Math.max(pinchRef.current.zoom * (getTouchDist(e.touches[0], e.touches[1]) / pinchRef.current.dist), 0.3), 3));
   };
   const handleTouchEnd = () => { setDragging(false); pinchRef.current = null; };
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (e.button === 0) { setDragging(true); setDidMove(false); dragStartRef.current = { x: e.clientX - pan.x, y: e.clientY - pan.y }; }
-  };
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (dragging) { setDidMove(true); setPan({ x: e.clientX - dragStartRef.current.x, y: e.clientY - dragStartRef.current.y }); }
-  };
+  const handleMouseDown = (e: React.MouseEvent) => { if (e.button === 0) { setDragging(true); setDidMove(false); dragStartRef.current = { x: e.clientX - pan.x, y: e.clientY - pan.y }; } };
+  const handleMouseMove = (e: React.MouseEvent) => { if (dragging) { setDidMove(true); setPan({ x: e.clientX - dragStartRef.current.x, y: e.clientY - dragStartRef.current.y }); } };
   const handleMouseUp = () => setDragging(false);
   const handleSvgClick = () => { if (!didMove) setSelected(null); };
   const handleNodeSelect = (id: string) => { if (!didMove) setSelected(id === selected ? null : id); };
 
-  const btnStyle: React.CSSProperties = {
-    width: 38, height: 38, display: "flex", alignItems: "center", justifyContent: "center",
+  const btnStyle: React.CSSProperties = { width: 38, height: 38, display: "flex", alignItems: "center", justifyContent: "center",
     background: "#2a2a2a", color: "#faf9f6", border: "none", borderRadius: 6, fontSize: 18,
-    fontFamily: "'IBM Plex Mono', monospace", cursor: "pointer", WebkitTapHighlightColor: "transparent", userSelect: "none",
-  };
+    fontFamily: "'IBM Plex Mono', monospace", cursor: "pointer", WebkitTapHighlightColor: "transparent", userSelect: "none" };
 
   return (
     <div ref={containerRef} style={{ width: "100%", height: "100vh", background: "#faf9f6",
@@ -1003,7 +1278,7 @@ export function DiagramPage() {
           <button onClick={() => setSelected("_intro")} style={{
             fontSize: 9, padding: "4px 10px", background: selected === "_intro" ? "#555" : "#333",
             color: "#faf9f6", border: "none", borderRadius: 4, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>
-            O PROJEKTU
+            ℹ O PROJEKTU
           </button>
           <span style={{ fontSize: 10, color: "#888" }}>{Math.round(zoom * 100)}%</span>
         </div>
