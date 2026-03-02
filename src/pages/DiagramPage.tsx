@@ -42,9 +42,53 @@ Wiki se plní během Bookkeepingu (krok 6) a čte při přípravě scény (krok 
   },
   postava: {
     title: "Postava (hráčova myš)",
-    text: `Karta hráčovy postavy. V Mausritteru: vlastnosti (STR, DEX, WIL), slot-based inventář, HP, podmínky (zraněný, vyčerpaný...).
+    text: `Karta hráčovy postavy. Centrální entita — propojená se vším.
 
-Propojená se vším — kde se nachází, jaké má úkoly, s kým mluvila, co vlastní.`,
+IDENTITA:
+• Jméno: vlastní + mateřské (např. "Ada Katzenreiserová")
+• Původ (Background): určen z tabulky podle počátečních BO × ďobků. Ne volná volba — výsledek říká co myš dělala předtím (kuchyňský slídil, dráteník, uprchlík z klece...) a určuje 2 startovní předměty.
+• Rodné znamení (Birthsign): hod d6. Hvězda, Kolo, Žalud, Matka... Každé nese dvojici povahových rysů (statečná/zbrklá, pečující/ustaraná).
+• Srst: barva + vzor (čokoládová mourovatá, namodralá tečkovaná...)
+• Výrazný rys: páska přes oko, tělo plné jizev, zakroucený ocásek, dredy...
+
+ATRIBUTY (rozsah 2-12, generovány 3d6 keep 2):
+• STR (Síla) — fyzická síla a odolnost
+• DEX (Mrštnost) — rychlost a obratnost
+• WIL (Vůle) — odhodlání a kouzlo osobnosti
+
+BODY OCHRANY (BO):
+• Aktuální / Maximum (generováno d6 na úroveň)
+• BO NENÍ zdraví — je to schopnost vyhnout se zranění
+• Když BO = 0, poškození jde přímo do STR!
+• Pokud STR poškozena → záchrana na STR, jinak kritické zranění
+
+INVENTÁŘ (10 slotů, vizuální grid):
+• Packy: 2 sloty (silnější / slabší) — aktivně držené, volná akce k použití
+• Tělo: 2 sloty — rychlý přístup, výměna s packami = volná akce
+• Batoh: 6 slotů — vyndání v boji stojí akci!
+• Velké předměty (obouruční zbraně, těžká zbroj) zabírají 2 sloty
+• PODMÍNKY ZABÍRAJÍ SLOT: Hlad, Vyčerpání, Poranění, Vystrašení, Pomatení
+• Přetížení: nemůže běhat, záchrany s nevýhodou
+
+PODMÍNKY (stavy): Hlad, Vyčerpání, Poranění, Vystrašení, Pomatení — každý zabírá slot. Kuráž (od úrovně 2) = speciální sloty kde podmínka nemá negativní efekt.
+
+PENÍZE: Ďobky (Pips). Prvních 250 zdarma, každých dalších 250 zabírá slot.
+
+POSTUP: zk. = 1 za každý ďobek pokladu přineseného do bezpečí. Úroveň 2 = 1000, 3 = 3000, 4 = 6000.
+
+LÉČENÍ: Krátký (10 min, d6+1 BO), Dlouhý (6 hod, všechny BO), Úplný (týden, vše).`,
+  },
+  pomocnik: {
+    title: "Pomocník (Hireling)",
+    text: `Najatý spolucestující. V Mausritteru NENÍ overkill — pomocníci slouží jako "nosiči" pro poklady a rozšiřují omezenou kapacitu inventáře.
+
+ATRIBUTY (2d6 na každý): STR, DEX, WIL. BO: d6.
+
+INVENTÁŘ (6 slotů): Packy 2, Tělo 2, Batoh 2 (méně než hráč!).
+
+PLATBA: Denní mzda v ďobcích (světlonoš 1ď, zbrojmyš 10ď, rytíř 25ď). Morálka: stres → záchrana WIL, jinak uteče.
+
+PROČ JE DŮLEŽITÝ: Inventář v Mausritteru je extrémně omezený (10 slotů). Pomocník s 6 sloty výrazně zvyšuje kapacitu — víc pokladů = víc zk. = rychlejší postup.`,
   },
   npc_seznam: {
     title: "NPC Seznam (AKTIVNÍ MECHANICKÝ)",
@@ -92,27 +136,59 @@ Pokud je seznam prázdný (začátek hry), mechanika přesměruje na "Current Co
   },
   osady: {
     title: "Osady / Místa",
-    text: `Lokace ve světě — osady, města, jeskyně, lesy, body zájmu. Každé místo má popis, obyvatele (NPC), události (scény), úkoly.
+    text: `Lokace ve světě hry. Od farem po velkoměsta, od jeskyní po hexcrawl body zájmu.
 
-Propojení: osada není bod na mapě, ale živé místo s obyvateli a příběhy. Klikneš na osadu a vidíš všechny NPC co tam žijí.`,
+GENEROVÁNÍ OSADY:
+• Velikost (2d6, nižší): 1=Farma, 2=Křižovatka, 3=Víska (50-150), 4=Vesnice (150-300), 5=Město (300-1000), 6=Velkoměsto (1000+)
+• Společenské zřízení (d6 + velikost) — kdo vládne
+• Výrazný prvek, obyvatelé, živnost, událost, hospoda
+• Jména (d12+d12): Dubov, Měsíční Hrob, Černá Lhota...
+
+SLUŽBY (v ďobcích): Ubytování 1-5ď/noc, jídlo 2ď, léčení (týden) 20ď, banka 1%, verbování 20ď.
+
+HEXCRAWL MAPA (5×5 hexů, 1 hex = 1 míle): Terén d6, body zájmu d20, detaily d6/d8.
+
+Propojení: NPC obyvatelé, frakce, úkoly, scény z deníku.`,
   },
   frakce: {
     title: "Frakce",
-    text: `Organizované skupiny — cechy, bandy, šlechtické rody, náboženské řády. Členové (NPC), cíle, sídla (osady), vzájemné vztahy.
+    text: `Mocné síly ve světě s vlastní MECHANIKOU (progress track).
 
-V Mausritteru jsou frakce motor příběhu — jejich konflikty generují hooky a úkoly.`,
+STRUKTURA: Název, popis, ZDROJE (bohatství, armáda, magie...), CÍLE (2-5 políček pokroku).
+
+MECHANIKA MEZI SEZENÍMI (Tah frakcí):
+1. Hod 1d6 za každou frakci
+2. +1 za relevantní zdroj, -1 za konkurenční zdroj
+3. Výsledek 4-5 → 1 políčko, 6+ → 2 políčka
+4. Dokončení cíle → nový zdroj (frakce roste!)
+
+ZÁSAHY HRÁČŮ: Pomoc = +1-3 políčka, zdržení = -1-3 políčka. Cíle frakcí se objevují jako zvěsti (hooky!).
+
+Propojení: členové (NPC), sídla (osady), úkoly, konflikty s jinými frakcemi.`,
   },
   ukoly: {
-    title: "Úkoly / Hooky",
-    text: `Aktivní i splněné úkoly. Hook = nabídka dobrodružství, důvod proč někam jít. Úkol = konkrétní zadání.
+    title: "Úkoly / Hooky / Dobrodružná místa",
+    text: `Aktivní i dokončené úkoly, příběhové hooky a dobrodružná místa.
 
-Propojené: od koho (NPC), kde (osada), stav (otevřený/splněný), do které příběhové linky patří (thread).`,
+GENEROVÁNÍ ZÁPLETEK (d66 × 3): Tvor × Problém × Komplikace → "Kočičí pán se chce nechat bavit a uvěznil hráčské myši"
+
+TABULKA ZVĚSTÍ (d6): 1-3 pravdivé, 4-5 částečně, 6 nepravdivé. Propojené s cíli frakcí!
+
+DOBRODRUŽNÁ MÍSTA: Téma → Chátrání → Místnosti (3d6) → Překážky/Pasti/Hlavolamy → Poklady (2d20 + bonus kostky).
+
+Propojení: zadavatel (NPC), lokace (osada), thread, typ (hook/quest/dungeon/zvěst).`,
   },
   predmety: {
-    title: "Předměty",
-    text: `Příběhově důležité předměty — artefakty, dokumenty, poklady. Ne celý inventář, ale věci s příběhovým významem.
+    title: "Předměty / Vybavení / Kouzla",
+    text: `Vše co může postava vlastnit. V Mausritteru je inventář JÁDRO hry.
 
-Propojené: kde nalezeny, kdo dal, k jakému úkolu se vztahují.`,
+ZBRANĚ: Improvizovaná d6/1slot/1ď, Lehká d6/10ď, Střední d6-d8/20ď, Těžká d10/obě packy/40ď. Střelné: prak d6/10ď, luk d8/40ď.
+
+ZBROJE: Lehká (-1 zranění, 150ď), Těžká (-1, 500ď, 2 sloty).
+
+KOUZLA — FYZICKÉ PŘEDMĚTY (obsidiánové destičky): Sesílání d6 × moc (1-3). Za každou 4-6 škrtni tečku. Za každou 6 → d6 WIL zranění (Vymknutí). 15 kouzel: Ohnivá koule, Zahojení, Neviditelnost...
+
+V APPCE: Příběhově důležité předměty (artefakty, quest itemy, kouzla). Ne celý inventář.`,
   },
   chaos_val: {
     title: "Chaos Faktor (CF)",
@@ -135,10 +211,18 @@ ROZSAH: Striktně 1-9. Nemůže klesnout pod 1 ani přesáhnout 9.
 VARIANTY: Mid-Chaos, Low-Chaos, No-Chaos (alternativní tabulky pro jiný styl hry).`,
   },
   denik: {
-    title: "Deník kampaně",
-    text: `Timeline scén. Heslovité záznamy + občas narativní shrnutí pro důležité momenty.
+    title: "Deník kampaně (Scény)",
+    text: `Chronologický záznam všech scén. Páteř příběhu.
 
-Propojené s entitami — zmíníš NPC, osadu, úkol a automaticky se propojí. Slouží k "kdy jsem potkal toho kupce" nebo "co se stalo v osadě minule".`,
+KAŽDÁ SCÉNA OBSAHUJE:
+• Číslo scény (automatické)
+• Typ: očekávaná / pozměněná / přerušená
+• CF na začátku a na konci (sledování trendu)
+• Shrnutí — heslovité "co se stalo" (povinné)
+• Narativní text — delší popis pro důležité momenty (volitelné)
+• Zmíněné entity — NPC, osady, předměty, úkoly
+
+PROPOJENÍ: Klikneš na NPC v deníku → detail NPC. Filtr: "scény kde se objevil kupec Hrách". Timeline: vizuální přehled CF a interruptů.`,
   },
   progress_track: {
     title: "Thread Progress Track",
@@ -564,25 +648,33 @@ interface NodeData {
 
 const NODES: NodeData[] = [
   // === WIKI ===
-  { id: "wiki_bg", x: 280, y: 200, w: 420, h: 340, type: "group", label: "KAMPÁŇOVÁ WIKI" },
-  { id: "postava", x: 305, y: 238, w: 90, h: 28, type: "core", label: "POSTAVA" },
-  { id: "osady", x: 405, y: 238, w: 130, h: 28, type: "core", label: "OSADY / MÍSTA" },
-  { id: "frakce", x: 545, y: 238, w: 80, h: 28, type: "core", label: "FRAKCE" },
-  { id: "ukoly", x: 305, y: 274, w: 90, h: 28, type: "core", label: "ÚKOLY" },
-  { id: "predmety", x: 405, y: 274, w: 130, h: 28, type: "core", label: "PŘEDMĚTY" },
-  { id: "denik", x: 545, y: 274, w: 80, h: 28, type: "core", label: "DENÍK" },
+  { id: "wiki_bg", x: 270, y: 190, w: 440, h: 410, type: "group", label: "KAMPÁŇOVÁ WIKI" },
 
-  // Mechanické seznamy — zvýrazněné
-  { id: "npc_seznam", x: 305, y: 320, w: 170, h: 42, type: "mech_list", label: "NPC SEZNAM\n25 řádků · 5 sekcí · váhy" },
-  { id: "thread_seznam", x: 490, y: 320, w: 170, h: 42, type: "mech_list", label: "THREAD SEZNAM\n25 řádků · 5 sekcí · váhy" },
+  // Mausritter postavy
+  { id: "postavy_label", x: 290, y: 218, w: 180, h: 16, type: "sublabel", label: "postavy (Mausritter)" },
+  { id: "postava", x: 290, y: 236, w: 200, h: 36, type: "core", label: "POSTAVA\nSTR DEX WIL · 10 slotů · BO" },
+  { id: "pomocnik", x: 500, y: 236, w: 190, h: 36, type: "core", label: "POMOCNÍK\n6 slotů · mzda · morálka" },
 
-  { id: "chaos_val", x: 305, y: 378, w: 130, h: 32, type: "core_highlight", label: "CHAOS FAKTOR" },
-  { id: "progress_track", x: 490, y: 378, w: 170, h: 32, type: "core_progress", label: "PROGRESS TRACK" },
+  // Svět
+  { id: "svet_label", x: 290, y: 280, w: 180, h: 16, type: "sublabel", label: "svět (wiki entity)" },
+  { id: "osady", x: 290, y: 293, w: 130, h: 38, type: "core", label: "OSADY / MÍSTA\nhex · generátor · služby" },
+  { id: "frakce", x: 430, y: 293, w: 120, h: 38, type: "core", label: "FRAKCE\nzdroje · cíle · d6" },
+  { id: "predmety", x: 560, y: 293, w: 130, h: 38, type: "core", label: "PŘEDMĚTY\nzbraně · kouzla · loot" },
+  { id: "ukoly", x: 290, y: 338, w: 130, h: 32, type: "core", label: "ÚKOLY / HOOKY\nd66 · zvěsti · dungeon" },
+  { id: "denik", x: 430, y: 338, w: 260, h: 32, type: "core", label: "DENÍK — scéna po scéně + propojení" },
 
-  { id: "propojeni", x: 350, y: 420, w: 260, h: 22, type: "sublabel", label: "vše propojené · váhy · bloky" },
+  // Mythic mechaniky — oddělené
+  { id: "mythic_label", x: 290, y: 370, w: 300, h: 16, type: "sublabel", label: "── aktivní mechaniky (Mythic GME) ──" },
+  { id: "npc_seznam", x: 290, y: 390, w: 200, h: 42, type: "mech_list", label: "NPC SEZNAM\n25 řádků · 5 sekcí · váhy" },
+  { id: "thread_seznam", x: 500, y: 390, w: 190, h: 42, type: "mech_list", label: "THREAD SEZNAM\n25 řádků · 5 sekcí · váhy" },
+
+  { id: "chaos_val", x: 290, y: 445, w: 200, h: 32, type: "core_highlight", label: "CHAOS FAKTOR (1-9)" },
+  { id: "progress_track", x: 500, y: 445, w: 190, h: 32, type: "core_progress", label: "PROGRESS TRACK" },
+
+  { id: "propojeni", x: 350, y: 490, w: 260, h: 22, type: "sublabel", label: "vše propojené · klikni pro detail" },
 
   // Random event flow annotation
-  { id: "random_event_flow", x: 770, y: 510, w: 200, h: 50, type: "note_alert", label: "RANDOM EVENT\ndoubles ≤ CF → Event Focus\n→ seznam → Meaning Tables" },
+  { id: "random_event_flow", x: 770, y: 580, w: 200, h: 50, type: "note_alert", label: "RANDOM EVENT\ndoubles ≤ CF → Event Focus\n→ seznam → Meaning Tables" },
 
   // === CYKLUS SCÉNY ===
   { id: "ocekavani", x: 360, y: 40, w: 240, h: 50, type: "cycle", label: "1. OČEKÁVÁNÍ\nco by se mělo stát?" },
@@ -596,10 +688,10 @@ const NODES: NodeData[] = [
   { id: "event_focus", x: 800, y: 328, w: 170, h: 20, type: "sublabel_tool", label: "↳ Event Focus (d100)" },
   { id: "scene_meaning", x: 800, y: 350, w: 170, h: 20, type: "sublabel_tool", label: "↳ + Meaning Tables" },
 
-  { id: "hrani", x: 750, y: 420, w: 270, h: 60, type: "cycle_active", label: "4. HRANÍ SCÉNY\nFate Q · Meaning · Detail Check\ndoubles → random events!" },
-  { id: "ukonceni", x: 370, y: 580, w: 220, h: 40, type: "cycle", label: "5. SCÉNA VYČERPÁNA" },
+  { id: "hrani", x: 750, y: 460, w: 270, h: 60, type: "cycle_active", label: "4. HRANÍ SCÉNY\nFate Q · Meaning · Detail Check\ndoubles → random events!" },
+  { id: "ukonceni", x: 370, y: 650, w: 220, h: 40, type: "cycle", label: "5. SCÉNA VYČERPÁNA" },
 
-  { id: "bookkeeping_bg", x: 20, y: 430, w: 215, h: 130, type: "cycle_write", label: "6. BOOKKEEPING\n· NPC seznam (váhy ±)\n· Thread seznam (váhy ±)\n· Chaos faktor ±1\n· Progress Track\n· Deník + Wiki" },
+  { id: "bookkeeping_bg", x: 20, y: 500, w: 215, h: 130, type: "cycle_write", label: "6. BOOKKEEPING\n· NPC seznam (váhy ±)\n· Thread seznam (váhy ±)\n· Chaos faktor ±1\n· Progress Track\n· Deník + Wiki" },
 
   { id: "zpet", x: 30, y: 100, w: 210, h: 50, type: "cycle", label: "→ NOVÁ SCÉNA\nzpět na očekávání" },
 
@@ -622,7 +714,7 @@ const NODES: NodeData[] = [
 
   // === META ===
   { id: "meritko", x: 760, y: 30, w: 230, h: 50, type: "note", label: "MĚŘÍTKO (V HLAVĚ)", bullets: ["architekt ↔ průzkumník"] },
-  { id: "hrac", x: 410, y: 510, w: 140, h: 36, type: "player", label: "TY (hráč + GM)" },
+  { id: "hrac", x: 410, y: 610, w: 140, h: 36, type: "player", label: "TY (hráč + GM)" },
 ];
 
 interface EdgeData {
