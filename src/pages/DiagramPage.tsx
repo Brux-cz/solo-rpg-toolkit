@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 interface Description {
   title: string;
@@ -1319,6 +1319,25 @@ export function DiagramPage() {
 
   useEffect(() => { panRef.current = pan; }, [pan]);
 
+  const CONTENT = { x: 20, y: 15, w: 1230, h: 745 };
+  const HEADER_H = 40;
+
+  const fitToScreen = useCallback(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const vw = el.clientWidth;
+    const vh = el.clientHeight - HEADER_H;
+    const pad = 24;
+    const z = Math.min((vw - pad * 2) / CONTENT.w, (vh - pad * 2) / CONTENT.h, 1);
+    setPan({
+      x: (vw - CONTENT.w * z) / 2 - CONTENT.x * z,
+      y: HEADER_H + pad - CONTENT.y * z,
+    });
+    setZoom(z);
+  }, []);
+
+  useEffect(() => { fitToScreen(); }, [fitToScreen]);
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -1381,7 +1400,7 @@ export function DiagramPage() {
         display: "flex", flexDirection: "column", gap: 6, zIndex: 10, transition: "right 0.2s" }}>
         <button onClick={() => setZoom(z => Math.min(z * 1.2, 3))} style={btnStyle}>+</button>
         <button onClick={() => setZoom(z => Math.max(z * 0.8, 0.3))} style={btnStyle}>−</button>
-        <button onClick={() => { setPan({ x: 0, y: 0 }); setZoom(1); }} style={{ ...btnStyle, fontSize: 11 }}>↺</button>
+        <button onClick={fitToScreen} style={{ ...btnStyle, fontSize: 11 }}>↺</button>
       </div>
 
       <svg width="100%" height="100%" style={{ cursor: dragging ? "grabbing" : "grab", touchAction: "none" }}
