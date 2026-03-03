@@ -1397,7 +1397,7 @@ export function DiagramPage() {
       </div>
 
       <div style={{ position: "absolute", bottom: 20, right: selected ? "min(476px, calc(88vw + 16px))" : 16,
-        display: "flex", flexDirection: "column", gap: 6, zIndex: 10, transition: "right 0.2s" }}>
+        display: "flex", flexDirection: "row", gap: 6, zIndex: 10, transition: "right 0.2s" }}>
         <button onClick={() => setZoom(z => Math.min(z * 1.2, 3))} style={btnStyle}>+</button>
         <button onClick={() => setZoom(z => Math.max(z * 0.8, 0.3))} style={btnStyle}>−</button>
         <button onClick={fitToScreen} style={{ ...btnStyle, fontSize: 11 }}>↺</button>
