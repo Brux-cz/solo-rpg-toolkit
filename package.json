@@ -6,7 +6,7 @@
   "description": "Aplikace pro sólové hraní stolních RPG — kampáňová wiki, cyklus scény (Mythic GME), panel nástrojů.",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {

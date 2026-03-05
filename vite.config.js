@@ -1,21 +1,18 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   plugins: [
     react(),
-    tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["favicon.svg"],
       manifest: {
-        name: "Solo RPG Toolkit",
+        name: "Solo RPG Companion",
         short_name: "SoloRPG",
-        description:
-          "Kampáňová wiki, cyklus scény a nástroje pro sólové hraní stolních RPG.",
-        theme_color: "#1a1a1a",
+        description: "Mobilní PWA pro sólové hraní stolních RPG — Mausritter + Mythic GME 2e.",
+        theme_color: "#faf9f6",
         background_color: "#faf9f6",
         display: "standalone",
         orientation: "any",
