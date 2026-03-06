@@ -130,53 +130,47 @@ export default function PostavaTab({ character, onUpdate }) {
 
               if (editing) {
                 return (
-                  <div key={idx} style={{ border: `1px solid ${C.blue}`, borderRadius: 6, padding: "6px 8px", marginBottom: 4, background: C.blue + "08" }}>
-                    <div style={{ display: "flex", gap: 4, marginBottom: 4 }}>
-                      <input
-                        autoFocus
-                        value={slot.nazev}
-                        onChange={e => updateSlot(idx, { nazev: e.target.value })}
-                        placeholder="Název předmětu"
-                        style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 11, fontFamily: FONT, background: "white", color: C.text, outline: "none" }}
-                      />
-                    </div>
-                    <div style={{ display: "flex", gap: 4, alignItems: "center", flexWrap: "wrap" }}>
-                      <select
-                        value={slot.typ}
-                        onChange={e => updateSlot(idx, { typ: e.target.value })}
-                        style={{ border: `1px solid ${C.border}`, borderRadius: 4, padding: "2px 4px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none" }}
-                      >
-                        <option value="">—typ—</option>
-                        {TYPY.map(t => <option key={t} value={t}>{t}</option>)}
-                      </select>
-                      {slot.typ === "zbraň" && (
-                        <select
-                          value={slot.dmg || ""}
-                          onChange={e => updateSlot(idx, { dmg: e.target.value })}
-                          style={{ border: `1px solid ${C.border}`, borderRadius: 4, padding: "2px 4px", fontSize: 10, fontFamily: FONT, background: "white", color: C.red, outline: "none", fontWeight: 700 }}
-                        >
-                          <option value="">dmg</option>
-                          {["d4","d6","d8","d10"].map(d => <option key={d} value={d}>{d}</option>)}
+                  <div key={idx} style={{ border: `1px solid ${C.blue}`, borderRadius: 6, padding: "8px 10px", marginBottom: 4, background: C.blue + "08" }}>
+                    <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
+                      <label style={{ flex: 2 }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Název</span>
+                        <input autoFocus value={slot.nazev} onChange={e => updateSlot(idx, { nazev: e.target.value })} placeholder="Název předmětu"
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                      </label>
+                      <label style={{ flex: 1 }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Typ</span>
+                        <select value={slot.typ} onChange={e => updateSlot(idx, { typ: e.target.value })}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }}>
+                          <option value="">—</option>
+                          {TYPY.map(t => <option key={t} value={t}>{t}</option>)}
                         </select>
+                      </label>
+                    </div>
+                    <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
+                      {slot.typ === "zbraň" && (
+                        <label style={{ flex: 1 }}>
+                          <span style={{ color: C.muted, fontSize: 9 }}>Dmg</span>
+                          <select value={slot.dmg || ""} onChange={e => updateSlot(idx, { dmg: e.target.value })}
+                            style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }}>
+                            <option value="">—</option>
+                            {["d4","d6","d8","d10"].map(d => <option key={d} value={d}>{d}</option>)}
+                          </select>
+                        </label>
                       )}
-                      <span style={{ fontSize: 9, color: C.muted }}>tečky</span>
-                      <input
-                        type="number"
-                        value={slot.tecky.akt}
-                        onChange={e => updateSlot(idx, { tecky: { ...slot.tecky, akt: Math.max(0, Number(e.target.value) || 0) } })}
-                        style={{ ...statInput, width: 28, fontSize: 10 }}
-                      />
-                      <span style={{ fontSize: 9, color: C.muted }}>/</span>
-                      <input
-                        type="number"
-                        value={slot.tecky.max}
-                        onChange={e => updateSlot(idx, { tecky: { ...slot.tecky, max: Math.max(0, Number(e.target.value) || 0) } })}
-                        style={{ ...statInput, width: 28, fontSize: 10 }}
-                      />
-                      <div style={{ marginLeft: "auto", display: "flex", gap: 4 }}>
-                        <button onClick={() => clearSlot(idx)} style={{ border: "none", background: "none", color: C.red, fontSize: 10, fontFamily: FONT, cursor: "pointer", padding: "2px 4px" }}>smazat</button>
-                        <button onClick={() => setEditSlot(null)} style={{ border: "none", background: "none", color: C.green, fontSize: 10, fontFamily: FONT, cursor: "pointer", padding: "2px 4px", fontWeight: 700 }}>✓</button>
-                      </div>
+                      <label style={{ flex: 1 }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Tečky</span>
+                        <div style={{ display: "flex", gap: 4, alignItems: "center", marginTop: 2 }}>
+                          <input type="number" value={slot.tecky.akt} onChange={e => updateSlot(idx, { tecky: { ...slot.tecky, akt: Math.max(0, Number(e.target.value) || 0) } })}
+                            style={{ width: 32, border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", textAlign: "center" }} />
+                          <span style={{ fontSize: 9, color: C.muted }}>/</span>
+                          <input type="number" value={slot.tecky.max} onChange={e => updateSlot(idx, { tecky: { ...slot.tecky, max: Math.max(0, Number(e.target.value) || 0) } })}
+                            style={{ width: 32, border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", textAlign: "center" }} />
+                        </div>
+                      </label>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+                      <button onClick={() => clearSlot(idx)} style={{ border: "none", background: "none", color: C.red, fontSize: 10, fontFamily: FONT, cursor: "pointer", padding: "2px 4px" }}>smazat</button>
+                      <button onClick={() => setEditSlot(null)} style={{ border: "none", background: "none", color: C.green, fontSize: 10, fontFamily: FONT, cursor: "pointer", padding: "2px 4px", fontWeight: 700 }}>✓</button>
                     </div>
                   </div>
                 );
@@ -290,29 +284,47 @@ export default function PostavaTab({ character, onUpdate }) {
 
                     if (editing) {
                       return (
-                        <div key={idx} style={{ border: `1px solid ${C.blue}`, borderRadius: 6, padding: "6px 8px", marginBottom: 4, background: C.blue + "08" }}>
-                          <div style={{ display: "flex", gap: 4, marginBottom: 4 }}>
-                            <input autoFocus value={slot.nazev} onChange={e => updateHSlot(pom.id, idx, { nazev: e.target.value })} placeholder="Název předmětu" style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 11, fontFamily: FONT, background: "white", color: C.text, outline: "none" }} />
-                          </div>
-                          <div style={{ display: "flex", gap: 4, alignItems: "center", flexWrap: "wrap" }}>
-                            <select value={slot.typ} onChange={e => updateHSlot(pom.id, idx, { typ: e.target.value })} style={{ border: `1px solid ${C.border}`, borderRadius: 4, padding: "2px 4px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none" }}>
-                              <option value="">—typ—</option>
-                              {TYPY.map(t => <option key={t} value={t}>{t}</option>)}
-                            </select>
-                            {slot.typ === "zbraň" && (
-                              <select value={slot.dmg || ""} onChange={e => updateHSlot(pom.id, idx, { dmg: e.target.value })} style={{ border: `1px solid ${C.border}`, borderRadius: 4, padding: "2px 4px", fontSize: 10, fontFamily: FONT, background: "white", color: C.red, outline: "none", fontWeight: 700 }}>
-                                <option value="">dmg</option>
-                                {["d4","d6","d8","d10"].map(d => <option key={d} value={d}>{d}</option>)}
+                        <div key={idx} style={{ border: `1px solid ${C.blue}`, borderRadius: 6, padding: "8px 10px", marginBottom: 4, background: C.blue + "08" }}>
+                          <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
+                            <label style={{ flex: 2 }}>
+                              <span style={{ color: C.muted, fontSize: 9 }}>Název</span>
+                              <input autoFocus value={slot.nazev} onChange={e => updateHSlot(pom.id, idx, { nazev: e.target.value })} placeholder="Název předmětu"
+                                style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                            </label>
+                            <label style={{ flex: 1 }}>
+                              <span style={{ color: C.muted, fontSize: 9 }}>Typ</span>
+                              <select value={slot.typ} onChange={e => updateHSlot(pom.id, idx, { typ: e.target.value })}
+                                style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }}>
+                                <option value="">—</option>
+                                {TYPY.map(t => <option key={t} value={t}>{t}</option>)}
                               </select>
+                            </label>
+                          </div>
+                          <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
+                            {slot.typ === "zbraň" && (
+                              <label style={{ flex: 1 }}>
+                                <span style={{ color: C.muted, fontSize: 9 }}>Dmg</span>
+                                <select value={slot.dmg || ""} onChange={e => updateHSlot(pom.id, idx, { dmg: e.target.value })}
+                                  style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }}>
+                                  <option value="">—</option>
+                                  {["d4","d6","d8","d10"].map(d => <option key={d} value={d}>{d}</option>)}
+                                </select>
+                              </label>
                             )}
-                            <span style={{ fontSize: 9, color: C.muted }}>tečky</span>
-                            <input type="number" value={slot.tecky.akt} onChange={e => updateHSlot(pom.id, idx, { tecky: { ...slot.tecky, akt: Math.max(0, Number(e.target.value) || 0) } })} style={{ ...statInput, width: 28, fontSize: 10 }} />
-                            <span style={{ fontSize: 9, color: C.muted }}>/</span>
-                            <input type="number" value={slot.tecky.max} onChange={e => updateHSlot(pom.id, idx, { tecky: { ...slot.tecky, max: Math.max(0, Number(e.target.value) || 0) } })} style={{ ...statInput, width: 28, fontSize: 10 }} />
-                            <div style={{ marginLeft: "auto", display: "flex", gap: 4 }}>
-                              <button onClick={() => clearHSlot(pom.id, idx)} style={{ border: "none", background: "none", color: C.red, fontSize: 10, fontFamily: FONT, cursor: "pointer", padding: "2px 4px" }}>smazat</button>
-                              <button onClick={() => setEditHSlot(null)} style={{ border: "none", background: "none", color: C.green, fontSize: 10, fontFamily: FONT, cursor: "pointer", padding: "2px 4px", fontWeight: 700 }}>✓</button>
-                            </div>
+                            <label style={{ flex: 1 }}>
+                              <span style={{ color: C.muted, fontSize: 9 }}>Tečky</span>
+                              <div style={{ display: "flex", gap: 4, alignItems: "center", marginTop: 2 }}>
+                                <input type="number" value={slot.tecky.akt} onChange={e => updateHSlot(pom.id, idx, { tecky: { ...slot.tecky, akt: Math.max(0, Number(e.target.value) || 0) } })}
+                                  style={{ width: 32, border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", textAlign: "center" }} />
+                                <span style={{ fontSize: 9, color: C.muted }}>/</span>
+                                <input type="number" value={slot.tecky.max} onChange={e => updateHSlot(pom.id, idx, { tecky: { ...slot.tecky, max: Math.max(0, Number(e.target.value) || 0) } })}
+                                  style={{ width: 32, border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", textAlign: "center" }} />
+                              </div>
+                            </label>
+                          </div>
+                          <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
+                            <button onClick={() => clearHSlot(pom.id, idx)} style={{ border: "none", background: "none", color: C.red, fontSize: 10, fontFamily: FONT, cursor: "pointer", padding: "2px 4px" }}>smazat</button>
+                            <button onClick={() => setEditHSlot(null)} style={{ border: "none", background: "none", color: C.green, fontSize: 10, fontFamily: FONT, cursor: "pointer", padding: "2px 4px", fontWeight: 700 }}>✓</button>
                           </div>
                         </div>
                       );
