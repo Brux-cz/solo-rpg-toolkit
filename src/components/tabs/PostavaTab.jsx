@@ -216,9 +216,9 @@ export default function PostavaTab({ character, onUpdate }) {
       </div>
 
       {/* Pomocníci */}
-      <div style={{ border: `1px solid ${C.border}`, borderRadius: 8, padding: "10px 12px" }}>
+      <div style={{ marginBottom: 10 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-          <span style={{ fontSize: 9, color: C.muted, letterSpacing: 0.8 }}>POMOCNÍCI ({pomocnici.length})</span>
+          <span style={{ fontSize: 9, color: C.muted }}>POMOCNÍCI ({pomocnici.length})</span>
           {pomocnici.length > 0 && (
             <span style={{ fontSize: 9, color: C.yellow }}>
               {pomocnici.reduce((s, p) => s + (p.denniMzda || 0), 0)}ď/den
@@ -229,49 +229,61 @@ export default function PostavaTab({ character, onUpdate }) {
           const hInv = pom.inventar || Array.from({ length: 6 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } }));
           const isExpanded = expandedPom === pom.id;
           return (
-            <div key={pom.id} style={{ border: `1px solid ${isExpanded ? C.green : C.border}`, borderRadius: 6, marginBottom: 8, overflow: "hidden" }}>
-              {/* Hlavička — klik sbalí/rozbalí */}
+            <div key={pom.id} style={{ marginBottom: 4 }}>
+              {/* Hlavička — stejný styl jako NPC */}
               <div
                 onClick={() => setExpandedPom(isExpanded ? null : pom.id)}
-                style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 10px", cursor: "pointer", background: isExpanded ? C.green + "08" : "transparent" }}
+                style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 10px", border: `1px solid ${isExpanded ? C.green : C.border}`, borderRadius: isExpanded ? "6px 6px 0 0" : 6, fontSize: 11, cursor: "pointer", background: isExpanded ? C.green + "08" : "transparent" }}
               >
-                <span style={{ fontSize: 10, color: C.muted }}>{isExpanded ? "▼" : "▶"}</span>
-                <span style={{ flex: 1, fontSize: 12, fontWeight: 700, color: C.text }}>{pom.jmeno || "Bez jména"}</span>
-                {pom.role && <span style={{ fontSize: 10, color: C.muted }}>{pom.role}</span>}
+                <span style={{ flex: 1, fontWeight: isExpanded ? 700 : 400 }}>{pom.jmeno || "Bez jména"}</span>
+                {pom.role && <span style={{ fontSize: 8, color: C.muted, border: `1px solid ${C.border}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>{pom.role}</span>}
                 {pom.denniMzda > 0 && <span style={{ fontSize: 9, color: C.yellow }}>{pom.denniMzda}ď</span>}
+                <button onClick={e => { e.stopPropagation(); propustitPomocnika(pom.id); }} style={{ background: "none", border: "none", color: C.red, fontSize: 13, cursor: "pointer", padding: "0 4px", lineHeight: 1 }}>✕</button>
               </div>
               {isExpanded && (
-              <div style={{ padding: "0 10px 8px" }}>
-              {/* Jméno, role, propustit */}
-              <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
-                <input value={pom.jmeno} onChange={e => updatePom(pom.id, { jmeno: e.target.value })} placeholder="Jméno" style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 12, fontWeight: 700, fontFamily: FONT, background: "white", color: C.text, outline: "none" }} />
-                <input value={pom.role} onChange={e => updatePom(pom.id, { role: e.target.value })} placeholder="Role" style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 11, fontFamily: FONT, background: "white", color: C.muted, outline: "none" }} />
-                <button onClick={() => propustitPomocnika(pom.id)} style={{ border: `1px solid ${C.red}33`, borderRadius: 4, background: "transparent", color: C.red, fontFamily: FONT, fontSize: 13, cursor: "pointer", padding: "0 6px", lineHeight: 1 }}>×</button>
+              <div style={{ border: `1px solid ${C.green}`, borderTop: "none", borderRadius: "0 0 6px 6px", padding: 10, background: C.bg, fontSize: 10 }}>
+              {/* Jméno, role */}
+              <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
+                <label style={{ flex: 1 }}>
+                  <span style={{ color: C.muted, fontSize: 9 }}>Jméno</span>
+                  <input value={pom.jmeno} onChange={e => updatePom(pom.id, { jmeno: e.target.value })} placeholder="Jméno"
+                    style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                </label>
+                <label style={{ flex: 1 }}>
+                  <span style={{ color: C.muted, fontSize: 9 }}>Role</span>
+                  <input value={pom.role} onChange={e => updatePom(pom.id, { role: e.target.value })} placeholder="Světlonoš..."
+                    style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                </label>
               </div>
               {/* Věrnost + mzda */}
-              <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 8 }}>
-                <select value={pom.vernost} onChange={e => updatePom(pom.id, { vernost: e.target.value })} style={{ border: `1px solid ${C.border}`, borderRadius: 4, padding: "2px 4px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none" }}>
-                  <option value="bezny">běžný</option>
-                  <option value="verny">věrný</option>
-                </select>
-                <span style={{ fontSize: 9, color: C.muted }}>mzda</span>
-                <input type="number" value={pom.denniMzda} onChange={e => updatePom(pom.id, { denniMzda: Math.max(0, Number(e.target.value) || 0) })} style={{ ...statInput, width: 40, color: C.yellow, fontWeight: 700 }} />
-                <span style={{ fontSize: 9, color: C.muted }}>ď/den</span>
+              <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+                <label style={{ flex: 1 }}>
+                  <span style={{ color: C.muted, fontSize: 9 }}>Věrnost</span>
+                  <select value={pom.vernost} onChange={e => updatePom(pom.id, { vernost: e.target.value })}
+                    style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }}>
+                    <option value="bezny">běžný</option>
+                    <option value="verny">věrný</option>
+                  </select>
+                </label>
+                <label style={{ flex: 1 }}>
+                  <span style={{ color: C.muted, fontSize: 9 }}>Mzda (ď/den)</span>
+                  <input type="number" value={pom.denniMzda} onChange={e => updatePom(pom.id, { denniMzda: Math.max(0, Number(e.target.value) || 0) })}
+                    style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                </label>
               </div>
-              {/* Staty */}
-              <div style={{ marginBottom: 8 }}>
-                {[["str","STR",C.green],["dex","DEX",C.green],["wil","WIL",C.green],["bo","BO",C.red]].map(([key, label, col]) => {
+              {/* Staty — grid jako NPC */}
+              <div style={{ fontSize: 9, color: C.muted, marginBottom: 4, fontWeight: 700 }}>STATY</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4, marginBottom: 8 }}>
+                {["str", "dex", "wil", "bo"].map(key => {
                   const s = pom[key];
-                  const pct = s.max > 0 ? (s.akt / s.max) * 100 : 0;
                   return (
-                    <div key={key} style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}>
-                      <span style={{ width: 24, fontSize: 9, fontWeight: 700, color: col }}>{label}</span>
-                      <div style={{ flex: 1, height: 4, background: C.border, borderRadius: 2, overflow: "hidden" }}>
-                        <div style={{ width: `${Math.min(100, pct)}%`, height: "100%", background: col, borderRadius: 2 }} />
-                      </div>
-                      <input type="number" value={s.akt} onChange={e => setPomStat(pom.id, key, "akt", e.target.value)} style={{ ...statInput, width: 32, fontSize: 10, color: col }} />
-                      <span style={{ fontSize: 9, color: C.muted }}>/</span>
-                      <input type="number" value={s.max} onChange={e => setPomStat(pom.id, key, "max", e.target.value)} style={{ ...statInput, width: 32, fontSize: 10, color: C.muted }} />
+                    <div key={key} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                      <span style={{ fontSize: 9, color: C.muted, width: 24, textTransform: "uppercase" }}>{key}</span>
+                      <input type="number" value={s.akt} onChange={e => setPomStat(pom.id, key, "akt", e.target.value)} placeholder="akt"
+                        style={{ width: 32, border: `1px solid ${C.border}`, borderRadius: 3, padding: "2px 4px", fontSize: 10, fontFamily: FONT, textAlign: "center", color: C.text, outline: "none" }} />
+                      <span style={{ color: C.muted, fontSize: 9 }}>/</span>
+                      <input type="number" value={s.max} onChange={e => setPomStat(pom.id, key, "max", e.target.value)} placeholder="max"
+                        style={{ width: 32, border: `1px solid ${C.border}`, borderRadius: 3, padding: "2px 4px", fontSize: 10, fontFamily: FONT, textAlign: "center", color: C.text, outline: "none" }} />
                     </div>
                   );
                 })}
