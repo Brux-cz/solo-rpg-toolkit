@@ -8,7 +8,46 @@ Hráč je zároveň vypravěč — appka simuluje rozhodování GM přes mechani
 - React + Vite (JSX, ne TypeScript)
 - Čistý inline CSS — žádný Tailwind, žádné externí CSS třídy
 - IBM Plex Mono font
-- Hlavní soubor: `src/App.jsx`
+- Modulární struktura (viz Mapa souborů níže)
+
+## Mapa souborů
+```
+src/
+  App.jsx                        — orchestrace (Prototype, routing, game state)
+  constants/
+    theme.js                     — C (barvy) + FONT
+    tables.js                    — FATE_CHART, ACTIONS, DESCRIPTIONS, SCENE_ADJ, EVENT_FOCUS
+    bestiary.js                  — BESTIARY (12 tvorů)
+  utils/
+    dice.js                      — roll(), checkFate(), checkScene(), rollMeaning(), getEventFocus()
+    combat.js                    — resolveDamage(), rollInitiative(), rollMorale()
+  store/
+    gameStore.js                 — INITIAL_GAME, MIGRATIONS, localStorage CRUD, export/import
+  components/
+    Lobby.jsx                    — výběr/správa her (multi-save)
+    blocks/
+      FateBlock.jsx              — inline blok: Fate Question výsledek
+      MeaningBlock.jsx           — inline blok: Meaning Tables výsledek
+      SceneBlock.jsx             — inline blok: nadpis scény
+      TextBlock.jsx              — inline blok: volný text
+      CombatBlock.jsx            — inline blok: combat log
+    sheets/
+      FateSheet.jsx              — bottom sheet: Fate Question
+      SceneSheet.jsx             — bottom sheet: Nová Scéna
+      MeaningSheet.jsx           — bottom sheet: Meaning Tables
+      EndSceneSheet.jsx          — bottom sheet: Konec Scény (CF, NPC/Thread CRUD)
+      CombatSheet.jsx            — bottom sheet: Boj (bestiář/vlastní, simulace)
+      NoteSheet.jsx              — bottom sheet: Poznámka
+    tabs/
+      PostavaTab.jsx             — tab: character sheet (staty, inventář placeholder)
+      SvetTab.jsx                — tab: Mythic GME (CF, NPC/Thread seznamy, mapa placeholder)
+    ui/
+      Header.jsx                 — horní lišta (scéna, CF, staty)
+      EditorArea.jsx             — deník s inline bloky
+      ActionToolbar.jsx          — toolbar akcí (Stav A)
+      BottomNav.jsx              — spodní navigace (Deník/Postava/Svět)
+      Sheet.jsx                  — base bottom sheet komponenta
+```
 
 ## Design tokens — VŽDY používej tyto konstanty
 ```js
@@ -27,7 +66,7 @@ const FONT = "'IBM Plex Mono', monospace";
 ```
 
 ## Pravidla pro každou změnu
-- Edituj `src/App.jsx` pokud není řečeno jinak
+- Edituj příslušný soubor podle Mapy souborů (ne vše do App.jsx!)
 - Vždy inline CSS, nikdy externí CSS třídy
 - Barvy pouze z objektu `C`, font pouze z `FONT`
 - Při přidání nového fieldu k existujícím datům → VŽDY přidat migraci (MIGRATIONS, zvýšit CURRENT_VERSION)
@@ -46,18 +85,7 @@ Header ZMIZÍ · Editor (menší) · MiniToolbar (8 ikon) · BottomNav ZMIZÍ ·
 ### Stav C — Bottom sheet
 Header · Editor (max 50% výšky) · ActionToolbar · BottomNav · Sheet (52% výšky)
 
-## Komponenty v src/App.jsx
-- `EditorArea` — statický editor s inline bloky
-- `Header` — Scéna/CF/den, klik = rozbalí staty
-- `ActionToolbar` — Vložit: Scéna | ❓Fate | 🔮 | ⚔️ | 📝 | ⋯
-- `MiniToolbar` — 8 ikon nad klávesnicí: 🎬 ❓ 🔮 ⚔️ 📝 📕 🎲 ⋯
-- `BottomNav` — Deník / Postava / Svět
-- `FakeKeyboard` — simulovaná klávesnice pro dev
-- `Sheet` — základ bottom sheetu (height: 52%, slide-up animace)
-- `FateSheet` — Fate Question (vstup → výsledek ANO/NE)
-- `SceneSheet` — Nová Scéna (očekávání → chaos test → výsledek)
-- `MeaningSheet` — Meaning Tables (Actions/Descriptions/Elements → 2 slova)
-- `EndSceneSheet` — Konec Scény (CF úprava + thready)
+## Komponenty (viz Mapa souborů výše pro umístění)
 - `CombatSheet` — Boj (nepřítel → výsledek)
 - `PostavaTab` — character sheet (staty, inventář, pomocník)
 - `SvetTab` — Mythic (CF + NPC seznam + Thread seznam) + sub-taby
