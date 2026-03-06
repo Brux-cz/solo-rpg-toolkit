@@ -31,6 +31,8 @@ src/
       SceneBlock.jsx             — inline blok: nadpis scény
       TextBlock.jsx              — inline blok: volný text
       CombatBlock.jsx            — inline blok: combat log
+      DetailBlock.jsx            — inline blok: detail check
+      DiceBlock.jsx              — inline blok: hod kostkou
     sheets/
       FateSheet.jsx              — bottom sheet: Fate Question
       SceneSheet.jsx             — bottom sheet: Nová Scéna
@@ -38,9 +40,11 @@ src/
       EndSceneSheet.jsx          — bottom sheet: Konec Scény (CF, NPC/Thread CRUD)
       CombatSheet.jsx            — bottom sheet: Boj (bestiář/vlastní, simulace)
       NoteSheet.jsx              — bottom sheet: Poznámka
+      DetailCheckSheet.jsx       — bottom sheet: Detail Check
+      DiceSheet.jsx              — bottom sheet: Hod kostkou
     tabs/
-      PostavaTab.jsx             — tab: character sheet (staty, inventář placeholder)
-      SvetTab.jsx                — tab: Mythic GME (CF, NPC/Thread seznamy, mapa placeholder)
+      PostavaTab.jsx             — tab: character sheet (staty, inventář, pomocník)
+      SvetTab.jsx                — tab: Mythic GME (CF, NPC wiki karty, Thread seznamy)
     ui/
       Header.jsx                 — horní lišta (scéna, CF, staty)
       EditorArea.jsx             — deník s inline bloky
@@ -127,12 +131,13 @@ Header · Editor (max 50% výšky) · ActionToolbar · BottomNav · Sheet (52% v
 15. Combat→Character propojení — boj zapisuje zranění do game.character
 16. Inventář — editovatelný grid (10 slotů: Packy/Tělo/Batoh), inline editor, migrace v3→v4
 17. Detail Check sheet (🔍) — Actions/Descriptions tabulky, 2×d100, DetailBlock v deníku
+18. Pomocník — editovatelný (jméno, role, staty, inventář 6 slotů, mzda, věrnost), migrace v4→v5
+19. NPC wiki karty — expandovatelné detaily (popis, lokace, vztah, poznámky, bojové staty, zbraň+dmg, zbroj)
+20. Hod kostkou (🎲) — d4 až d100, DiceSheet + DiceBlock v deníku
 
 ## Co je potřeba udělat 📋
 - [ ] Visual Viewport API — detekce skutečné klávesnice
-- [ ] Pomocník — editovatelný (staty, inventář 6 slotů)
 - [ ] Thread Progress Track (Discovery Check mechanika)
-- [ ] NPC wiki karty (detailní info, reakce, bojové staty)
 - [ ] Čas a počasí — dynamická správa (den, hlídka, směna)
 - [ ] Osady, Frakce, Hexcrawl mapa
 - [ ] NPC Behavior Table
