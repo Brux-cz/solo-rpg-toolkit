@@ -5,6 +5,7 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
   const [sub, setSub] = useState("mythic");
   const [newNpc, setNewNpc] = useState("");
   const [newThread, setNewThread] = useState("");
+  const [expandedNpc, setExpandedNpc] = useState(null);
   const subs = [["mythic","Mythic"],["npc","NPC"],["thready","Thready"],["mapa","Mapa"]];
 
   const addNpc = () => {
@@ -45,6 +46,16 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
 
   const addProgress = (idx) => {
     onThreadsChange(threads.map((t, i) => i === idx ? { ...t, progress: Math.min(t.total, t.progress + 2) } : t));
+  };
+
+  const updateNpc = (idx, patch) => {
+    onNpcsChange(npcs.map((n, i) => i === idx ? { ...n, ...patch } : n));
+  };
+
+  const updateNpcStat = (idx, stat, field, value) => {
+    const npc = npcs[idx];
+    const current = npc[stat] || { akt: 0, max: 0 };
+    updateNpc(idx, { [stat]: { ...current, [field]: Number(value) || 0 } });
   };
 
   const addInputStyle = { flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "5px 8px", fontSize: 11, fontFamily: FONT, background: "white", color: C.text, outline: "none" };
@@ -97,15 +108,85 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
         {sub === "npc" && (
           <>
             <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>NPC SEZNAM ({npcs.length}/25)</div>
-            {npcs.map((n, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4, padding: "6px 10px", border: `1px solid ${C.border}`, borderRadius: 6, fontSize: 11 }}>
-                <span style={{ flex: 1 }}>{n.name}</span>
-                <button onClick={() => changeNpcWeight(i, -1)} style={weightBtnStyle}>−</button>
-                <span style={{ fontSize: 10, color: C.yellow, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{n.weight}×</span>
-                <button onClick={() => changeNpcWeight(i, 1)} style={weightBtnStyle}>+</button>
-                <button onClick={() => onNpcsChange(npcs.filter((_, j) => j !== i))} style={delBtnStyle}>✕</button>
-              </div>
-            ))}
+            {npcs.map((n, i) => {
+              const isExpanded = expandedNpc === i;
+              const vztahColor = n.vztah === "přátelský" ? C.green : n.vztah === "nepřátelský" ? C.red : C.muted;
+              return (
+                <div key={i} style={{ marginBottom: 4 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 10px", border: `1px solid ${isExpanded ? C.green : C.border}`, borderRadius: isExpanded ? "6px 6px 0 0" : 6, fontSize: 11, cursor: "pointer", background: isExpanded ? C.green + "08" : "transparent" }}
+                    onClick={() => setExpandedNpc(isExpanded ? null : i)}>
+                    <span style={{ flex: 1, fontWeight: isExpanded ? 700 : 400 }}>{n.name}</span>
+                    {n.vztah && <span style={{ fontSize: 8, color: vztahColor, border: `1px solid ${vztahColor}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>{n.vztah}</span>}
+                    <button onClick={e => { e.stopPropagation(); changeNpcWeight(i, -1); }} style={weightBtnStyle}>−</button>
+                    <span style={{ fontSize: 10, color: C.yellow, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{n.weight}×</span>
+                    <button onClick={e => { e.stopPropagation(); changeNpcWeight(i, 1); }} style={weightBtnStyle}>+</button>
+                    <button onClick={e => { e.stopPropagation(); onNpcsChange(npcs.filter((_, j) => j !== i)); if (expandedNpc === i) setExpandedNpc(null); }} style={delBtnStyle}>✕</button>
+                  </div>
+                  {isExpanded && (
+                    <div style={{ border: `1px solid ${C.green}`, borderTop: "none", borderRadius: "0 0 6px 6px", padding: 10, background: C.bg, fontSize: 10 }}>
+                      <label style={{ display: "block", marginBottom: 6 }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Popis</span>
+                        <textarea value={n.popis || ""} onChange={e => updateNpc(i, { popis: e.target.value })} rows={2}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                      </label>
+                      <label style={{ display: "block", marginBottom: 6 }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Lokace</span>
+                        <input value={n.lokace || ""} onChange={e => updateNpc(i, { lokace: e.target.value })}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                      </label>
+                      <label style={{ display: "block", marginBottom: 6 }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Vztah</span>
+                        <select value={n.vztah || ""} onChange={e => updateNpc(i, { vztah: e.target.value })}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }}>
+                          <option value="">--</option>
+                          <option value="přátelský">přátelský</option>
+                          <option value="neutrální">neutrální</option>
+                          <option value="nepřátelský">nepřátelský</option>
+                        </select>
+                      </label>
+                      <label style={{ display: "block", marginBottom: 8 }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Poznámky</span>
+                        <textarea value={n.poznamky || ""} onChange={e => updateNpc(i, { poznamky: e.target.value })} rows={2}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                      </label>
+                      <div style={{ fontSize: 9, color: C.muted, marginBottom: 4, fontWeight: 700 }}>BOJOVÉ STATY</div>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4, marginBottom: 6 }}>
+                        {["str", "dex", "wil", "bo"].map(stat => (
+                          <div key={stat} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                            <span style={{ fontSize: 9, color: C.muted, width: 24, textTransform: "uppercase" }}>{stat}</span>
+                            <input type="number" value={n[stat]?.akt ?? ""} onChange={e => updateNpcStat(i, stat, "akt", e.target.value)} placeholder="akt"
+                              style={{ width: 32, border: `1px solid ${C.border}`, borderRadius: 3, padding: "2px 4px", fontSize: 10, fontFamily: FONT, textAlign: "center", color: C.text, outline: "none" }} />
+                            <span style={{ color: C.muted, fontSize: 9 }}>/</span>
+                            <input type="number" value={n[stat]?.max ?? ""} onChange={e => updateNpcStat(i, stat, "max", e.target.value)} placeholder="max"
+                              style={{ width: 32, border: `1px solid ${C.border}`, borderRadius: 3, padding: "2px 4px", fontSize: 10, fontFamily: FONT, textAlign: "center", color: C.text, outline: "none" }} />
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ display: "flex", gap: 6 }}>
+                        <label style={{ flex: 2 }}>
+                          <span style={{ color: C.muted, fontSize: 9 }}>Zbraň</span>
+                          <input value={n.zbran || ""} onChange={e => updateNpc(i, { zbran: e.target.value })} placeholder="Meč, Dýka..."
+                            style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                        </label>
+                        <label style={{ flex: 1 }}>
+                          <span style={{ color: C.muted, fontSize: 9 }}>Dmg</span>
+                          <select value={n.dmg || ""} onChange={e => updateNpc(i, { dmg: e.target.value })}
+                            style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }}>
+                            <option value="">—</option>
+                            {["d4","d6","d8","d10"].map(d => <option key={d} value={d}>{d}</option>)}
+                          </select>
+                        </label>
+                        <label style={{ flex: 1 }}>
+                          <span style={{ color: C.muted, fontSize: 9 }}>Zbroj</span>
+                          <input type="number" value={n.zbroj ?? ""} onChange={e => updateNpc(i, { zbroj: e.target.value === "" ? "" : Number(e.target.value) })} placeholder="0"
+                            style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
             <div style={{ display: "flex", gap: 4, marginTop: 8 }}>
               <input value={newNpc} onChange={e => setNewNpc(e.target.value)} onKeyDown={e => e.key === "Enter" && addNpc()} placeholder="Nový NPC..." style={addInputStyle} />
               <button onClick={addNpc} style={addBtnStyle}>+ NPC</button>
