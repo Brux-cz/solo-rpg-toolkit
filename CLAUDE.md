@@ -66,10 +66,21 @@ const FONT = "'IBM Plex Mono', monospace";
 ```
 
 ## Pravidla pro každou změnu
+
+### POVINNÝ CHECKLIST PŘED IMPLEMENTACÍ
+1. **Mění se data (NPC, Thread, character, inventář...)?**
+   → Přečti `src/docs/datovy-model.jsx` (relevantní entitu)
+   → Přidej MIGRACI (`MIGRATIONS` v `src/store/gameStore.js` + zvýšit `CURRENT_VERSION`)
+2. **Mění se herní mechanika (boj, scéna, fate, bookkeeping...)?**
+   → Přečti `src/docs/solo-rpg-diagram.jsx` (relevantní sekci — viz mapa řádků níže)
+3. **Nesedí implementace s diagramem/modelem?**
+   → ZASTAV SE a upozorni uživatele
+4. Tento checklist platí i pro subagenty (Agent tool) — předej jim ho v promptu.
+
+### Pravidla kódu
 - Edituj příslušný soubor podle Mapy souborů (ne vše do App.jsx!)
 - Vždy inline CSS, nikdy externí CSS třídy
-- Barvy pouze z objektu `C`, font pouze z `FONT`
-- Při přidání nového fieldu k existujícím datům → VŽDY přidat migraci (MIGRATIONS, zvýšit CURRENT_VERSION)
+- Barvy pouze z objektu `C` (`src/constants/theme.js`), font pouze z `FONT`
 - Hlavní kontejner má `height: 100dvh` (ne 100vh — kvůli iOS Safari)
 - Sheet komponenta: `height: 52%`, pevná, obsah scrollovatelný (`overflow-y: auto`)
 - Po změně řekni co jsi udělal (1-2 věty), nic víc
@@ -124,9 +135,7 @@ Header · Editor (max 50% výšky) · ActionToolbar · BottomNav · Sheet (52% v
 - [ ] Detail Check sheet
 - [ ] NPC Behavior Table
 
-## Diagram aplikace — POVINNÁ REFERENCE
-
-**PRAVIDLO: Před implementací jakékoliv funkcionality si VŽDY přečti relevantní sekci diagramu v `src/docs/solo-rpg-diagram.jsx`. Při práci s daty si VŽDY přečti i relevantní sekci datového modelu v `src/docs/datovy-model.jsx`. Ověř, že plán odpovídá architektuře a datovému modelu. Pokud se něco liší, upozorni uživatele.**
+## Diagram a datový model — POVINNÁ REFERENCE (viz checklist výše)
 
 Diagram je velký (~1400 řádků). Čti jen sekce relevantní pro aktuální úkol:
 
