@@ -9,6 +9,16 @@ const SLOT_SECTIONS = [
 
 const TYPY = ["zbraň", "zbroj", "kouzlo", "zásoby", "světlo", "nástroj", "poklad", "stav"];
 
+const ROLE = [
+  { name: "světlonoš", mzda: 1 },
+  { name: "dělník", mzda: 3 },
+  { name: "průvodce", mzda: 5 },
+  { name: "zbrojmyš", mzda: 10 },
+  { name: "rytíř", mzda: 25 },
+  { name: "tlumočník", mzda: 30 },
+  { name: "špion", mzda: 20 },
+];
+
 const POMOCNIK_SECTIONS = [
   { label: "Packy", start: 0, count: 2 },
   { label: "Tělo", start: 2, count: 2 },
@@ -251,8 +261,14 @@ export default function PostavaTab({ character, onUpdate }) {
                 </label>
                 <label style={{ flex: 1 }}>
                   <span style={{ color: C.muted, fontSize: 9 }}>Role</span>
-                  <input value={pom.role} onChange={e => updatePom(pom.id, { role: e.target.value })} placeholder="Světlonoš..."
-                    style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                  <select value={pom.role} onChange={e => {
+                    const r = ROLE.find(x => x.name === e.target.value);
+                    updatePom(pom.id, { role: e.target.value, ...(r && !pom.denniMzda ? { denniMzda: r.mzda } : {}) });
+                  }}
+                    style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }}>
+                    <option value="">—</option>
+                    {ROLE.map(r => <option key={r.name} value={r.name}>{r.name} ({r.mzda}ď)</option>)}
+                  </select>
                 </label>
               </div>
               {/* Věrnost + mzda */}
