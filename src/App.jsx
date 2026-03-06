@@ -12,6 +12,7 @@ import EndSceneSheet from "./components/sheets/EndSceneSheet.jsx";
 import CombatSheet from "./components/sheets/CombatSheet.jsx";
 import NoteSheet from "./components/sheets/NoteSheet.jsx";
 import DetailCheckSheet from "./components/sheets/DetailCheckSheet.jsx";
+import DiceSheet from "./components/sheets/DiceSheet.jsx";
 import PostavaTab from "./components/tabs/PostavaTab.jsx";
 import SvetTab from "./components/tabs/SvetTab.jsx";
 import Lobby from "./components/Lobby.jsx";
@@ -102,6 +103,7 @@ export default function Prototype() {
           onEndSceneOpen={() => setSheet("endscene")}
           onCombatOpen={() => setSheet("combat")}
           onNoteOpen={() => setSheet("note")}
+          onDiceOpen={() => setSheet("dice")}
         />
       )}
 
@@ -114,6 +116,7 @@ export default function Prototype() {
       {sheet === "combat" && <CombatSheet onClose={() => setSheet(null)} onInsert={handleInsert} character={game.character} onCharUpdate={(ch) => updateGame({ character: ch })} />}
       {sheet === "note" && <NoteSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}
       {sheet === "detail" && <DetailCheckSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}
+      {sheet === "dice" && <DiceSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}
 
     </div>
   );
