@@ -9,11 +9,26 @@ const SLOT_SECTIONS = [
 
 const TYPY = ["zbraň", "zbroj", "kouzlo", "zásoby", "světlo", "nástroj", "poklad", "stav"];
 
+const POMOCNIK_SECTIONS = [
+  { label: "Packy", start: 0, count: 2 },
+  { label: "Tělo", start: 2, count: 2 },
+  { label: "Batoh", start: 4, count: 2 },
+];
+
+const DEFAULT_POMOCNIK = {
+  aktivni: false, jmeno: "", role: "", vernost: "bezny", denniMzda: 0,
+  str: { akt: 0, max: 0 }, dex: { akt: 0, max: 0 }, wil: { akt: 0, max: 0 }, bo: { akt: 0, max: 0 },
+  inventar: Array.from({ length: 6 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
+};
+
 export default function PostavaTab({ character, onUpdate }) {
   const ch = character;
   const zkMax = ch.uroven * 6;
   const [editSlot, setEditSlot] = useState(null);
+  const [editHSlot, setEditHSlot] = useState(null);
   const inv = ch.inventar || Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } }));
+  const pom = ch.pomocnik || DEFAULT_POMOCNIK;
+  const hInv = pom.inventar || DEFAULT_POMOCNIK.inventar;
   const statInput = { border: `1px solid ${C.border}`, borderRadius: 4, padding: "2px 4px", fontSize: 11, fontFamily: FONT, textAlign: "center", width: 36, background: "white", color: C.text, outline: "none" };
 
   const setStat = (key, field, val) => {
@@ -31,6 +46,24 @@ export default function PostavaTab({ character, onUpdate }) {
   const clearSlot = (idx) => {
     updateSlot(idx, { nazev: "", typ: "", tecky: { akt: 0, max: 0 } });
     setEditSlot(null);
+  };
+
+  const updatePomocnik = (patch) => onUpdate({ ...ch, pomocnik: { ...pom, ...patch } });
+  const setPomStat = (key, field, val) => {
+    const v = Math.max(0, Number(val) || 0);
+    updatePomocnik({ [key]: { ...pom[key], [field]: v } });
+  };
+  const updateHSlot = (idx, patch) => {
+    const next = hInv.map((s, i) => i === idx ? { ...s, ...patch } : s);
+    updatePomocnik({ inventar: next });
+  };
+  const clearHSlot = (idx) => {
+    updateHSlot(idx, { nazev: "", typ: "", tecky: { akt: 0, max: 0 } });
+    setEditHSlot(null);
+  };
+  const propustitPomocnika = () => {
+    onUpdate({ ...ch, pomocnik: { ...DEFAULT_POMOCNIK } });
+    setEditHSlot(null);
   };
 
   return (
@@ -157,14 +190,108 @@ export default function PostavaTab({ character, onUpdate }) {
         ))}
       </div>
 
-      {/* Pomocník — placeholder */}
+      {/* Pomocník */}
       <div style={{ border: `1px solid ${C.border}`, borderRadius: 8, padding: "10px 12px" }}>
-        <div style={{ fontSize: 9, color: C.muted, marginBottom: 4, letterSpacing: 0.8 }}>POMOCNÍK</div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-          <span style={{ fontWeight: 600, fontSize: 12 }}>Hrách</span>
-          <span style={{ fontSize: 10, color: C.muted }}>Mzda: 2ď/den</span>
-        </div>
-        <div style={{ fontSize: 10, color: C.muted, marginTop: 2 }}>STR 4  BO 0  Dýka d6</div>
+        <div style={{ fontSize: 9, color: C.muted, marginBottom: 6, letterSpacing: 0.8 }}>POMOCNÍK</div>
+        {!pom.aktivni ? (
+          <button
+            onClick={() => updatePomocnik({ aktivni: true })}
+            style={{ width: "100%", padding: "8px 0", border: `1px dashed ${C.border}`, borderRadius: 6, background: "transparent", fontFamily: FONT, fontSize: 11, color: C.muted, cursor: "pointer" }}
+          >+ Přidat pomocníka</button>
+        ) : (
+          <>
+            {/* Jméno, role, propustit */}
+            <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
+              <input value={pom.jmeno} onChange={e => updatePomocnik({ jmeno: e.target.value })} placeholder="Jméno" style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 12, fontWeight: 700, fontFamily: FONT, background: "white", color: C.text, outline: "none" }} />
+              <input value={pom.role} onChange={e => updatePomocnik({ role: e.target.value })} placeholder="Role" style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 11, fontFamily: FONT, background: "white", color: C.muted, outline: "none" }} />
+              <button onClick={propustitPomocnika} style={{ border: `1px solid ${C.red}33`, borderRadius: 4, background: "transparent", color: C.red, fontFamily: FONT, fontSize: 13, cursor: "pointer", padding: "0 6px", lineHeight: 1 }}>×</button>
+            </div>
+            {/* Věrnost + mzda */}
+            <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 8 }}>
+              <select value={pom.vernost} onChange={e => updatePomocnik({ vernost: e.target.value })} style={{ border: `1px solid ${C.border}`, borderRadius: 4, padding: "2px 4px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none" }}>
+                <option value="bezny">běžný</option>
+                <option value="verny">věrný</option>
+              </select>
+              <span style={{ fontSize: 9, color: C.muted }}>mzda</span>
+              <input type="number" value={pom.denniMzda} onChange={e => updatePomocnik({ denniMzda: Math.max(0, Number(e.target.value) || 0) })} style={{ ...statInput, width: 40, color: C.yellow, fontWeight: 700 }} />
+              <span style={{ fontSize: 9, color: C.muted }}>ď/den</span>
+            </div>
+            {/* Staty */}
+            <div style={{ marginBottom: 8 }}>
+              {[["str","STR",C.green],["dex","DEX",C.green],["wil","WIL",C.green],["bo","BO",C.red]].map(([key, label, col]) => {
+                const s = pom[key];
+                const pct = s.max > 0 ? (s.akt / s.max) * 100 : 0;
+                return (
+                  <div key={key} style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4 }}>
+                    <span style={{ width: 24, fontSize: 9, fontWeight: 700, color: col }}>{label}</span>
+                    <div style={{ flex: 1, height: 4, background: C.border, borderRadius: 2, overflow: "hidden" }}>
+                      <div style={{ width: `${Math.min(100, pct)}%`, height: "100%", background: col, borderRadius: 2 }} />
+                    </div>
+                    <input type="number" value={s.akt} onChange={e => setPomStat(key, "akt", e.target.value)} style={{ ...statInput, width: 32, fontSize: 10, color: col }} />
+                    <span style={{ fontSize: 9, color: C.muted }}>/</span>
+                    <input type="number" value={s.max} onChange={e => setPomStat(key, "max", e.target.value)} style={{ ...statInput, width: 32, fontSize: 10, color: C.muted }} />
+                  </div>
+                );
+              })}
+            </div>
+            {/* Inventář pomocníka (6 slotů) */}
+            <div style={{ fontSize: 8, color: C.muted, marginBottom: 4, letterSpacing: 0.5 }}>INVENTÁŘ (6 slotů)</div>
+            {POMOCNIK_SECTIONS.map(sec => (
+              <div key={sec.label}>
+                <div style={{ fontSize: 8, color: C.muted, marginBottom: 2, marginTop: sec.start > 0 ? 4 : 0, letterSpacing: 0.5 }}>{sec.label}</div>
+                {Array.from({ length: sec.count }, (_, j) => {
+                  const idx = sec.start + j;
+                  const slot = hInv[idx];
+                  const empty = !slot.nazev;
+                  const editing = editHSlot === idx;
+                  const isStav = slot.typ === "stav";
+
+                  if (editing) {
+                    return (
+                      <div key={idx} style={{ border: `1px solid ${C.blue}`, borderRadius: 6, padding: "6px 8px", marginBottom: 4, background: C.blue + "08" }}>
+                        <div style={{ display: "flex", gap: 4, marginBottom: 4 }}>
+                          <input autoFocus value={slot.nazev} onChange={e => updateHSlot(idx, { nazev: e.target.value })} placeholder="Název předmětu" style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 11, fontFamily: FONT, background: "white", color: C.text, outline: "none" }} />
+                        </div>
+                        <div style={{ display: "flex", gap: 4, alignItems: "center", flexWrap: "wrap" }}>
+                          <select value={slot.typ} onChange={e => updateHSlot(idx, { typ: e.target.value })} style={{ border: `1px solid ${C.border}`, borderRadius: 4, padding: "2px 4px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none" }}>
+                            <option value="">—typ—</option>
+                            {TYPY.map(t => <option key={t} value={t}>{t}</option>)}
+                          </select>
+                          <span style={{ fontSize: 9, color: C.muted }}>tečky</span>
+                          <input type="number" value={slot.tecky.akt} onChange={e => updateHSlot(idx, { tecky: { ...slot.tecky, akt: Math.max(0, Number(e.target.value) || 0) } })} style={{ ...statInput, width: 28, fontSize: 10 }} />
+                          <span style={{ fontSize: 9, color: C.muted }}>/</span>
+                          <input type="number" value={slot.tecky.max} onChange={e => updateHSlot(idx, { tecky: { ...slot.tecky, max: Math.max(0, Number(e.target.value) || 0) } })} style={{ ...statInput, width: 28, fontSize: 10 }} />
+                          <div style={{ marginLeft: "auto", display: "flex", gap: 4 }}>
+                            <button onClick={() => clearHSlot(idx)} style={{ border: "none", background: "none", color: C.red, fontSize: 10, fontFamily: FONT, cursor: "pointer", padding: "2px 4px" }}>smazat</button>
+                            <button onClick={() => setEditHSlot(null)} style={{ border: "none", background: "none", color: C.green, fontSize: 10, fontFamily: FONT, cursor: "pointer", padding: "2px 4px", fontWeight: 700 }}>✓</button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div key={idx} onClick={() => setEditHSlot(idx)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "4px 8px", marginBottom: 3, border: `1px solid ${empty ? C.border : isStav ? C.red + "55" : C.blue + "55"}`, borderRadius: 5, cursor: "pointer", background: empty ? "transparent" : isStav ? C.red + "08" : C.blue + "08" }}>
+                      {empty ? (
+                        <span style={{ flex: 1, fontSize: 10, color: C.muted, textAlign: "center" }}>+ prázdný slot</span>
+                      ) : (
+                        <>
+                          <span style={{ flex: 1, fontSize: 11, color: isStav ? C.red : C.text, fontWeight: isStav ? 600 : 400 }}>{slot.nazev}</span>
+                          {slot.typ && <span style={{ fontSize: 8, color: C.muted, flexShrink: 0 }}>{slot.typ}</span>}
+                          {slot.tecky.max > 0 && (
+                            <span style={{ fontSize: 9, color: C.muted, flexShrink: 0 }}>
+                              {Array.from({ length: slot.tecky.max }, (_, d) => d < slot.tecky.akt ? "●" : "○").join("")}
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

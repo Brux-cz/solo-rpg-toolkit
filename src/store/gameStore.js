@@ -1,6 +1,6 @@
 const INDEX_KEY = "solorpg_index";
 const SAVE_PREFIX = "solorpg_";
-export const CURRENT_VERSION = 4;
+export const CURRENT_VERSION = 5;
 
 export const INITIAL_GAME = {
   version: CURRENT_VERSION,
@@ -20,6 +20,18 @@ export const INITIAL_GAME = {
     bo: { akt: 4, max: 4 },
     dobky: 0,
     inventar: Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
+    pomocnik: {
+      aktivni: false,
+      jmeno: "",
+      role: "",
+      vernost: "bezny",
+      denniMzda: 0,
+      str: { akt: 0, max: 0 },
+      dex: { akt: 0, max: 0 },
+      wil: { akt: 0, max: 0 },
+      bo: { akt: 0, max: 0 },
+      inventar: Array.from({ length: 6 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
+    },
   },
 };
 
@@ -52,6 +64,25 @@ const MIGRATIONS = {
       inventar: data.character?.inventar || Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
     },
     version: 4,
+  }),
+  4: (data) => ({
+    ...data,
+    character: {
+      ...data.character,
+      pomocnik: data.character?.pomocnik || {
+        aktivni: false,
+        jmeno: "",
+        role: "",
+        vernost: "bezny",
+        denniMzda: 0,
+        str: { akt: 0, max: 0 },
+        dex: { akt: 0, max: 0 },
+        wil: { akt: 0, max: 0 },
+        bo: { akt: 0, max: 0 },
+        inventar: Array.from({ length: 6 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
+      },
+    },
+    version: 5,
   }),
 };
 
