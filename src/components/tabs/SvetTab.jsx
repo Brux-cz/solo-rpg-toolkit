@@ -162,7 +162,7 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
                           </div>
                         ))}
                       </div>
-                      <div style={{ display: "flex", gap: 6 }}>
+                      <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
                         <label style={{ flex: 2 }}>
                           <span style={{ color: C.muted, fontSize: 9 }}>Zbraň</span>
                           <input value={n.zbran || ""} onChange={e => updateNpc(i, { zbran: e.target.value })} placeholder="Meč, Dýka..."
@@ -182,6 +182,25 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
                             style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
                         </label>
                       </div>
+                      <div style={{ fontSize: 9, color: C.muted, marginBottom: 4, fontWeight: 700 }}>PŘEDMĚTY U SEBE</div>
+                      {(n.predmetyUSebe || []).map((item, j) => (
+                        <div key={j} style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 3 }}>
+                          <input value={item} onChange={e => {
+                            const items = [...(n.predmetyUSebe || [])];
+                            items[j] = e.target.value;
+                            updateNpc(i, { predmetyUSebe: items });
+                          }}
+                            style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none" }} />
+                          <button onClick={() => {
+                            const items = (n.predmetyUSebe || []).filter((_, k) => k !== j);
+                            updateNpc(i, { predmetyUSebe: items });
+                          }} style={delBtnStyle}>✕</button>
+                        </div>
+                      ))}
+                      <button onClick={() => updateNpc(i, { predmetyUSebe: [...(n.predmetyUSebe || []), ""] })}
+                        style={{ background: "none", border: `1px dashed ${C.border}`, borderRadius: 4, padding: "3px 8px", fontSize: 9, fontFamily: FONT, color: C.muted, cursor: "pointer", width: "100%" }}>
+                        + Přidat předmět
+                      </button>
                     </div>
                   )}
                 </div>
