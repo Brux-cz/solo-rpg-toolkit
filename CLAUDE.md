@@ -106,6 +106,8 @@ Header · Editor (max 50% výšky) · ActionToolbar · BottomNav · Sheet (52% v
 - **Fate**: zelený border vlevo `❓ otázka · odds · d100=X → ANO/NE`
 - **Meaning**: fialový border vlevo `🔮 Slovo + Slovo`
 - **Scene**: modrý border, nadpis sekce s číslem/názvem/typem/CF
+- **Detail**: žlutý border vlevo `🔍 Slovo + Slovo`
+- **Combat**: červený border vlevo, combat log
 
 ## Co je hotovo ✅
 1. Projekt vytvořen (Vite + React JSX)
@@ -123,16 +125,16 @@ Header · Editor (max 50% výšky) · ActionToolbar · BottomNav · Sheet (52% v
 13. NPC/Thread CRUD — přidávání/odebírání v EndSceneSheet i SvetTab sub-tabech
 14. Random Event UI — ve FateSheet při doubles ≤ CF zobrazí Event Focus + Meaning
 15. Combat→Character propojení — boj zapisuje zranění do game.character
+16. Inventář — editovatelný grid (10 slotů: Packy/Tělo/Batoh), inline editor, migrace v3→v4
+17. Detail Check sheet (🔍) — Actions/Descriptions tabulky, 2×d100, DetailBlock v deníku
 
 ## Co je potřeba udělat 📋
 - [ ] Visual Viewport API — detekce skutečné klávesnice
-- [ ] Inventář — editovatelný grid (10 slotů)
 - [ ] Pomocník — editovatelný (staty, inventář 6 slotů)
 - [ ] Thread Progress Track (Discovery Check mechanika)
 - [ ] NPC wiki karty (detailní info, reakce, bojové staty)
 - [ ] Čas a počasí — dynamická správa (den, hlídka, směna)
 - [ ] Osady, Frakce, Hexcrawl mapa
-- [ ] Detail Check sheet
 - [ ] NPC Behavior Table
 
 ## Diagram a datový model — POVINNÁ REFERENCE (viz checklist výše)
