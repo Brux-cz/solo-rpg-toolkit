@@ -20,18 +20,7 @@ export const INITIAL_GAME = {
     bo: { akt: 4, max: 4 },
     dobky: 0,
     inventar: Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
-    pomocnik: {
-      aktivni: false,
-      jmeno: "",
-      role: "",
-      vernost: "bezny",
-      denniMzda: 0,
-      str: { akt: 0, max: 0 },
-      dex: { akt: 0, max: 0 },
-      wil: { akt: 0, max: 0 },
-      bo: { akt: 0, max: 0 },
-      inventar: Array.from({ length: 6 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
-    },
+    pomocnici: [],
   },
 };
 
@@ -65,25 +54,12 @@ const MIGRATIONS = {
     },
     version: 4,
   }),
-  4: (data) => ({
-    ...data,
-    character: {
-      ...data.character,
-      pomocnik: data.character?.pomocnik || {
-        aktivni: false,
-        jmeno: "",
-        role: "",
-        vernost: "bezny",
-        denniMzda: 0,
-        str: { akt: 0, max: 0 },
-        dex: { akt: 0, max: 0 },
-        wil: { akt: 0, max: 0 },
-        bo: { akt: 0, max: 0 },
-        inventar: Array.from({ length: 6 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
-      },
-    },
-    version: 5,
-  }),
+  4: (data) => {
+    const old = data.character?.pomocnik;
+    const pomocnici = old && old.aktivni ? [{ ...old, id: Date.now().toString(36) }] : [];
+    const { pomocnik, ...restChar } = data.character || {};
+    return { ...data, character: { ...restChar, pomocnici }, version: 5 };
+  },
 };
 
 export function genId() {
