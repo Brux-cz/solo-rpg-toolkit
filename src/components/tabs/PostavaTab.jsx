@@ -157,6 +157,13 @@ export default function PostavaTab({ character, onUpdate }) {
                           </select>
                         </label>
                       )}
+                      {slot.typ === "zbroj" && (
+                        <label style={{ flex: 1 }}>
+                          <span style={{ color: C.muted, fontSize: 9 }}>Obrana</span>
+                          <input type="number" value={slot.obrana ?? ""} onChange={e => updateSlot(idx, { obrana: e.target.value === "" ? "" : Number(e.target.value) })} placeholder="1"
+                            style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                        </label>
+                      )}
                       <label style={{ flex: 1 }}>
                         <span style={{ color: C.muted, fontSize: 9 }}>Tečky</span>
                         <div style={{ display: "flex", gap: 4, alignItems: "center", marginTop: 2 }}>
@@ -193,7 +200,7 @@ export default function PostavaTab({ character, onUpdate }) {
                   ) : (
                     <>
                       <span style={{ flex: 1, fontSize: 11, color: isStav ? C.red : C.text, fontWeight: isStav ? 600 : 400 }}>{slot.nazev}</span>
-                      {slot.typ && <span style={{ fontSize: 8, color: C.muted, flexShrink: 0 }}>{slot.typ}{slot.dmg ? ` ${slot.dmg}` : ""}</span>}
+                      {slot.typ && <span style={{ fontSize: 8, color: C.muted, flexShrink: 0 }}>{slot.typ}{slot.dmg ? ` ${slot.dmg}` : ""}{slot.obrana ? ` ⛨${slot.obrana}` : ""}</span>}
                       {slot.tecky.max > 0 && (
                         <span style={{ fontSize: 9, color: C.muted, flexShrink: 0 }}>
                           {Array.from({ length: slot.tecky.max }, (_, d) => d < slot.tecky.akt ? "●" : "○").join("")}
@@ -311,6 +318,13 @@ export default function PostavaTab({ character, onUpdate }) {
                                 </select>
                               </label>
                             )}
+                            {slot.typ === "zbroj" && (
+                              <label style={{ flex: 1 }}>
+                                <span style={{ color: C.muted, fontSize: 9 }}>Obrana</span>
+                                <input type="number" value={slot.obrana ?? ""} onChange={e => updateHSlot(pom.id, idx, { obrana: e.target.value === "" ? "" : Number(e.target.value) })} placeholder="1"
+                                  style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                              </label>
+                            )}
                             <label style={{ flex: 1 }}>
                               <span style={{ color: C.muted, fontSize: 9 }}>Tečky</span>
                               <div style={{ display: "flex", gap: 4, alignItems: "center", marginTop: 2 }}>
@@ -337,7 +351,7 @@ export default function PostavaTab({ character, onUpdate }) {
                         ) : (
                           <>
                             <span style={{ flex: 1, fontSize: 11, color: isStav ? C.red : C.text, fontWeight: isStav ? 600 : 400 }}>{slot.nazev}</span>
-                            {slot.typ && <span style={{ fontSize: 8, color: C.muted, flexShrink: 0 }}>{slot.typ}{slot.dmg ? ` ${slot.dmg}` : ""}</span>}
+                            {slot.typ && <span style={{ fontSize: 8, color: C.muted, flexShrink: 0 }}>{slot.typ}{slot.dmg ? ` ${slot.dmg}` : ""}{slot.obrana ? ` ⛨${slot.obrana}` : ""}</span>}
                             {slot.tecky.max > 0 && (
                               <span style={{ fontSize: 9, color: C.muted, flexShrink: 0 }}>
                                 {Array.from({ length: slot.tecky.max }, (_, d) => d < slot.tecky.akt ? "●" : "○").join("")}
