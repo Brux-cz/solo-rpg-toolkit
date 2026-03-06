@@ -1,6 +1,6 @@
 const INDEX_KEY = "solorpg_index";
 const SAVE_PREFIX = "solorpg_";
-export const CURRENT_VERSION = 3;
+export const CURRENT_VERSION = 4;
 
 export const INITIAL_GAME = {
   version: CURRENT_VERSION,
@@ -19,6 +19,7 @@ export const INITIAL_GAME = {
     wil: { akt: 7, max: 7 },
     bo: { akt: 4, max: 4 },
     dobky: 0,
+    inventar: Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
   },
 };
 
@@ -43,6 +44,14 @@ const MIGRATIONS = {
     npcs: (data.npcs || []).map(n => ({ name: n.name || "", weight: n.weight || 1, flag: n.flag || false })),
     threads: (data.threads || []).map(t => ({ name: t.name || "", weight: t.weight || 1, progress: t.progress || 0, total: t.total || 10 })),
     version: 3,
+  }),
+  3: (data) => ({
+    ...data,
+    character: {
+      ...data.character,
+      inventar: data.character?.inventar || Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
+    },
+    version: 4,
   }),
 };
 
