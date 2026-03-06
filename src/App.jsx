@@ -11,6 +11,7 @@ import MeaningSheet from "./components/sheets/MeaningSheet.jsx";
 import EndSceneSheet from "./components/sheets/EndSceneSheet.jsx";
 import CombatSheet from "./components/sheets/CombatSheet.jsx";
 import NoteSheet from "./components/sheets/NoteSheet.jsx";
+import DetailCheckSheet from "./components/sheets/DetailCheckSheet.jsx";
 import PostavaTab from "./components/tabs/PostavaTab.jsx";
 import SvetTab from "./components/tabs/SvetTab.jsx";
 import Lobby from "./components/Lobby.jsx";
@@ -97,6 +98,7 @@ export default function Prototype() {
           onFateOpen={() => setSheet("fate")}
           onSceneOpen={() => setSheet("scene")}
           onMeaningOpen={() => setSheet("meaning")}
+          onDetailOpen={() => setSheet("detail")}
           onEndSceneOpen={() => setSheet("endscene")}
           onCombatOpen={() => setSheet("combat")}
           onNoteOpen={() => setSheet("note")}
@@ -111,6 +113,7 @@ export default function Prototype() {
       {sheet === "endscene" && <EndSceneSheet onClose={() => setSheet(null)} cf={game.cf} sceneNum={game.sceneNum} onCFChange={(v) => updateGame({ cf: v })} npcs={game.npcs} threads={game.threads} onNpcsChange={(npcs) => updateGame({ npcs })} onThreadsChange={(threads) => updateGame({ threads })} />}
       {sheet === "combat" && <CombatSheet onClose={() => setSheet(null)} onInsert={handleInsert} character={game.character} onCharUpdate={(ch) => updateGame({ character: ch })} />}
       {sheet === "note" && <NoteSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}
+      {sheet === "detail" && <DetailCheckSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}
 
     </div>
   );

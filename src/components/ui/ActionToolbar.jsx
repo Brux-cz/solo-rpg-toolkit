@@ -1,6 +1,6 @@
 import { C, FONT } from "../../constants/theme.js";
 
-export default function ActionToolbar({ onFateOpen, onSceneOpen, onMeaningOpen, onEndSceneOpen, onCombatOpen, onNoteOpen }) {
+export default function ActionToolbar({ onFateOpen, onSceneOpen, onMeaningOpen, onDetailOpen, onEndSceneOpen, onCombatOpen, onNoteOpen }) {
   return (
     <div style={{ padding: "6px 12px 5px", borderTop: `1px solid ${C.border}`, background: C.bg, flexShrink: 0, fontFamily: FONT }}>
       <div style={{ fontSize: 8, color: C.border, letterSpacing: 0.8, marginBottom: 4, textTransform: "uppercase" }}>Vložit:</div>
@@ -9,6 +9,7 @@ export default function ActionToolbar({ onFateOpen, onSceneOpen, onMeaningOpen, 
           { icon: "🎬", label: "Scéna", fn: onSceneOpen },
           { icon: "❓", label: "Fate", fn: onFateOpen, accent: true },
           { icon: "🔮", fn: onMeaningOpen },
+          { icon: "🔍", fn: onDetailOpen },
           { icon: "⚔️", fn: onCombatOpen },
           { icon: "📝", fn: onNoteOpen },
           { icon: "⋯", fn: onEndSceneOpen },
