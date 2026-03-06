@@ -30,6 +30,7 @@ const FONT = "'IBM Plex Mono', monospace";
 - Edituj `src/App.jsx` pokud není řečeno jinak
 - Vždy inline CSS, nikdy externí CSS třídy
 - Barvy pouze z objektu `C`, font pouze z `FONT`
+- Při přidání nového fieldu k existujícím datům → VŽDY přidat migraci (MIGRATIONS, zvýšit CURRENT_VERSION)
 - Hlavní kontejner má `height: 100dvh` (ne 100vh — kvůli iOS Safari)
 - Sheet komponenta: `height: 52%`, pevná, obsah scrollovatelný (`overflow-y: auto`)
 - Po změně řekni co jsi udělal (1-2 věty), nic víc
