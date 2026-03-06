@@ -32,6 +32,12 @@ export default function Prototype() {
   const updateGame = (patch) => setGame(g => ({ ...g, ...patch }));
 
   useEffect(() => {
+    const handler = (e) => { if (e.target.type === "number") e.target.select(); };
+    document.addEventListener("focus", handler, true);
+    return () => document.removeEventListener("focus", handler, true);
+  }, []);
+
+  useEffect(() => {
     if (activeId && screen === "game") {
       saveGameById(activeId, game);
       try {
