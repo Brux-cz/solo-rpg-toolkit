@@ -1,12 +1,16 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { C, FONT } from "../../constants/theme.js";
+
+const DatovyModel = lazy(() => import("../../docs/datovy-model.jsx"));
+const SoloRpgDiagram = lazy(() => import("../../docs/solo-rpg-diagram.jsx"));
 
 export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, onThreadsChange }) {
   const [sub, setSub] = useState("mythic");
   const [newNpc, setNewNpc] = useState("");
   const [newThread, setNewThread] = useState("");
   const [expandedNpc, setExpandedNpc] = useState(null);
-  const subs = [["mythic","Mythic"],["npc","NPC"],["thready","Thready"],["mapa","Mapa"]];
+  const [docView, setDocView] = useState("model");
+  const subs = [["mythic","Mythic"],["npc","NPC"],["thready","Thready"],["mapa","Mapa"],["docs","Docs"]];
 
   const addNpc = () => {
     const name = newNpc.trim();
@@ -234,6 +238,21 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
         )}
         {sub === "mapa" && (
           <div style={{ fontSize: 11, color: C.muted, textAlign: "center", marginTop: 40 }}>Hexcrawl mapa — placeholder</div>
+        )}
+        {sub === "docs" && (
+          <>
+            <div style={{ display: "flex", gap: 4, marginBottom: 12 }}>
+              {[["model", "Datový model"], ["diagram", "Diagram"]].map(([id, label]) => (
+                <button key={id} onClick={() => setDocView(id)}
+                  style={{ flex: 1, padding: "6px 0", border: `1px solid ${docView === id ? C.green : C.border}`, background: docView === id ? C.green + "15" : "transparent", borderRadius: 6, fontSize: 10, fontFamily: FONT, color: docView === id ? C.green : C.muted, fontWeight: docView === id ? 700 : 400, cursor: "pointer" }}>
+                  {label}
+                </button>
+              ))}
+            </div>
+            <Suspense fallback={<div style={{ fontSize: 11, color: C.muted, textAlign: "center", marginTop: 20 }}>Načítání...</div>}>
+              {docView === "model" ? <DatovyModel /> : <SoloRpgDiagram />}
+            </Suspense>
+          </>
         )}
       </div>
     </div>
