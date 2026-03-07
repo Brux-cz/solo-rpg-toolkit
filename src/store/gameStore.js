@@ -1,6 +1,6 @@
 const INDEX_KEY = "solorpg_index";
 const SAVE_PREFIX = "solorpg_";
-export const CURRENT_VERSION = 5;
+export const CURRENT_VERSION = 6;
 
 export const INITIAL_GAME = {
   version: CURRENT_VERSION,
@@ -59,6 +59,25 @@ const MIGRATIONS = {
     const pomocnici = old && old.aktivni ? [{ ...old, id: Date.now().toString(36) }] : [];
     const { pomocnik, ...restChar } = data.character || {};
     return { ...data, character: { ...restChar, pomocnici }, version: 5 };
+  },
+  5: (data) => {
+    const migrateSlot = (s) => {
+      if (!s || !s.nazev) return s;
+      return { ...s, sloty: s.sloty || 1, span: s.span || { rows: 1, cols: 1 } };
+    };
+    const char = data.character || {};
+    return {
+      ...data,
+      character: {
+        ...char,
+        inventar: (char.inventar || []).map(migrateSlot),
+        pomocnici: (char.pomocnici || []).map(p => ({
+          ...p,
+          inventar: (p.inventar || []).map(migrateSlot),
+        })),
+      },
+      version: 6,
+    };
   },
 };
 
