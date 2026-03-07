@@ -113,6 +113,83 @@ GENERÁTORY NPC (ověřeno NotebookLM):
 
 PROPOJENÍ: aktuální lokace (osada), úkoly, zmínky v deníku, předměty.`,
   },
+  tvorba_postavy: {
+    title: "Tvorba postavy (Character Creation)",
+    text: `Pevně daný 5-krokový postup kombinující náhodné hody a volby hráče.
+
+KROK 1 — VLASTNOSTI (3d6 keep 2):
+Citace: "Na každou vlastnost hoď v uvedeném pořadí 3k6. Dva nejvyšší výsledky sečti, dostaneš hodnotu mezi 2 a 12. Nakonec můžeš hodnoty dvou vlastností vzájemně prohodit."
+1. STR (Síla) — fyzická síla a odolnost
+2. DEX (Mrštnost) — rychlost a obratnost
+3. WIL (Vůle) — síla odhodlání a kouzlo osobnosti
+Rozsah: 2-12. Swap: po vygenerování všech tří lze prohodit libovolné DVĚ.
+
+KROK 2 — BO A DOBKY (d6 + d6):
+Citace: "Hodem k6 urči svoje body ochrany (BO)." + "Hodem k6 urči svůj počáteční počet ďobků."
+Oba hody jsou nezávislé a slouží jako vstupy do tabulky původu.
+
+KROK 3 — PŮVOD (Background, cross-reference BO x ďobky):
+Citace: "Porovnej hodnotu svých BO s počtem ďobků v tabulce původu. Tak zjistíš, co tvoje myš dělala, než se stala dobrodruhem."
+Tabulka 6x6 = 36 různých původů. Každý určuje:
+1. Název/popis (co myš dělala dříve)
+2. Předmět A + Předmět B (konkrétní startovní vybavení)
+
+KOMPLETNÍ TABULKA PŮVODU:
+BO 1: Pokusná myš (Kouzlo: Kouzelná střela + Olověný plášť) | Kuchyňský slídil (Štít a kabátec + Hrnce) | Uprchlík z klece (Kouzlo: Srozumitelnost + Láhev mléka) | Čarodějnice (Kouzlo: Zahojení + Vonná tyčka) | Kožešník (Štít a kabátec + Silné nůžky) | Pouliční rváč (Dýka d6 + Láhev kávy)
+BO 2: Žebravý kněz (Kouzlo: Zotavení + Svatý symbol) | Honák brouků (Pomocník: věrný brouk + Tyč 15cm) | Sládek (Pomocník: opilý světlonoš + Soudek piva)
+POZNÁMKA K POMOCNÍKŮM Z BACKGROUNDU: Zdarma a hned (ne hledání v osadě). Světlonoš = standardní pomocník (d6 BO, 2d6 vlastnosti). Tažná krysa = staty z bestiáře (3 BO, STR 12, DEX 8, WIL 8). Brouk = pravidla neřeší (vodítko: kouzlo Přízračný brouk, unese 6 slotů). Všichni mají 6 slotů inventáře. | Rybář (Síť + Jehla d6) | Kovář (Kladivo d6/d8 + Pilník na železo) | Dráteník (Drát + Elektrická lampa)
+BO 3: Dřevorubec (Sekera d6/d8 + Motouz) | Člen netopýřího kultu (Kouzlo: Tma + Pytlík netopýřích zubů) | Horník v cínovém dole (Krumpáč d6/d8 + Lucerna) | Sběrač odpadků (Hák na odpadky d10 + Zrcátko) | Stěnolezec (Rybářský háček + Nit) | Kupec (Pomocník: tažná krysa + Směnka 20ď)
+BO 4: Vorař (Kladivo d6/d8 + Dřevěné klíny) | Honák žížal (Tyč 15cm + Mýdlo) | Vlaštovkář (Rybářský háček + Ochranné brýle) | Kanálník (Pilník na železo + Nit) | Žalářník (Řetěz 15cm + Kopí d10) | Pěstitel hub (Sušené houby + Maska proti spórám)
+BO 5: Stavitel hrází (Lopata + Dřevěné klíny) | Kartograf (Brk a inkoust + Kompas) | Vykradač pastiček (Kus sýra + Lepidlo) | Tulák (Stan + Mapa k pokladu) | Pěstitel obilí (Kopí d10 + Píšťalka) | Poslíček (Deka + Dokumenty zapečetěné)
+BO 6: Trubadúr (Hudební nástroj + Maskovací sada) | Hazardní hráč (Zatížené kostky + Zrcátko) | Sběrač mízy (Vědro + Dřevěné klíny) | Včelař (Sklenice medu + Síť) | Knihovník (Útržek ze starodávné knihy + Brk a inkoust) | Zchudlý šlechtic (Plstěný klobouk + Parfém)
+
+KROK 4 — POČÁTEČNÍ VYBAVENÍ:
+Citace: "Do začátku má tvoje myš: Pochodně a Zásoby. Dva předměty podle svého původu (A + B). Jednu zbraň podle tvého výběru."
+
+Záchranná síť pro slabší postavy:
+- Nejvyšší vlastnost <= 9: hoď znovu na tabulku původů, vezmi si A NEBO B navíc.
+- Nejvyšší vlastnost <= 7: hoď znovu, vezmi si OBA (A i B) navíc.
+
+SEZNAM ZBRANÍ NA VÝBĚR:
+- Improvizovaná (klacek, kámen): k6 normálně, 1 packa, 1ď. Vždy škrtá tečku po boji (ne d6 test jako u běžných zbraní).
+- Lehká (dýka, jehla): k6, 1 packa, 10ď. Dvě lehké = hoď obě, použij lepší.
+- Střední (meč, sekera): k6 jedna packa / k8 obě packy, 20ď.
+- Těžká (kopí, hákopí): k10, obě packy, 40ď.
+- Lehká střelná (prak, ruční kuše): k6, 1 packa, 10ď. Potřebuje munici.
+- Těžká střelná (luk): k8, obě packy, 40ď. Potřebuje munici.
+Munice: toulec šípů 5ď, váček kamenů 1ď.
+
+KROK 5 — PODROBNOSTI A VZHLED:
+Citace: "Nahoď nebo vyber si rodné znamení, srst a výrazný rys."
+Hráč si může vybrat, nebo použít rychlý generátor:
+
+Rodné znamení (k6):
+1=Hvězda (statečná/zbrklá), 2=Kolo (pracovitá/nenápaditá), 3=Žalud (zvědavá/paličatá), 4=Bouřka (štědrá/popudlivá), 5=Měsíc (moudrá/záhadná), 6=Matka (pečující/ustaraná)
+
+Barva srsti (k6):
+1=Čokoládová, 2=Černá, 3=Bílá, 4=Světle hnědá, 5=Šedá, 6=Namodralá
+
+Vzor srsti (k6):
+1=Jednolitá, 2=Mourovatá, 3=Strakatá, 4=Pruhovaná, 5=Tečkovaná, 6=Skvrnitá
+
+Výrazný rys (k66 — první k6 desítky, druhá jednotky):
+11=Tělo plné jizev, 12=Korpulentní tělo, 13=Vychrtlé tělo, 14=Klackovité tělo, 15=Drobné tělíčko, 16=Rozložité tělo
+21=Válečné malování, 22=Cizokrajné oblečení, 23=Elegantní oblečení, 24=Záplatované oblečení, 25=Módní oblečení, 26=Neprané oblečení
+31=Useknuté ucho, 32=Neforemný obličej, 33=Krásný obličej, 34=Baculatý obličej, 35=Jemné rysy v obličeji, 36=Protáhlý obličej
+41=Načesaná srst, 42=Dredy, 43=Nabarvená srst, 44=Oholená srst, 45=Kudrnatá srst, 46=Sametová srst
+51=Oči temné jako noc, 52=Páska přes oko, 53=Krvavě rudé oči, 54=Moudrý pohled, 55=Pronikavý pohled, 56=Blyštivé oči
+61=Zastřižený ocásek, 62=Ocásek jako bič, 63=Chocholatý ocásek, 64=Pahýl ocásku, 65=Chápavý ocásek, 66=Zakroucený ocásek
+
+Jméno: "Vyber si jméno vhodné pro statečnou myš." Volba nebo hod kostkou:
+
+Vlastní jména (d100/d99, položka 50 chybí):
+1=Ada, 2=Agáta, 3=Akácie, 4=Aloe, 5=Ambrož, 6=Anežka, 7=Anýz, 8=Apríl, 9=Astra, 10=Augustín, 11=Azalka, 12=Bazalka, 13=Berylie, 14=Bobek, 15=Bodlák, 16=Bříz, 17=Čedar, 18=Čekanka, 19=Devětsil, 20=Edmund, 21=Eidam, 22=Elza, 23=Emil, 24=Erina, 25=Estragon, 26=Fenykl, 27=Fialka, 28=Filip, 29=Františka, 30=Gouda, 31=Grácie, 32=Gvendolína, 33=Habrovec, 34=Háta, 35=Hložek, 36=Horácio, 37=Hyacint, 38=Iris, 39=Jalovec, 40=Janek, 41=Jasan, 42=Jaspis, 43=Jeřabinka, 44=Jílovec, 45=Jiřička, 46=Karmína, 47=Klára, 48=Kmínek, 49=Konrád, 51=Krokus, 52=Kuklík, 53=Květa, 54=Levandule, 55=Lilie, 56=Líska, 57=Lorenz, 58=Magnolie, 59=Majoránka, 60=Makovec, 61=Máslena, 62=Meduňka, 63=Měsíček, 64=Muškát, 65=Myrta, 66=Niva, 67=Nora, 68=Okřál, 69=Oliver, 70=Olivie, 71=Olša, 72=Opál, 73=Otýlie, 74=Pelyňka, 75=Pepřík, 76=Perla, 77=Rípčíp, 78=Rokfór, 79=Routa, 80=Rozmarín, 81=Rulík, 82=Řebřík, 83=Sedmikráska, 84=Slídie, 85=Smaragd, 86=Svízel, 87=Šafrán, 88=Šimon, 89=Šípek, 90=Šťavel, 91=Tis, 92=Vavřinec, 93=Vilík, 94=Višňa, 95=Vlnka, 96=Vrbena, 97=Vřesena, 98=Vřesík, 99=Zuzanka
+
+Mateřská jména / příjmení (d20):
+1=Bílý/á, 2=Černý/á, 3=Čihař/ová, 4=Darček/ová, 5=Durman/ová, 6=Hrabal/ová, 7=Chalva/ová, 8=Jařinka/ová, 9=Jeleňák/ová, 10=Jeseň/ová, 11=Katzenreiser/ová, 12=Máselník/ová, 13=Píp/ová, 14=Řešetlák/ová, 15=Semínko/vá, 16=Sníh/Sněhová, 17=Strážný/á, 18=Trnka/ová, 19=Urobil/ová, 20=Žvanil/ová
+
+PRAVIDLA TOTO NEŘEŠÍ: Věk, rodinné vazby, ani motivace nejsou povinnou součástí tvorby postavy.`,
+  },
   pomocnik: {
     title: "Pomocník (Hireling)",
     text: `Najatý spolucestující. V Mausritteru NENÍ overkill — pomocníci slouží jako "nosiči" pro poklady a rozšiřují omezenou kapacitu inventáře. V sólo hře navíc POJISTKA PROTI SMRTI.

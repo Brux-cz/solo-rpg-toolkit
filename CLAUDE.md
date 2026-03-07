@@ -148,10 +148,11 @@ Diagram je velký (~1400 řádků). Čti jen sekce relevantní pro aktuální ú
 
 ### Mapa diagramu (řádky)
 
-**WIKI — entity a data (ř. 23–570)**
+**WIKI — entity a data (ř. 23–640)**
 - ř. 23–40: Kampáňová Wiki (přehled, propojení entit)
-- ř. 41–116: Postava (atributy, inventář, podmínky, leveling, léčení)
-- ř. 117–176: Pomocník (Hireling)
+- ř. 41–115: Postava (atributy, inventář, podmínky, leveling, léčení)
+- ř. 116–185: Tvorba postavy (5 kroků, tabulka původů 6×6, zbraně, vzhled)
+- ř. 186–245: Pomocník (Hireling)
 - ř. 177–207: NPC (wiki záznam)
 - ř. 208–239: Thread / Příběhová linka
 - ř. 240–268: NPC Seznam (aktivní mechanický)
@@ -200,11 +201,12 @@ Diagram je velký (~1400 řádků). Čti jen sekce relevantní pro aktuální ú
 
 ### Mapa datového modelu — `src/docs/datovy-model.jsx` (řádky)
 
-- ř. 6–43: Postava (atributy, inventář, podmínky, kuráž)
-- ř. 44–68: Pomocník (hireling)
-- ř. 69–112: Předmět (zbraně, zbroje, kouzla, spotřební)
-- ř. 113–134: Frakce
-- ř. 135–168: Osada (služby, obchody, NPC)
+- ř. 5–42: Postava (atributy, inventář, podmínky, kuráž)
+- ř. 43–74: Tvorba postavy (5 kroků, tabulky, zbraně, vzhled)
+- ř. 75–99: Pomocník (hireling)
+- ř. 100–143: Předmět (zbraně, zbroje, kouzla, spotřební)
+- ř. 144–165: Frakce
+- ř. 166–199: Osada (služby, obchody, NPC)
 - ř. 169–202: NPC (reakce, vztah, motivace)
 - ř. 203–234: Mythic GME (CF, NPC seznam, Thread seznam)
 - ř. 235–260: Scéna (typ, chaos test, eventy)

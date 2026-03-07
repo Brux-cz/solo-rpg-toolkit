@@ -40,6 +40,38 @@ const entities = {
       stavy: "Poranění (zabírá slot na těle!)",
     }
   },
+  tvorbaPostavy: {
+    title: "Tvorba postavy",
+    emoji: "🎲",
+    color: "#d97706",
+    fields: [
+      { name: "-- krok 1: vlastnosti --", type: "---", note: "" },
+      { name: "str, dex, wil", type: "3d6 keep 2", note: "V pořadí STR→DEX→WIL. Rozsah 2-12. Po vygenerování všech tří lze prohodit libovolné DVĚ." },
+      { name: "-- krok 2: BO a ďobky --", type: "---", note: "" },
+      { name: "bo", type: "d6", note: "Body ochrany — vstup do tabulky původu" },
+      { name: "dobky", type: "d6", note: "Počáteční ďobky — vstup do tabulky původu" },
+      { name: "-- krok 3: původ --", type: "---", note: "" },
+      { name: "puvod", type: "cross-ref BO×ďobky", note: "Tabulka 6×6 = 36 původů. Určuje název + Předmět A + Předmět B." },
+      { name: "-- krok 4: vybavení --", type: "---", note: "" },
+      { name: "zakladniVybava", type: "note", note: "KAŽDÁ myš: pochodeň + zásoby + 2 předměty z původu (A,B) + 1 zbraň dle výběru" },
+      { name: "zachrannaSit", type: "note", note: "Nejvyšší vlastnost ≤9: +1 předmět (A nebo B) z nového hodu. ≤7: +2 předměty (oba)." },
+      { name: "zbrane", type: "note", note: "Improvizovaná d6 1ď (vždy škrtá tečku!) | Lehká d6 10ď | Střední d6/d8 20ď | Těžká d10 40ď | Lehká střelná d6 10ď | Těžká střelná d8 40ď" },
+      { name: "-- krok 5: vzhled --", type: "---", note: "" },
+      { name: "znameni", type: "d6", note: "1=Hvězda(statečná/zbrklá) 2=Kolo(pracovitá/nenápaditá) 3=Žalud(zvědavá/paličatá) 4=Bouřka(štědrá/popudlivá) 5=Měsíc(moudrá/záhadná) 6=Matka(pečující/ustaraná)" },
+      { name: "barvaSrsti", type: "d6", note: "1=Čokoládová 2=Černá 3=Bílá 4=Světle hnědá 5=Šedá 6=Namodralá" },
+      { name: "vzorSrsti", type: "d6", note: "1=Jednolitá 2=Mourovatá 3=Strakatá 4=Pruhovaná 5=Tečkovaná 6=Skvrnitá" },
+      { name: "vyraznyRys", type: "d66", note: "36 rysů (11-66). Tělo, oblečení, obličej, srst, oči, ocásek." },
+      { name: "jmeno", type: "volba/d100+d20", note: "Vlastní jména (99 položek, d100, č.50 chybí) + mateřská jména (20 položek, d20). Volba nebo hod. Viz kompletní seznamy v diagramu sekce tvorba_postavy." },
+    ],
+    ada: {
+      priklad: [
+        "Krok 1: STR 3d6=[4,5,2]→9, DEX 3d6=[6,3,1]→9, WIL 3d6=[5,6,4]→11 → swap STR↔WIL → STR 11, DEX 9, WIL 9",
+        "Krok 2: BO d6=4, Ďobky d6=3 → tabulka: BO 4 × 3ď = Vlaštovkář (Rybářský háček + Ochranné brýle)",
+        "Krok 4: Pochodeň + Zásoby + Rybářský háček + Ochranné brýle + Jehla (lehká, d6) dle výběru",
+        "Krok 5: Znamení d6=3 Žalud (zvědavá/paličatá), Srst d6=1+d6=2 Čokoládová mourovatá, Rys d66=54 Moudrý pohled",
+      ]
+    }
+  },
   pomocnik: {
     title: "Pomocník",
     emoji: "🐹",
@@ -76,6 +108,8 @@ const entities = {
       { name: "podminkaOdstraneni", type: "string?", note: "Jen stavy: jak se zbavit (odpočinek, jídlo, léčení...)" },
       { name: "tecky", type: "{aktualni, max}", note: "Většina 3 (i pochodeň!), lampa 6 (výjimka)" },
       { name: "sloty", type: "number (1-6)", note: "Většina 1-2, objemné poklady až 4-6" },
+      { name: "span", type: "{rows,cols}?", note: "Rozměry v gridu pro multi-slot (2×1 nebo 1×2). Jen pokud sloty>1." },
+      { name: "_preset", type: "string?", note: "Interní: název vybraného presetu. Umožňuje přejmenování bez ztráty vazby na šablonu." },
       { name: "hodnota", type: "number", note: "Cena v ďobcích" },
       { name: "cenaOpravy", type: "number?", note: "10% hodnoty za tečku. Jen zbraně/zbroje v osadě." },
       { name: "-- jen zbraně --", type: "---", note: "" },
@@ -84,14 +118,14 @@ const entities = {
       { name: "jeDalkova", type: "boolean", note: "Prak, luk — kryt = d4" },
       { name: "jeKouzelna", type: "boolean", note: "Tečka jen na hod 6" },
       { name: "jePostribrena", type: "boolean", note: "Postříbřené — VŽDY škrtá tečku po boji (ne d6)" },
-      { name: "jeImprovizovana", type: "boolean", note: "Improvizovaná — d6 s NEVÝHODOU (2d6 keep worst)" },
+      { name: "jeImprovizovana", type: "boolean", note: "Improvizovaná — d6 normálně, ale VŽDY škrtá tečku po boji (ne d6 test)" },
       { name: "ucinekPriNoseni", type: "string?", note: "Jen kouzelné — pasivní efekt (mluvení s rybami...)" },
       { name: "kritickyUcinek", type: "string?", note: "Jen kouzelné — efekt při kritickém zranění" },
       { name: "kletba", type: "string?", note: "Jen kouzelné — popis prokletí" },
       { name: "podminkaZruseniKletby", type: "string?", note: "Jak se kletby zbavit" },
       { name: "-- jen zbroje --", type: "---", note: "" },
       { name: "hodnotaObrany", type: "number", note: "FIXNÍ hodnota! Lehká=1, Těžká=1. Odečte se od zranění." },
-      { name: "poziceZbroje", type: "string", note: "Lehká: packa+tělo. Těžká: 2×tělo. Štít: 1 packa." },
+      { name: "poziceZbroje", type: "string", note: "Informativní (ne validační). Lehká: packa+tělo. Těžká: 2×tělo. Štít: 1 packa. Hráč může umístit kamkoliv." },
       { name: "-- jen kouzla --", type: "---", note: "" },
       { name: "popisUcinku", type: "string", note: "Text efektu s [POČET] a [SOUČET]. Kouzlo = obsidiánová destička!" },
       { name: "ritualDobijeni", type: "string", note: "Unikátní per kouzlo" },
@@ -497,7 +531,7 @@ export default function DataModelDiagram() {
   const collapseAll = () => setExpanded(new Set());
   
   const groups = {
-    "Jádro hry": ["postava", "pomocnik", "predmet"],
+    "Jádro hry": ["postava", "tvorbaPostavy", "pomocnik", "predmet"],
     "Svět": ["osada", "frakce", "npc", "zvesti", "hexcrawl"],
     "Mechaniky": ["mythic", "scena", "boj", "cas"],
   };
