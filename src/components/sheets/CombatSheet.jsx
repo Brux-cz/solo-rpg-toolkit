@@ -1,17 +1,43 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { C, FONT } from "../../constants/theme.js";
 import { BESTIARY } from "../../constants/bestiary.js";
-import { rollWeapon } from "../../utils/dice.js";
+import { rollWeapon, roll } from "../../utils/dice.js";
 import { resolveDamage, rollInitiative, rollMorale } from "../../utils/combat.js";
 import Sheet from "../ui/Sheet.jsx";
+
+function getWeaponsFromInventory(inv) {
+  if (!inv) return [];
+  return inv
+    .map((s, i) => ({ ...s, _idx: i }))
+    .filter(s => s.typ === "zbraň" && s.nazev && !s._occupied);
+}
+
+function getArmorFromInventory(inv) {
+  if (!inv) return 0;
+  return inv
+    .filter(s => s.typ === "zbroj" && s.nazev && !s._occupied)
+    .reduce((sum, s) => sum + (s.obrana || 0), 0);
+}
 
 export default function CombatSheet({ onClose, onInsert, character, onCharUpdate }) {
   const [step, setStep] = useState("setup");
   const [source, setSource] = useState("bestiary");
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [custom, setCustom] = useState({ name: "", str: 8, dex: 8, wil: 8, bo: 3, weapon: "d6", armor: 0, weaponName: "Útok" });
-  const [playerWeapon, setPlayerWeapon] = useState("d6");
-  const [playerArmor, setPlayerArmor] = useState(0);
+
+  const weapons = useMemo(() => getWeaponsFromInventory(character.inventar), [character.inventar]);
+  const autoArmor = useMemo(() => getArmorFromInventory(character.inventar), [character.inventar]);
+
+  // weaponSource: index into weapons array, or "manual"
+  const [weaponSource, setWeaponSource] = useState(() => weapons.length > 0 ? 0 : "manual");
+  const [manualWeapon, setManualWeapon] = useState("d6");
+  const [armorOverride, setArmorOverride] = useState(null);
+
+  const playerWeapon = weaponSource === "manual" ? manualWeapon : (weapons[weaponSource]?.dmg || "d6");
+  const playerWeaponName = weaponSource === "manual" ? null : weapons[weaponSource]?.nazev;
+  const playerWeaponIdx = weaponSource === "manual" ? null : weapons[weaponSource]?._idx;
+  const playerArmor = armorOverride !== null ? armorOverride : autoArmor;
+
   const [playerDex, setPlayerDex] = useState(character.dex.akt);
   const [combatResult, setCombatResult] = useState(null);
 
@@ -117,17 +143,74 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
     }
     if (!result) result = "victory";
 
-    setCombatResult({ log, result, initText, enemy: { ...enemy }, playerWeapon, playerBoAfter: pBo, playerStrAfter: pStr });
+    // Opotřebení zbraně a zbroje po boji
+    const wearLog = [];
+    const invChanges = {}; // idx → { tecky: { akt, max } }
+
+    // Zbraň
+    if (playerWeaponIdx !== null) {
+      const w = character.inventar[playerWeaponIdx];
+      if (w && w.tecky?.max > 0) {
+        const isImprov = w._preset === "Improvizovaná" || w.nazev === "Improvizovaná";
+        if (isImprov) {
+          const newAkt = Math.max(0, w.tecky.akt - 1);
+          invChanges[playerWeaponIdx] = { tecky: { ...w.tecky, akt: newAkt } };
+          wearLog.push(`Zbraň ${w.nazev}: improvizovaná → škrt tečky (${w.tecky.akt}→${newAkt})`);
+          if (newAkt === 0) wearLog.push(`  → ${w.nazev} zničena!`);
+        } else {
+          const d = roll(6);
+          if (d >= 4) {
+            const newAkt = Math.max(0, w.tecky.akt - 1);
+            invChanges[playerWeaponIdx] = { tecky: { ...w.tecky, akt: newAkt } };
+            wearLog.push(`Zbraň ${w.nazev}: d6=${d} → škrt tečky (${w.tecky.akt}→${newAkt})`);
+            if (newAkt === 0) wearLog.push(`  → ${w.nazev} zničena!`);
+          } else {
+            wearLog.push(`Zbraň ${w.nazev}: d6=${d} → OK`);
+          }
+        }
+      }
+    }
+
+    // Zbroje
+    if (character.inventar) {
+      character.inventar.forEach((s, i) => {
+        if (s.typ !== "zbroj" || !s.nazev || s._occupied) return;
+        if (!s.tecky?.max || s.tecky.max <= 0) return;
+        const d = roll(6);
+        if (d >= 4) {
+          const newAkt = Math.max(0, s.tecky.akt - 1);
+          invChanges[i] = { tecky: { ...s.tecky, akt: newAkt } };
+          wearLog.push(`Zbroj ${s.nazev}: d6=${d} → škrt tečky (${s.tecky.akt}→${newAkt})`);
+          if (newAkt === 0) wearLog.push(`  → ${s.nazev} zničena!`);
+        } else {
+          wearLog.push(`Zbroj ${s.nazev}: d6=${d} → OK`);
+        }
+      });
+    }
+
+    if (wearLog.length > 0) {
+      log.push("--- Opotřebení ---");
+      log.push(...wearLog);
+    }
+
+    setCombatResult({ log, result, initText, enemy: { ...enemy }, playerWeapon, playerBoAfter: pBo, playerStrAfter: pStr, invChanges });
     setStep("result");
   };
 
   const doInsert = () => {
     if (onCharUpdate) {
-      onCharUpdate({
+      const updatedChar = {
         ...character,
         bo: { ...character.bo, akt: combatResult.playerBoAfter },
         str: { ...character.str, akt: combatResult.playerStrAfter },
-      });
+      };
+      // Apply inventory wear changes
+      if (combatResult.invChanges && Object.keys(combatResult.invChanges).length > 0 && updatedChar.inventar) {
+        updatedChar.inventar = updatedChar.inventar.map((s, i) =>
+          combatResult.invChanges[i] ? { ...s, ...combatResult.invChanges[i] } : s
+        );
+      }
+      onCharUpdate(updatedChar);
     }
     onInsert({
       type: "combat",
@@ -199,20 +282,38 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
           )}
 
           <div style={{ fontSize: 9, color: C.muted, marginBottom: 4, fontFamily: FONT, letterSpacing: 0.8 }}>HRÁČ:</div>
-          <div style={{ display: "flex", gap: 8, marginBottom: 12, alignItems: "center", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center", flexWrap: "wrap" }}>
             <label style={{ fontSize: 10, color: C.muted, fontFamily: FONT, display: "flex", alignItems: "center", gap: 3 }}>
               DEX
               <input type="number" value={playerDex} onChange={e => setPlayerDex(Number(e.target.value))} style={inputStyle} />
             </label>
             <label style={{ fontSize: 10, color: C.muted, fontFamily: FONT, display: "flex", alignItems: "center", gap: 3 }}>
               Zbraň
-              <select value={playerWeapon} onChange={e => setPlayerWeapon(e.target.value)} style={{ ...inputStyle, width: 60 }}>
-                {dieCostky.map(d => <option key={d} value={d}>{d === "d4" ? "d4 (zeslab.)" : d === "d12" ? "d12 (zesíl.)" : d}</option>)}
+              <select value={weaponSource} onChange={e => {
+                const v = e.target.value;
+                setWeaponSource(v === "manual" ? "manual" : Number(v));
+              }} style={{ ...inputStyle, width: weapons.length > 0 ? 120 : 60 }}>
+                {weapons.map((w, i) => (
+                  <option key={w._idx} value={i}>{w.nazev} ({w.dmg})</option>
+                ))}
+                <option value="manual">Jiná (ručně)...</option>
               </select>
             </label>
+            {weaponSource === "manual" && (
+              <select value={manualWeapon} onChange={e => setManualWeapon(e.target.value)} style={{ ...inputStyle, width: 60 }}>
+                {dieCostky.map(d => <option key={d} value={d}>{d}</option>)}
+              </select>
+            )}
+          </div>
+          <div style={{ display: "flex", gap: 8, marginBottom: 12, alignItems: "center", flexWrap: "wrap" }}>
             <label style={{ fontSize: 10, color: C.muted, fontFamily: FONT, display: "flex", alignItems: "center", gap: 3 }}>
               Zbroj
-              <select value={playerArmor} onChange={e => setPlayerArmor(Number(e.target.value))} style={{ ...inputStyle, width: 50 }}>
+              <span style={{ fontSize: 10, fontFamily: FONT, fontWeight: 700, color: C.text, padding: "4px 6px" }}>{autoArmor}</span>
+            </label>
+            <label style={{ fontSize: 10, color: C.muted, fontFamily: FONT, display: "flex", alignItems: "center", gap: 3 }}>
+              Override
+              <select value={armorOverride !== null ? armorOverride : ""} onChange={e => setArmorOverride(e.target.value === "" ? null : Number(e.target.value))} style={{ ...inputStyle, width: 50 }}>
+                <option value="">—</option>
                 {[0, 1, 2, 3].map(a => <option key={a} value={a}>{a}</option>)}
               </select>
             </label>
