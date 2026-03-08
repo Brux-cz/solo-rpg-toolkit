@@ -93,3 +93,16 @@ export const EVENT_FOCUS = [
   [85,  "PC Positive"],
   [100, "Current Context"],
 ];
+
+// Thread Discovery Check Table (1d10 + progress)
+// [maxRoll, type, points, description]
+export const THREAD_DISCOVERY = [
+  [9,  "Progress",   2, "Objev posune blíž k vyřešení"],
+  [10, "Flashpoint", 2, "Dramatická důležitá událost"],
+  [14, "Track",      1, "Úsilí samo posouvá, nic konkrétního"],
+  [17, "Progress",   3, "Významný objev"],
+  [18, "Flashpoint", 3, "Velký dramatický zlom"],
+  [19, "Track",      2, "Úsilí posouvá výrazněji"],
+  [24, "Strengthen", 1, "Dřívější pokrok posílen/potvrzen"],
+  [99, "Strengthen", 2, "Dřívější pokrok výrazně posílen"], // 25+
+];
