@@ -90,7 +90,8 @@ POSTUP (leveling):
 • zk. = 1 za každý ďobek pokladu přineseného do bezpečí
 • Bonus: 1 zk. za 10 ďobků utracených pro komunitu
 • Úroveň 2 = 1000 zk., úroveň 3 = 3000, úroveň 4 = 6000
-• Při postupu: d20 vs každý atribut (vyšší = +1), nový hod na BO
+• Při postupu: d20 vs každý atribut MAX (vyšší = max+1, akt+1), nový hod na BO
+  → Level-up se dělá v osadě po úplném odpočinku (akt == max). Porovnání vs MAX (base stat).
 
 LÉČENÍ (tři typy odpočinku):
 • Krátký (10 min, voda): obnoví d6+1 BO. NEOBNOVUJE vlastnosti!
@@ -281,12 +282,13 @@ PROPOJENÍ:
 • Frakce ke které patří
 • Úkoly co zadal
 • Scény kde se objevil (z deníku)
-• Pozice v mechanickém NPC Seznamu (váha 1-3×)
+• Pozice v mechanickém NPC Seznamu (váha 0-3×, kde 0 = wiki-only)
 
 DŮLEŽITÉ: NPC má DVĚ TVÁŘE v appce:
 1. Wiki záznam (tento) — kdo to je, kde žije, co ví
 2. Řádek(y) v NPC Seznamu (mechanický) — váha pro Mythic hody
-Obojí musí být propojené. Přidáš NPC do wiki → nabídne přidání do seznamu.`,
+Obojí musí být propojené. Přidáš NPC do wiki → nabídne přidání do seznamu.
+VÁHA 0 = wiki-only: NPC existuje v databázi (wiki karta), ale NENÍ v aktivním seznamu pro Mythic hody. Zobrazí se s badgem "jen wiki". Zvýšením váhy na 1+ se aktivuje v seznamu.`,
   },
   thread: {
     title: "Thread / Příběhová linka (Wiki záznam)",
@@ -1067,7 +1069,7 @@ MYTHIC MECHANIKY:
 • PERIL POINTS (2e, ověřeno NotebookLM): Start 2 body. 1 bod = záchrana před koncem. Obnova: volba hráče (per sezení nebo nikdy).
 • DISCOVERY CHECK (2e, ověřeno NotebookLM): Zaseknutý thread → akce → Fate Q "Je něco objeveno?" (min 50/50!) → Yes=d10+progress na Thread Discovery Table. ExcNo=blokuje VŠECHNY další Discovery Checks ve scéně! Random Event může nastat (standardní doubles ≤ CF). Meaning Tables dle výběru hráče.
 • DETERMINING NPC STATISTICS (ověřeno NotebookLM): Odhad → Fate Q → Yes=přesně, ExcYes=+25%, No=-25%, ExcNo=-50%
-• NPC BEHAVIOR TABLE (ověřeno NotebookLM): Interpretuje intenzitu akce po Fate Q. Specializované tabulky: Character Actions, Conversations, Animal Actions
+• NPC BEHAVIOR TABLE (ověřeno NotebookLM): Rozhodovací strom: 1) Jasná představa + neklíčová akce → improvizace. 2) Důležitá akce → Fate Q + interpretační rámec (YES=přesně, EXC YES=intenzivněji, NO=druhá nejpravděpodobnější/Meaning, EXC NO=opak/Meaning intenzivně, Random Event=Meaning pro další akci). 3) Žádná představa → rovnou Meaning Tables. Kontextové tabulky: Character Actions General, Character Actions Combat, Character Conversations, Animal Actions
 • DISCOVERING MEANING (ověřeno NotebookLM): 2×d100 na Meaning Tables (core + 45 tematických Elements). Není Fate Q — otevřená odpověď bez Ano/Ne
 • CHAOS FLAVORS (2e): Varianty chaosu — standard/low/mid/no. Nastavení hry
 • Fate Chart Ano/Ne funguje intuitivně
