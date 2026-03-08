@@ -15,6 +15,8 @@ import DetailCheckSheet from "./components/sheets/DetailCheckSheet.jsx";
 import DiceSheet from "./components/sheets/DiceSheet.jsx";
 import RestSheet from "./components/sheets/RestSheet.jsx";
 import DiscoveryCheckSheet from "./components/sheets/DiscoveryCheckSheet.jsx";
+import CharCreateSheet from "./components/sheets/CharCreateSheet.jsx";
+import BehaviorSheet from "./components/sheets/BehaviorSheet.jsx";
 import PostavaTab from "./components/tabs/PostavaTab.jsx";
 import SvetTab from "./components/tabs/SvetTab.jsx";
 import Lobby from "./components/Lobby.jsx";
@@ -98,7 +100,7 @@ export default function Prototype() {
 
       <div style={{ flex: 1, overflow: "hidden", maxHeight: sheetOpen ? "calc(50% - 10px)" : undefined }}>
         {tab === "diary" && <EditorArea entries={game.entries} />}
-        {tab === "char" && <PostavaTab character={game.character} onUpdate={(ch) => updateGame({ character: ch })} />}
+        {tab === "char" && <PostavaTab character={game.character} onUpdate={(ch) => updateGame({ character: ch })} onCharCreate={() => setSheet("charcreate")} />}
         {tab === "world" && <SvetTab cf={game.cf} npcs={game.npcs} threads={game.threads} onGoToLobby={handleGoToLobby} onNpcsChange={(npcs) => updateGame({ npcs })} onThreadsChange={(threads) => updateGame({ threads })} />}
       </div>
 
@@ -114,13 +116,14 @@ export default function Prototype() {
           onDiceOpen={() => setSheet("dice")}
           onRestOpen={() => setSheet("rest")}
           onDiscoveryOpen={() => setSheet("discovery")}
+          onBehaviorOpen={() => setSheet("behavior")}
         />
       )}
 
       <BottomNav active={tab} onChange={setTab} />
 
-      {sheet === "fate" && <FateSheet onClose={() => setSheet(null)} cf={game.cf} onInsert={handleInsert} />}
-      {sheet === "scene" && <SceneSheet onClose={() => setSheet(null)} cf={game.cf} sceneNum={game.sceneNum} onInsert={handleInsert} />}
+      {sheet === "fate" && <FateSheet onClose={() => setSheet(null)} cf={game.cf} npcs={game.npcs} threads={game.threads} onInsert={handleInsert} />}
+      {sheet === "scene" && <SceneSheet onClose={() => setSheet(null)} cf={game.cf} sceneNum={game.sceneNum} npcs={game.npcs} threads={game.threads} onInsert={handleInsert} />}
       {sheet === "meaning" && <MeaningSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}
       {sheet === "endscene" && <EndSceneSheet onClose={() => setSheet(null)} cf={game.cf} sceneNum={game.sceneNum} onCFChange={(v) => updateGame({ cf: v })} npcs={game.npcs} threads={game.threads} onNpcsChange={(npcs) => updateGame({ npcs })} onThreadsChange={(threads) => updateGame({ threads })} onInsert={handleInsert} />}
       {sheet === "combat" && <CombatSheet onClose={() => setSheet(null)} onInsert={handleInsert} character={game.character} onCharUpdate={(ch) => updateGame({ character: ch })} />}
@@ -128,7 +131,9 @@ export default function Prototype() {
       {sheet === "detail" && <DetailCheckSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}
       {sheet === "dice" && <DiceSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}
       {sheet === "rest" && <RestSheet onClose={() => setSheet(null)} onInsert={handleInsert} character={game.character} onCharUpdate={(ch) => updateGame({ character: ch })} />}
-      {sheet === "discovery" && <DiscoveryCheckSheet cf={game.cf} threads={game.threads} onThreadsChange={(t) => updateGame({ threads: t })} onInsert={handleInsert} onClose={() => setSheet(null)} />}
+      {sheet === "discovery" && <DiscoveryCheckSheet cf={game.cf} threads={game.threads} npcs={game.npcs} onThreadsChange={(t) => updateGame({ threads: t })} onInsert={handleInsert} onClose={() => setSheet(null)} />}
+      {sheet === "charcreate" && <CharCreateSheet onClose={() => setSheet(null)} onComplete={(ch) => { updateGame({ character: ch }); setSheet(null); }} />}
+      {sheet === "behavior" && <BehaviorSheet onClose={() => setSheet(null)} onInsert={handleInsert} npcList={game.npcs} />}
 
     </div>
   );

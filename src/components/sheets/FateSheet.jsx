@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { C, FONT } from "../../constants/theme.js";
-import { checkFate, getEventFocus, rollMeaning } from "../../utils/dice.js";
+import { checkFate, getEventFocus, rollMeaning, resolveEventTarget } from "../../utils/dice.js";
 import Sheet from "../ui/Sheet.jsx";
 
-export default function FateSheet({ onClose, cf, onInsert }) {
+export default function FateSheet({ onClose, cf, npcs, threads, onInsert }) {
   const [step, setStep] = useState("input");
   const [odds, setOdds] = useState(4);
   const [question, setQuestion] = useState("");
@@ -16,7 +16,8 @@ export default function FateSheet({ onClose, cf, onInsert }) {
     if (r.randomEvent) {
       const focus = getEventFocus();
       const meaning = rollMeaning("actions");
-      eventData = { focus, meaning };
+      const target = resolveEventTarget(focus, npcs, threads);
+      eventData = { focus, meaning, target };
     }
     setResult({ ...r, question: question || "?", oddsLabel: oddsLabels[odds], eventData });
     setStep("result");
@@ -35,6 +36,12 @@ export default function FateSheet({ onClose, cf, onInsert }) {
     if (result.eventData) {
       entry.eventFocus = result.eventData.focus;
       entry.eventMeaning = result.eventData.meaning;
+      if (result.eventData.target) {
+        entry.eventTargetType = result.eventData.target.type;
+        entry.eventTargetName = result.eventData.target.item?.name || null;
+        entry.eventTargetReroll = result.eventData.target.reroll || false;
+        entry.eventTargetEmpty = result.eventData.target.empty || false;
+      }
     }
     onInsert(entry);
     onClose();
@@ -80,9 +87,23 @@ export default function FateSheet({ onClose, cf, onInsert }) {
               <div style={{ fontSize: 9, color: C.yellow, fontWeight: 700, marginBottom: 4 }}>⚡ RANDOM EVENT</div>
               <div style={{ fontSize: 11, color: C.text, marginBottom: 2 }}>Focus: <span style={{ fontWeight: 600 }}>{result.eventData.focus}</span></div>
               <div style={{ fontSize: 11, color: C.purple }}>Meaning: <span style={{ fontWeight: 600 }}>{result.eventData.meaning.word1} + {result.eventData.meaning.word2}</span></div>
+              {result.eventData.meaning.cz1 && <div style={{ fontSize: 9, color: C.muted, marginTop: 2 }}>{result.eventData.meaning.cz1} + {result.eventData.meaning.cz2}</div>}
+              {result.eventData.target && (
+                <div style={{ fontSize: 11, color: C.text, marginTop: 4 }}>
+                  {result.eventData.target.type === "npc" ? "NPC" : "Thread"}:{" "}
+                  <span style={{ fontWeight: 600 }}>
+                    {result.eventData.target.empty ? "(prázdný seznam → Current Context)"
+                      : result.eventData.target.reroll ? "Vyber sám"
+                      : result.eventData.target.item?.name}
+                  </span>
+                </div>
+              )}
             </div>
           )}
-          <button onClick={doInsert} style={{ width: "100%", height: 46, background: C.green, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT DO TEXTU</button>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button onClick={() => { setStep("input"); setResult(null); }} style={{ flex: 1, height: 46, background: "transparent", color: C.muted, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>HODIT ZNOVU</button>
+            <button onClick={doInsert} style={{ flex: 2, height: 46, background: C.green, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT DO TEXTU</button>
+          </div>
         </>
       )}
     </Sheet>

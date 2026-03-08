@@ -8,6 +8,7 @@ import DetailBlock from "../blocks/DetailBlock.jsx";
 import DiceBlock from "../blocks/DiceBlock.jsx";
 import EndSceneBlock from "../blocks/EndSceneBlock.jsx";
 import DiscoveryBlock from "../blocks/DiscoveryBlock.jsx";
+import BehaviorBlock from "../blocks/BehaviorBlock.jsx";
 
 export default function EditorArea({ entries }) {
   return (
@@ -22,6 +23,7 @@ export default function EditorArea({ entries }) {
         if (e.type === "dice") return <DiceBlock key={i} entry={e} />;
         if (e.type === "endscene") return <EndSceneBlock key={i} entry={e} />;
         if (e.type === "discovery") return <DiscoveryBlock key={i} entry={e} />;
+        if (e.type === "behavior") return <BehaviorBlock key={i} entry={e} />;
         return null;
       })}
       <span style={{ display: "inline-block", width: 2, height: 14, background: C.green, verticalAlign: "text-bottom", animation: "blink 1s step-end infinite" }} />

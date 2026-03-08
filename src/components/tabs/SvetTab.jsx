@@ -42,8 +42,10 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
   };
 
   const changeNpcWeight = (idx, delta) => {
-    onNpcsChange(npcs.map((n, i) => i === idx ? { ...n, weight: Math.max(1, Math.min(3, n.weight + delta)) } : n));
+    onNpcsChange(npcs.map((n, i) => i === idx ? { ...n, weight: Math.max(0, Math.min(3, n.weight + delta)) } : n));
   };
+
+  const hasWikiDetails = (n) => !!(n.popis || n.lokace || n.vztah || n.poznamky);
 
   const changeThreadWeight = (idx, delta) => {
     onThreadsChange(threads.map((t, i) => i === idx ? { ...t, weight: Math.max(1, Math.min(3, t.weight + delta)) } : t));
@@ -91,13 +93,17 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
               </div>
               <span style={{ fontSize: 9, color: C.muted }}>1–9</span>
             </div>
-            <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>NPC SEZNAM ({npcs.length}/25)</div>
-            {npcs.map((n, i) => (
-              <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "5px 10px", border: `1px solid ${C.border}`, borderRadius: 6, marginBottom: 4, fontSize: 11 }}>
-                <span>{n.name}</span>
-                <span style={{ color: n.flag?C.red:C.muted }}>{n.weight}{n.flag&&" ⚠️"}</span>
-              </div>
-            ))}
+            <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>NPC SEZNAM ({npcs.filter(n => n.weight >= 1).length}/25)</div>
+            {npcs.map((n, origIdx) => {
+              if (n.weight < 1) return null;
+              return (
+                <div key={origIdx} style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 10px", border: `1px solid ${C.border}`, borderRadius: 6, marginBottom: 4, fontSize: 11 }}>
+                  <span style={{ flex: 1 }}>{n.name}</span>
+                  {hasWikiDetails(n) && <span onClick={() => { setSub("npc"); setExpandedNpc(origIdx); }} style={{ cursor: "pointer", fontSize: 12, opacity: 0.6 }} title="Zobrazit wiki kartu">📋</span>}
+                  <span style={{ color: n.flag?C.red:C.muted }}>{n.weight}{n.flag&&" ⚠️"}</span>
+                </div>
+              );
+            })}
             <div style={{ fontSize: 9, color: C.muted, margin: "12px 0 6px" }}>THREAD SEZNAM ({threads.length}/25)</div>
             {threads.map((t, i) => (
               <div key={i} style={{ padding: "6px 10px", border: `1px solid ${C.border}`, borderRadius: 6, marginBottom: 4 }}>
@@ -116,7 +122,7 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
         )}
         {sub === "npc" && (
           <>
-            <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>NPC SEZNAM ({npcs.length}/25)</div>
+            <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>NPC WIKI ({npcs.length}) · aktivní: {npcs.filter(n => n.weight >= 1).length}</div>
             {npcs.map((n, i) => {
               const isExpanded = expandedNpc === i;
               const vztahColor = n.vztah === "přátelský" ? C.green : n.vztah === "nepřátelský" ? C.red : C.muted;
@@ -125,6 +131,10 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
                   <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 10px", border: `1px solid ${isExpanded ? C.green : C.border}`, borderRadius: isExpanded ? "6px 6px 0 0" : 6, fontSize: 11, cursor: "pointer", background: isExpanded ? C.green + "08" : "transparent" }}
                     onClick={() => setExpandedNpc(isExpanded ? null : i)}>
                     <span style={{ flex: 1, fontWeight: isExpanded ? 700 : 400 }}>{n.name}</span>
+                    {n.weight >= 1
+                      ? <span style={{ fontSize: 8, color: C.green, border: `1px solid ${C.green}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>aktivní {n.weight}×</span>
+                      : <span style={{ fontSize: 8, color: C.muted, border: `1px solid ${C.border}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>jen wiki</span>
+                    }
                     {n.vztah && <span style={{ fontSize: 8, color: vztahColor, border: `1px solid ${vztahColor}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>{n.vztah}</span>}
                     <button onClick={e => { e.stopPropagation(); changeNpcWeight(i, -1); }} style={weightBtnStyle}>−</button>
                     <span style={{ fontSize: 10, color: C.yellow, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{n.weight}×</span>

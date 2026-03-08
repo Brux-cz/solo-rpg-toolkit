@@ -8,5 +8,6 @@ export const C = {
   yellow: "#c89030",
   purple: "#7a5aaa",
   blue: "#8888cc",
+  orange: "#cc7a30",
 };
 export const FONT = "'IBM Plex Mono', monospace";

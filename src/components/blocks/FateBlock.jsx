@@ -14,7 +14,10 @@ export default function FateBlock({ entry }) {
       <span>·</span>
       <span>d100={entry.d100}</span>
       <span style={{ marginLeft: "auto", color, fontWeight: 700 }}>→ {label}</span>
-      {entry.randomEvent && <span style={{ color: C.yellow, fontSize: 10 }}>⚡ {entry.eventFocus || "Random Event"}{entry.eventMeaning ? ` · ${entry.eventMeaning.word1} + ${entry.eventMeaning.word2}` : ""}</span>}
+      {entry.randomEvent && <div style={{ width: "100%", color: C.yellow, fontSize: 10 }}>
+        ⚡ {entry.eventFocus || "Random Event"}{entry.eventMeaning ? ` · ${entry.eventMeaning.word1} + ${entry.eventMeaning.word2}` : ""}{entry.eventTargetName ? ` → ${entry.eventTargetName}` : ""}{entry.eventTargetReroll ? " → Vyber sám" : ""}{entry.eventTargetEmpty ? " → (prázdný seznam)" : ""}
+        {entry.eventMeaning?.cz1 && <div style={{ color: C.muted, fontSize: 9 }}>{entry.eventMeaning.cz1} + {entry.eventMeaning.cz2}</div>}
+      </div>}
     </div>
   );
 }

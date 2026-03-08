@@ -1,4 +1,4 @@
-import { FATE_DIAG, ACTIONS, DESCRIPTIONS, SCENE_ADJ, EVENT_FOCUS, THREAD_DISCOVERY } from "../constants/tables.js";
+import { FATE_DIAG, ACTIONS, ACTIONS_CZ, DESCRIPTIONS, DESCRIPTIONS_CZ, SCENE_ADJ, EVENT_FOCUS, THREAD_DISCOVERY } from "../constants/tables.js";
 import { ELEMENTS } from "../constants/elements.js";
 
 export function roll(sides) {
@@ -51,14 +51,16 @@ export function checkScene(cf) {
 export function rollMeaning(table) {
   const d1 = roll(100);
   const d2 = roll(100);
-  let list;
-  if (table === "descriptions") list = DESCRIPTIONS;
-  else if (table === "actions") list = ACTIONS;
-  else list = ELEMENTS[table];
-  if (!list) list = ACTIONS;
+  let list, listCz;
+  if (table === "descriptions") { list = DESCRIPTIONS; listCz = DESCRIPTIONS_CZ; }
+  else if (table === "actions") { list = ACTIONS; listCz = ACTIONS_CZ; }
+  else { list = ELEMENTS[table]; listCz = null; }
+  if (!list) { list = ACTIONS; listCz = ACTIONS_CZ; }
   const w1 = list[(d1 - 1) % list.length];
   const w2 = list[(d2 - 1) % list.length];
-  return { d1, d2, word1: w1, word2: w2 };
+  const cz1 = listCz ? listCz[(d1 - 1) % listCz.length] : null;
+  const cz2 = listCz ? listCz[(d2 - 1) % listCz.length] : null;
+  return { d1, d2, word1: w1, word2: w2, cz1, cz2 };
 }
 
 // Thread Discovery Check: 1d10 + progress → tabulka
@@ -76,6 +78,28 @@ export function rollDiscoveryCheck(progress, meaningTable = "actions") {
   const last = THREAD_DISCOVERY[THREAD_DISCOVERY.length - 1];
   const meaning = rollMeaning(meaningTable);
   return { d10, total, type: last[1], points: last[2], description: last[3], meaning };
+}
+
+// Resolve Event Target — automatický výběr NPC/Thread dle Event Focus
+const NPC_FOCUSES = ["NPC Action", "NPC Negative", "NPC Positive"];
+const THREAD_FOCUSES = ["Move toward thread", "Move away from thread", "Close thread"];
+
+export function resolveEventTarget(focus, npcs, threads) {
+  if (NPC_FOCUSES.includes(focus)) {
+    const active = (npcs || []).filter(n => n.weight >= 1);
+    if (active.length === 0) return { type: "npc", empty: true };
+    const result = rollFromList(active);
+    if (!result) return { type: "npc", empty: true };
+    return { type: "npc", ...result };
+  }
+  if (THREAD_FOCUSES.includes(focus)) {
+    const active = (threads || []).filter(t => t.weight >= 1);
+    if (active.length === 0) return { type: "thread", empty: true };
+    const result = rollFromList(active);
+    if (!result) return { type: "thread", empty: true };
+    return { type: "thread", ...result };
+  }
+  return null;
 }
 
 // Mythic 2e: dvoustupňový hod na NPC/Thread seznam

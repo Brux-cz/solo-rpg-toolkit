@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { C, FONT } from "../../constants/theme.js";
 
-export default function ActionToolbar({ onFateOpen, onSceneOpen, onMeaningOpen, onDetailOpen, onEndSceneOpen, onCombatOpen, onNoteOpen, onDiceOpen, onRestOpen, onDiscoveryOpen }) {
+export default function ActionToolbar({ onFateOpen, onSceneOpen, onMeaningOpen, onDetailOpen, onEndSceneOpen, onCombatOpen, onNoteOpen, onDiceOpen, onRestOpen, onDiscoveryOpen, onBehaviorOpen }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
@@ -15,9 +15,9 @@ export default function ActionToolbar({ onFateOpen, onSceneOpen, onMeaningOpen, 
   }, [menuOpen]);
 
   return (
-    <div style={{ padding: "6px 12px 5px", borderTop: `1px solid ${C.border}`, background: C.bg, flexShrink: 0, fontFamily: FONT }}>
+    <div style={{ padding: "6px 12px 5px", borderTop: `1px solid ${C.border}`, background: C.bg, flexShrink: 0, fontFamily: FONT, overflow: "hidden" }}>
       <div style={{ fontSize: 8, color: C.border, letterSpacing: 0.8, marginBottom: 4, textTransform: "uppercase" }}>Vložit:</div>
-      <div style={{ display: "flex", gap: 6 }}>
+      <div style={{ display: "flex", gap: 4 }}>
         {[
           { icon: "🎬", label: "Scéna", fn: onSceneOpen },
           { icon: "❓", label: "Fate", fn: onFateOpen, accent: true },
@@ -54,13 +54,14 @@ export default function ActionToolbar({ onFateOpen, onSceneOpen, onMeaningOpen, 
           }}>⋯</button>
           {menuOpen && (
             <div style={{
-              position: "absolute", bottom: 42, right: 0, background: C.bg,
+              position: "fixed", bottom: 95, right: 12, background: C.bg,
               border: `1px solid ${C.border}`, borderRadius: 8, boxShadow: "0 4px 16px rgba(0,0,0,0.15)",
               minWidth: 180, zIndex: 20, overflow: "hidden",
             }}>
               {[
                 { icon: "📕", label: "Konec scény", fn: onEndSceneOpen },
                 { icon: "🔍", label: "Discovery Check", fn: onDiscoveryOpen },
+                { icon: "🎭", label: "NPC Akce", fn: onBehaviorOpen },
               ].map((item, i) => (
                 <button key={i} onClick={() => { item.fn(); setMenuOpen(false); }} style={{
                   width: "100%", padding: "10px 14px", background: "transparent",

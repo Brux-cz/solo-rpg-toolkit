@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { C, FONT } from "../../constants/theme.js";
-import { checkFate, getEventFocus, rollMeaning, rollDiscoveryCheck } from "../../utils/dice.js";
+import { checkFate, getEventFocus, rollMeaning, rollDiscoveryCheck, resolveEventTarget } from "../../utils/dice.js";
 import Sheet from "../ui/Sheet.jsx";
 
 const ODDS_LABELS = ["Impossible","Nearly imp.","V.unlikely","Unlikely","50/50","Likely","V.likely","Nearly cert.","Certain"];
@@ -14,7 +14,7 @@ const TYPE_COLORS = {
 
 const MEANING_TABLES = ["actions", "descriptions"];
 
-export default function DiscoveryCheckSheet({ cf, threads, onThreadsChange, onInsert, onClose }) {
+export default function DiscoveryCheckSheet({ cf, threads, npcs, onThreadsChange, onInsert, onClose }) {
   const [step, setStep] = useState(1);
   const [selectedIdx, setSelectedIdx] = useState(null);
   const [odds, setOdds] = useState(4);
@@ -31,7 +31,8 @@ export default function DiscoveryCheckSheet({ cf, threads, onThreadsChange, onIn
     if (r.randomEvent) {
       const focus = getEventFocus();
       const meaning = rollMeaning("actions");
-      setEventData({ focus, meaning });
+      const target = resolveEventTarget(focus, npcs, threads);
+      setEventData({ focus, meaning, target });
     }
 
     if (r.yes) {
@@ -67,6 +68,12 @@ export default function DiscoveryCheckSheet({ cf, threads, onThreadsChange, onIn
       entry.randomEvent = true;
       entry.eventFocus = eventData.focus;
       entry.eventMeaning = eventData.meaning;
+      if (eventData.target) {
+        entry.eventTargetType = eventData.target.type;
+        entry.eventTargetName = eventData.target.item?.name || null;
+        entry.eventTargetReroll = eventData.target.reroll || false;
+        entry.eventTargetEmpty = eventData.target.empty || false;
+      }
     }
     onInsert(entry);
     onClose();
@@ -162,6 +169,17 @@ export default function DiscoveryCheckSheet({ cf, threads, onThreadsChange, onIn
                   <div style={{ fontSize: 9, color: C.yellow, fontWeight: 700, marginBottom: 4 }}>⚡ RANDOM EVENT</div>
                   <div style={{ fontSize: 11, color: C.text, marginBottom: 2 }}>Focus: <span style={{ fontWeight: 600 }}>{eventData.focus}</span></div>
                   <div style={{ fontSize: 11, color: C.purple }}>Meaning: <span style={{ fontWeight: 600 }}>{eventData.meaning.word1} + {eventData.meaning.word2}</span></div>
+                  {eventData.meaning.cz1 && <div style={{ fontSize: 9, color: C.muted, marginTop: 2 }}>{eventData.meaning.cz1} + {eventData.meaning.cz2}</div>}
+                  {eventData.target && (
+                    <div style={{ fontSize: 11, color: C.text, marginTop: 4 }}>
+                      {eventData.target.type === "npc" ? "NPC" : "Thread"}:{" "}
+                      <span style={{ fontWeight: 600 }}>
+                        {eventData.target.empty ? "(prázdný seznam → Current Context)"
+                          : eventData.target.reroll ? "Vyber sám"
+                          : eventData.target.item?.name}
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
               <button onClick={onClose} style={{
@@ -208,9 +226,10 @@ export default function DiscoveryCheckSheet({ cf, threads, onThreadsChange, onIn
           <div style={{ fontSize: 11, color: C.muted, textAlign: "center", marginBottom: 4 }}>
             {discoveryResult.description}
           </div>
-          <div style={{ fontSize: 11, color: C.purple, textAlign: "center", marginBottom: 12 }}>
+          <div style={{ fontSize: 11, color: C.purple, textAlign: "center", marginBottom: 4 }}>
             {discoveryResult.meaning.word1} + {discoveryResult.meaning.word2}
           </div>
+          {discoveryResult.meaning.cz1 && <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 12 }}>{discoveryResult.meaning.cz1} + {discoveryResult.meaning.cz2}</div>}
           <button onClick={doInsertAndClose} style={{
             width: "100%", height: 46, background: C.green, color: "white", border: "none",
             borderRadius: 8, fontSize: 11, fontWeight: 700, fontFamily: FONT, cursor: "pointer",

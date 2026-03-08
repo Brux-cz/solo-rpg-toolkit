@@ -25,6 +25,8 @@ export default function MeaningSheet({ onClose, onInsert }) {
       type: "meaning",
       word1: result.word1,
       word2: result.word2,
+      cz1: result.cz1,
+      cz2: result.cz2,
       d1: result.d1,
       d2: result.d2,
       table: selectedType === "Elements" ? selectedElement : selectedType,
@@ -60,6 +62,7 @@ export default function MeaningSheet({ onClose, onInsert }) {
           <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 8, fontFamily: FONT }}>d100 = {result.d1}, d100 = {result.d2}</div>
           <div style={{ background: C.purple + "20", border: `2px solid ${C.purple}`, borderRadius: 8, padding: "12px 0", textAlign: "center", marginBottom: 10 }}>
             <div style={{ fontSize: 22, fontWeight: 700, color: C.purple, fontFamily: FONT }}>{result.word1} + {result.word2}</div>
+            {result.cz1 && <div style={{ fontSize: 11, color: C.muted, marginTop: 4, fontFamily: FONT }}>{result.cz1} + {result.cz2}</div>}
           </div>
           <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 12, fontFamily: FONT }}>Interpretuj v kontextu scény</div>
           <button onClick={doInsert} style={{ width: "100%", height: 46, background: C.purple, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT DO TEXTU</button>

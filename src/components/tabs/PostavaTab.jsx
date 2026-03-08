@@ -710,7 +710,7 @@ function getZkMax(uroven) {
   return 6000 + (uroven - 4) * 5000;
 }
 
-export default function PostavaTab({ character, onUpdate }) {
+export default function PostavaTab({ character, onUpdate, onCharCreate }) {
   const ch = character;
   const zkMax = getZkMax(ch.uroven + 1);
   const [editSlot, setEditSlot] = useState(null);
@@ -733,13 +733,15 @@ export default function PostavaTab({ character, onUpdate }) {
     const log = [];
     const updated = { ...ch };
 
-    // 1) d20 per vlastnost — pokud hod > max → max +1
+    // 1) d20 per vlastnost — pokud hod > max → max +1, akt +1
     for (const key of ["str", "dex", "wil"]) {
       const d = roll(20);
       const label = key.toUpperCase();
       if (d > updated[key].max) {
-        updated[key] = { ...updated[key], max: updated[key].max + 1, akt: updated[key].max + 1 };
-        log.push(`${label}: d20=${d} > ${updated[key].max - 1} → max +1 (${updated[key].max})`);
+        const newMax = updated[key].max + 1;
+        const newAkt = updated[key].akt + 1;
+        updated[key] = { ...updated[key], akt: newAkt, max: newMax };
+        log.push(`${label}: d20=${d} > ${updated[key].max - 1} → +1 (${newAkt}/${newMax})`);
       } else {
         log.push(`${label}: d20=${d} ≤ ${updated[key].max} → beze změny`);
       }
@@ -769,9 +771,8 @@ export default function PostavaTab({ character, onUpdate }) {
     updated.kuraz = novaKuraz;
     log.push(`Kuráž: ${novaKuraz}`);
 
-    // 4) Úroveň +1, ZK = 0
+    // 4) Úroveň +1 (ZK zůstává)
     updated.uroven = novaUroven;
-    updated.zk = 0;
 
     setLevelUpResult(log);
     onUpdate(updated);
@@ -830,6 +831,12 @@ export default function PostavaTab({ character, onUpdate }) {
 
   return (
     <div style={{ padding: "14px 16px", overflowY: "auto", height: "100%", fontFamily: FONT }}>
+      {/* Tvorba postavy */}
+      {onCharCreate && !ch.jmeno && (
+        <button onClick={onCharCreate} style={{ width: "100%", padding: "10px 0", background: C.green, color: "white", border: "none", borderRadius: 6, fontSize: 12, fontFamily: FONT, fontWeight: 700, cursor: "pointer", marginBottom: 10 }}>
+          🎲 Vytvořit postavu
+        </button>
+      )}
       {/* Identita */}
       <div style={{ marginBottom: 10 }}>
         <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
@@ -842,7 +849,7 @@ export default function PostavaTab({ character, onUpdate }) {
         <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
           <input value={ch.puvod} onChange={e => setField("puvod", e.target.value)} placeholder="Původ (Kuchařka...)" style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 8px", fontSize: 11, fontFamily: FONT, background: "white", color: C.muted, outline: "none" }} />
           <span style={{ fontSize: 10, color: C.muted, whiteSpace: "nowrap" }}>ZK</span>
-          <input type="number" value={ch.zk} onChange={e => setField("zk", Math.max(0, Number(e.target.value) || 0))} style={{ ...statInput, width: 44, fontSize: 10, color: C.text }} />
+          <input type="number" value={ch.zk} onChange={e => setField("zk", Math.max(0, Number(e.target.value) || 0))} style={{ ...statInput, width: 54, fontSize: 10, color: C.text }} />
           <span style={{ fontSize: 10, color: C.muted }}>/</span>
           <span style={{ fontSize: 10, color: C.muted }}>{zkMax}</span>
           <span style={{ fontSize: 10, color: C.muted, whiteSpace: "nowrap" }}>Ďobky</span>
