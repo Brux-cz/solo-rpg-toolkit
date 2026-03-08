@@ -1,6 +1,6 @@
 const INDEX_KEY = "solorpg_index";
 const SAVE_PREFIX = "solorpg_";
-export const CURRENT_VERSION = 7;
+export const CURRENT_VERSION = 8;
 
 export const INITIAL_GAME = {
   version: CURRENT_VERSION,
@@ -101,6 +101,17 @@ const MIGRATIONS = {
       version: 7,
     };
   },
+  7: (data) => ({
+    ...data,
+    threads: (data.threads || []).map(t => ({
+      ...t,
+      popis: t.popis || "",
+      stav: t.stav || "aktivní",
+      typ: t.typ || "hlavní",
+      poznamky: t.poznamky || "",
+    })),
+    version: 8,
+  }),
 };
 
 export function genId() {

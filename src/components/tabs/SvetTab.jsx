@@ -9,6 +9,7 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
   const [newNpc, setNewNpc] = useState("");
   const [newThread, setNewThread] = useState("");
   const [expandedNpc, setExpandedNpc] = useState(null);
+  const [expandedThread, setExpandedThread] = useState(null);
   const [docView, setDocView] = useState("model");
   const subs = [["mythic","Mythic"],["npc","NPC"],["thready","Thready"],["mapa","Mapa"],["docs","Docs"]];
 
@@ -35,7 +36,7 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
       onThreadsChange(threads.map((t, i) => i === existing ? { ...t, weight: Math.min(3, t.weight + 1) } : t));
     } else {
       if (threads.length >= 25) return;
-      onThreadsChange([...threads, { name, weight: 1, progress: 0, total: 10 }]);
+      onThreadsChange([...threads, { name, weight: 1, progress: 0, total: 10, popis: "", stav: "aktivní", typ: "hlavní", poznamky: "" }]);
     }
     setNewThread("");
   };
@@ -60,6 +61,10 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
     const npc = npcs[idx];
     const current = npc[stat] || { akt: 0, max: 0 };
     updateNpc(idx, { [stat]: { ...current, [field]: Number(value) || 0 } });
+  };
+
+  const updateThread = (idx, patch) => {
+    onThreadsChange(threads.map((t, i) => i === idx ? { ...t, ...patch } : t));
   };
 
   const addInputStyle = { flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "5px 8px", fontSize: 11, fontFamily: FONT, background: "white", color: C.text, outline: "none" };
@@ -219,17 +224,62 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
         {sub === "thready" && (
           <>
             <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>THREAD SEZNAM ({threads.length}/25)</div>
-            {threads.map((t, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 4, padding: "6px 10px", border: `1px solid ${C.border}`, borderRadius: 6, fontSize: 11 }}>
-                <span style={{ flex: 1 }}>{t.name}</span>
-                <span style={{ fontSize: 9, color: C.purple }}>{t.progress}/{t.total}</span>
-                <button onClick={() => addProgress(i)} style={progressBtnStyle}>+2</button>
-                <button onClick={() => changeThreadWeight(i, -1)} style={weightBtnStyle}>−</button>
-                <span style={{ fontSize: 10, color: C.yellow, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{t.weight}×</span>
-                <button onClick={() => changeThreadWeight(i, 1)} style={weightBtnStyle}>+</button>
-                <button onClick={() => onThreadsChange(threads.filter((_, j) => j !== i))} style={delBtnStyle}>✕</button>
-              </div>
-            ))}
+            {threads.map((t, i) => {
+              const isExpanded = expandedThread === i;
+              const stavColor = t.stav === "vyřešený" ? C.green : t.stav === "opuštěný" ? C.muted : C.purple;
+              return (
+                <div key={i} style={{ marginBottom: 4 }}>
+                  <div
+                    onClick={() => setExpandedThread(isExpanded ? null : i)}
+                    style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 10px", border: `1px solid ${isExpanded ? C.purple : C.border}`, borderRadius: isExpanded ? "6px 6px 0 0" : 6, fontSize: 11, cursor: "pointer", background: isExpanded ? C.purple + "08" : "transparent" }}
+                  >
+                    <span style={{ flex: 1, fontWeight: isExpanded ? 700 : 400 }}>{t.name}</span>
+                    {t.typ && t.typ !== "hlavní" && <span style={{ fontSize: 8, color: C.muted, border: `1px solid ${C.border}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>{t.typ}</span>}
+                    <span style={{ fontSize: 8, color: stavColor, border: `1px solid ${stavColor}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>{t.stav || "aktivní"}</span>
+                    <span style={{ fontSize: 9, color: C.purple }}>{t.progress}/{t.total}</span>
+                    <button onClick={e => { e.stopPropagation(); addProgress(i); }} style={progressBtnStyle}>+2</button>
+                    <button onClick={e => { e.stopPropagation(); changeThreadWeight(i, -1); }} style={weightBtnStyle}>−</button>
+                    <span style={{ fontSize: 10, color: C.yellow, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{t.weight}×</span>
+                    <button onClick={e => { e.stopPropagation(); changeThreadWeight(i, 1); }} style={weightBtnStyle}>+</button>
+                    <button onClick={e => { e.stopPropagation(); onThreadsChange(threads.filter((_, j) => j !== i)); if (expandedThread === i) setExpandedThread(null); }} style={delBtnStyle}>✕</button>
+                  </div>
+                  {isExpanded && (
+                    <div style={{ border: `1px solid ${C.purple}`, borderTop: "none", borderRadius: "0 0 6px 6px", padding: 10, background: C.bg, fontSize: 10 }}>
+                      <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
+                        <label style={{ flex: 1 }}>
+                          <span style={{ color: C.muted, fontSize: 9 }}>Typ</span>
+                          <select value={t.typ || "hlavní"} onChange={e => updateThread(i, { typ: e.target.value })}
+                            style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }}>
+                            <option value="hlavní">hlavní</option>
+                            <option value="vedlejší">vedlejší</option>
+                            <option value="osobní">osobní</option>
+                          </select>
+                        </label>
+                        <label style={{ flex: 1 }}>
+                          <span style={{ color: C.muted, fontSize: 9 }}>Stav</span>
+                          <select value={t.stav || "aktivní"} onChange={e => updateThread(i, { stav: e.target.value })}
+                            style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }}>
+                            <option value="aktivní">aktivní</option>
+                            <option value="vyřešený">vyřešený</option>
+                            <option value="opuštěný">opuštěný</option>
+                          </select>
+                        </label>
+                      </div>
+                      <label style={{ display: "block", marginBottom: 6 }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Popis</span>
+                        <textarea value={t.popis || ""} onChange={e => updateThread(i, { popis: e.target.value })} rows={2}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                      </label>
+                      <label style={{ display: "block" }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Poznámky</span>
+                        <textarea value={t.poznamky || ""} onChange={e => updateThread(i, { poznamky: e.target.value })} rows={2}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                      </label>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
             <div style={{ display: "flex", gap: 4, marginTop: 8 }}>
               <input value={newThread} onChange={e => setNewThread(e.target.value)} onKeyDown={e => e.key === "Enter" && addThread()} placeholder="Nový Thread..." style={addInputStyle} />
               <button onClick={addThread} style={addBtnStyle}>+ Thread</button>

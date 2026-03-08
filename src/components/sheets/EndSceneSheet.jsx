@@ -30,7 +30,7 @@ export default function EndSceneSheet({ onClose, cf, sceneNum, onCFChange, npcs,
       onThreadsChange(threads.map((t, i) => i === existing ? { ...t, weight: Math.min(3, t.weight + 1) } : t));
     } else {
       if (threads.length >= 25) return;
-      onThreadsChange([...threads, { name, weight: 1, progress: 0, total: 10 }]);
+      onThreadsChange([...threads, { name, weight: 1, progress: 0, total: 10, popis: "", stav: "aktivní", typ: "hlavní", poznamky: "" }]);
     }
     setNewThread("");
   };
