@@ -51,9 +51,9 @@ Based on the category, read the specific sections:
 1. Quick check that displayed field names and data types match the model
 2. No deep verification needed
 
-### Phase 2b: Cross-check Between Docs
+### Phase 2b: Cross-check Between Docs (ALWAYS — not just for MIX)
 
-If both docs were read (DATA+MECHANIC or MIX), compare them against each other. The two docs were written at different times and may contradict each other — different field names, different enum values, different dice. When a contradiction is found, flag it as NESROVNALOST even if the implementation plan matches one of them. Both docs need to agree before proceeding.
+ALWAYS read and compare both docs for any non-trivial change, even if the change seems to affect only one. The two docs describe the same game from different angles (diagram = prose mechanics, model = structured data). They were built from each other and must stay in sync. When a contradiction is found, flag it as NESROVNALOST even if the implementation plan matches one of them. Both docs need to agree before proceeding.
 
 ### Phase 3: Report Result
 
@@ -76,10 +76,33 @@ Otazka: [what exactly needs to be answered — e.g. "Does Mausritter define NPC 
 Zdroj: [which source should answer — Mausritter rulebook? Mythic GME 2e?]
 ```
 
-Then WAIT for the user's answer. After receiving the answer:
-1. Update the relevant doc file (`datovy-model.jsx` or `solo-rpg-diagram.jsx`) with the new information
-2. Confirm the update with the user
-3. Only then proceed with implementation
+Then WAIT for the user's answer. After receiving the answer, follow the Dual-Doc Update procedure below, then proceed with implementation.
+
+### Phase 4b: Dual-Doc Update (MANDATORY after every NotebookLM answer)
+
+The two reference docs are interdependent — the diagram describes mechanics in prose, the data model defines the same concepts as structured fields. New information from NotebookLM almost always affects both. Updating only one creates a silent inconsistency that causes bugs in future implementations.
+
+**Step 1: Update BOTH docs.** For every piece of new information:
+- `solo-rpg-diagram.jsx` — update the relevant prose section (mechanic description, entity wiki text, tables)
+- `datovy-model.jsx` — update the relevant entity's fields array (add/modify fields, types, constraints, notes, Ada example)
+
+If the information clearly affects only one doc (e.g. pure flavor text for diagram, or a type annotation for model), still CHECK the other doc for anything that should change. Default assumption: both need updating.
+
+**Step 2: Cross-check the change.** After editing both files, re-read the sections you just changed in BOTH docs side by side. Verify:
+- Field names match (diagram prose uses the same names as model fields)
+- Types and constraints agree (e.g. if diagram says "d6" the model field says "d6" too)
+- Enum values are identical (e.g. diagram lists 3 states, model lists the same 3)
+- Notes/descriptions don't contradict each other
+
+**Step 3: Report what was updated.** Tell the user:
+```
+AKTUALIZACE DOCS:
+- solo-rpg-diagram.jsx: [what changed, which section/lines]
+- datovy-model.jsx: [what changed, which entity/field]
+- Cross-check: [SEDI or specific discrepancy found and fixed]
+```
+
+This step is non-negotiable. The user relies on both docs being in sync as the single source of truth for all implementation work.
 
 ## Delegating to Subagents
 
@@ -89,12 +112,14 @@ When using the Agent tool to delegate work, include this in the subagent prompt:
 PRED IMPLEMENTACI — povinny checklist:
 1. Meni se data? Precti src/docs/datovy-model.jsx (relevantni entitu)
 2. Meni se mechanika? Precti src/docs/solo-rpg-diagram.jsx (relevantni sekci — radky viz CLAUDE.md "Mapa diagramu")
-3. Nesedi implementace s docs? ZASTAV SE a report uzivateli
-4. Chybi neco v docs? ZASTAV SE a report uzivateli
-5. Potrebujes migraci? (nove pole = ANO, zvys CURRENT_VERSION v gameStore.js)
+3. Cross-check: precti OBA docs a porovnej ze souhlasi (nazvy poli, typy, enum hodnoty)
+4. Nesedi implementace s docs? ZASTAV SE a report uzivateli
+5. Chybi neco v docs? ZASTAV SE a report uzivateli — formuluj NotebookLM dotaz
+6. Potrebujes migraci? (nove pole = ANO, zvys CURRENT_VERSION v gameStore.js)
+7. Aktualizujes docs po NotebookLM odpovedi? VZDY oba soubory — diagram I datovy model!
 ```
 
-This is non-negotiable. Subagents that skip verification cause the hardest bugs to find.
+This is non-negotiable. Subagents that skip verification cause the hardest bugs to find. The most common failure mode is updating only one doc — this silently breaks future verifications.
 
 ## Common Pitfalls
 
@@ -104,6 +129,7 @@ These are real mistakes that happened in this project:
 - **Invented field**: Added `weight`/`progress` to a thread without checking the model first. The model uses `vaha` and `progressTrack`.
 - **Wrong dice**: Implemented d20 for a mechanic that uses 2d6. The diagram specifies the exact dice for each mechanic.
 - **Wrong constraint**: Set BO max to 6 for all levels. The model says level 1 = 1d6, level 2 = 2d6, etc., with a cap at 4d6.
+- **One-doc update**: After NotebookLM answer, updated only `solo-rpg-diagram.jsx` but forgot `datovy-model.jsx`. The two docs went out of sync, and the next agent used stale model data. ALWAYS update both docs — see Phase 4b.
 
 ## Quick Reference: Line Maps
 
