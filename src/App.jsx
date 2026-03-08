@@ -118,7 +118,7 @@ export default function Prototype() {
       {sheet === "fate" && <FateSheet onClose={() => setSheet(null)} cf={game.cf} onInsert={handleInsert} />}
       {sheet === "scene" && <SceneSheet onClose={() => setSheet(null)} cf={game.cf} sceneNum={game.sceneNum} onInsert={handleInsert} />}
       {sheet === "meaning" && <MeaningSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}
-      {sheet === "endscene" && <EndSceneSheet onClose={() => setSheet(null)} cf={game.cf} sceneNum={game.sceneNum} onCFChange={(v) => updateGame({ cf: v })} npcs={game.npcs} threads={game.threads} onNpcsChange={(npcs) => updateGame({ npcs })} onThreadsChange={(threads) => updateGame({ threads })} />}
+      {sheet === "endscene" && <EndSceneSheet onClose={() => setSheet(null)} cf={game.cf} sceneNum={game.sceneNum} onCFChange={(v) => updateGame({ cf: v })} npcs={game.npcs} threads={game.threads} onNpcsChange={(npcs) => updateGame({ npcs })} onThreadsChange={(threads) => updateGame({ threads })} onInsert={handleInsert} />}
       {sheet === "combat" && <CombatSheet onClose={() => setSheet(null)} onInsert={handleInsert} character={game.character} onCharUpdate={(ch) => updateGame({ character: ch })} />}
       {sheet === "note" && <NoteSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}
       {sheet === "detail" && <DetailCheckSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}

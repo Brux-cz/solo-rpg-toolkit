@@ -2,7 +2,7 @@ import { useState } from "react";
 import { C, FONT } from "../../constants/theme.js";
 import Sheet from "../ui/Sheet.jsx";
 
-export default function EndSceneSheet({ onClose, cf, sceneNum, onCFChange, npcs, threads, onNpcsChange, onThreadsChange }) {
+export default function EndSceneSheet({ onClose, cf, sceneNum, onCFChange, npcs, threads, onNpcsChange, onThreadsChange, onInsert }) {
   const [choice, setChoice] = useState(null);
   const [newNpc, setNewNpc] = useState("");
   const [newThread, setNewThread] = useState("");
@@ -48,8 +48,11 @@ export default function EndSceneSheet({ onClose, cf, sceneNum, onCFChange, npcs,
   };
 
   const doEnd = () => {
-    if (choice === "minus") onCFChange(Math.max(1, cf - 1));
-    if (choice === "plus") onCFChange(Math.min(9, cf + 1));
+    const newCf = choice === "minus" ? Math.max(1, cf - 1) : choice === "plus" ? Math.min(9, cf + 1) : cf;
+    if (choice) onCFChange(newCf);
+    if (onInsert) {
+      onInsert({ type: "endscene", sceneNum, cfOld: cf, cfNew: newCf });
+    }
     onClose();
   };
 
