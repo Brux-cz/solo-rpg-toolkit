@@ -1,4 +1,4 @@
-import { FATE_CHART, ACTIONS, DESCRIPTIONS, SCENE_ADJ, EVENT_FOCUS } from "../constants/tables.js";
+import { FATE_DIAG, ACTIONS, DESCRIPTIONS, SCENE_ADJ, EVENT_FOCUS } from "../constants/tables.js";
 
 export function roll(sides) {
   return Math.floor(Math.random() * sides) + 1;
@@ -9,18 +9,19 @@ export function rollWeapon(die) {
   return roll(n);
 }
 
+// Mythic 2e: tři prahy per buňka [excYes, yes, excNo]
+// Pozice = oddsIndex + cf (diagonal property)
 export function checkFate(oddsIndex, cf) {
   const d100 = roll(100);
-  const threshold = FATE_CHART[oddsIndex][cf - 1];
-  const yes = d100 <= threshold;
-  const excThresh = Math.floor(threshold / 5);
-  const excNoThresh = 100 - Math.floor((100 - threshold) / 5);
-  const exceptional = yes ? d100 <= excThresh : d100 >= excNoThresh;
+  const pos = oddsIndex + cf;
+  const [excYesThresh, yesThresh, excNoThresh] = FATE_DIAG[pos];
+  const yes = d100 <= yesThresh;
+  const exceptional = yes ? d100 <= excYesThresh : d100 >= excNoThresh;
   const tensDigit = d100 === 100 ? 0 : Math.floor(d100 / 10);
   const unitsDigit = d100 === 100 ? 0 : d100 % 10;
   const doubles = tensDigit === unitsDigit;
   const randomEvent = doubles && tensDigit <= cf;
-  return { d100, yes, exceptional, randomEvent, threshold };
+  return { d100, yes, exceptional, randomEvent, threshold: yesThresh };
 }
 
 export function getEventFocus() {
@@ -28,7 +29,7 @@ export function getEventFocus() {
   for (const [max, label] of EVENT_FOCUS) {
     if (d <= max) return label;
   }
-  return "NPC Positive";
+  return "Current Context";
 }
 
 export function checkScene(cf) {
@@ -44,9 +45,10 @@ export function checkScene(cf) {
   return { d10, type: "altered", adjRoll, adj };
 }
 
+// Fix: oba hody z vybrané tabulky (ne word2 vždy z DESCRIPTIONS)
 export function rollMeaning(table) {
   const d1 = roll(100);
   const d2 = roll(100);
   const list = table === "descriptions" ? DESCRIPTIONS : ACTIONS;
-  return { d1, d2, word1: list[d1 - 1], word2: DESCRIPTIONS[d2 - 1] };
+  return { d1, d2, word1: list[d1 - 1], word2: list[d2 - 1] };
 }

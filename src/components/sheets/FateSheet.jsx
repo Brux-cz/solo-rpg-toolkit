@@ -5,10 +5,10 @@ import Sheet from "../ui/Sheet.jsx";
 
 export default function FateSheet({ onClose, cf, onInsert }) {
   const [step, setStep] = useState("input");
-  const [odds, setOdds] = useState(5);
+  const [odds, setOdds] = useState(4);
   const [question, setQuestion] = useState("");
   const [result, setResult] = useState(null);
-  const oddsLabels = ["Impossible","No way","V.unlikely","Unlikely","50/50","Likely","V.likely","Near sure","Sure thing","Has to be"];
+  const oddsLabels = ["Impossible","Nearly imp.","V.unlikely","Unlikely","50/50","Likely","V.likely","Nearly cert.","Certain"];
 
   const doRoll = () => {
     const r = checkFate(odds, cf);

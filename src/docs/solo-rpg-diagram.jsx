@@ -870,15 +870,28 @@ POSTUP:
 • VÝJIMEČNÉ NE — hod ≥ práh pro Výjimečné Ne
 • NE — hod > práh pro Ano (ale < práh pro Výjimečné Ne)
 
-PŘÍKLADY (formát: VýjAno / Ano / VýjNe):
-50/50 při CF 5 → 10/50/91 (hoď ≤10 = výj.ano, ≤50 = ano, ≥91 = výj.ne)
-Likely při CF 5 → 13/65/94
-Unlikely při CF 5 → 7/35/88
-50/50 při CF 9 → 18/90/99 (chaos zvyšuje šance dramaticky!)
-Impossible při CF 1 → X/1/81 (1% šance, výjimečné ano nemožné)
-Certain při CF 9 → 20/99/X (99% šance, výjimečné ne nemožné)
+KOMPLETNÍ DIAGONÁLNÍ TABULKA (pozice = oddsIndex + CF):
+Pos  VýjAno  Ano  VýjNe   Příklad
+ 1     X      1    81     Impossible@CF1
+ 2     X      1    81
+ 3     X      1    81
+ 4     1      5    82
+ 5     2     10    83
+ 6     3     15    84
+ 7     5     25    86
+ 8     7     35    88     Unlikely@CF5
+ 9    10     50    91     50/50@CF5
+10    13     65    94     Likely@CF5
+11    15     75    96
+12    17     85    98
+13    18     90    99     50/50@CF9
+14    19     95   100
+15    20     99    X      Certain@CF7
+16    20     99    X
+17    20     99    X      Certain@CF9
 
 ELEGANTNÍ VZOR: Tabulka je diagonální — +1 likelihood = +1 CF. Takže Likely při CF 4 = 50/50 při CF 5 = Unlikely při CF 6.
+X = výjimečný výsledek není při těchto pravděpodobnostech možný.
 
 INTERAKCE S CF:
 • Vysoký CF (6-9) → vyšší šance na Ano → svět je aktivnější
