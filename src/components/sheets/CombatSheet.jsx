@@ -225,6 +225,49 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
     setStep("result");
   };
 
+  const doFlee = () => {
+    const log = [];
+    const dexRoll = roll(20);
+    const success = dexRoll <= character.dex.akt;
+    let pBo = character.bo.akt, pStr = character.str.akt;
+    const invChanges = {};
+
+    log.push(`Útěk: DEX záchrana d20=${dexRoll} vs DEX ${character.dex.akt} → ${success ? "ÚSPĚCH" : "NEÚSPĚCH"}`);
+
+    if (success) {
+      log.push("Bezpečný únik!");
+    } else {
+      log.push(`Neúspěch → ${enemy.name} má volný útok!`);
+      const dmgRoll = rollWeapon(enemy.weapon);
+      const res = resolveDamage(dmgRoll, playerArmor, pBo, pStr);
+      pBo = res.boAfter;
+      pStr = res.strAfter;
+      let line = `${enemy.name} ${enemy.weapon}=${dmgRoll}`;
+      if (playerArmor > 0) line += `-${playerArmor}zbroj`;
+      line += ` → ${res.totalDmg} dmg`;
+      if (res.totalDmg > 0) {
+        if (res.boBefore > 0 && res.boAfter === 0 && res.strAfter < res.strBefore) {
+          line += ` → BO ${res.boBefore}→0, STR ${res.strBefore}→${res.strAfter}`;
+        } else if (res.boBefore > 0) {
+          line += ` → BO ${res.boBefore}→${res.boAfter}`;
+        } else {
+          line += ` → STR ${res.strBefore}→${res.strAfter}`;
+        }
+      }
+      if (res.strSave !== null) {
+        line += ` → STR save d20=${res.strSave} ${res.strSaveResult ? "OK" : "FAIL"}`;
+        if (res.wounded) line += " → Poranění!";
+      }
+      if (res.dead) line += " → SMRT!";
+      log.push(line);
+      if (!res.dead) log.push("Únik po zásahu.");
+    }
+
+    const result = pStr <= 0 ? "death" : success ? "escape" : "escape_hit";
+    setCombatResult({ log, result, initText: "Pokus o útěk", enemy: { ...enemy }, playerWeapon, playerBoAfter: pBo, playerStrAfter: pStr, invChanges });
+    setStep("result");
+  };
+
   const doInsert = () => {
     if (onCharUpdate) {
       const updatedChar = {
@@ -253,8 +296,8 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
     onClose();
   };
 
-  const resultColor = combatResult?.result === "victory" ? C.green : combatResult?.result === "fled" ? C.yellow : C.red;
-  const resultLabel = combatResult?.result === "victory" ? "VÍTĚZSTVÍ" : combatResult?.result === "fled" ? "NEPŘÍTEL UTEKL" : combatResult?.result === "wounded" ? "PORANĚNÍ" : "SMRT";
+  const resultColor = combatResult?.result === "victory" ? C.green : combatResult?.result === "fled" || combatResult?.result === "escape" || combatResult?.result === "escape_hit" ? C.yellow : C.red;
+  const resultLabel = { victory: "VÍTĚZSTVÍ", fled: "NEPŘÍTEL UTEKL", wounded: "PORANĚNÍ", death: "SMRT", escape: "ÚNIK", escape_hit: "ÚNIK (PO ZÁSAHU)" }[combatResult?.result] || "SMRT";
   const dieCostky = ["d4", "d6", "d8", "d10", "d12"];
 
   const inputStyle = { width: 50, border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 11, fontFamily: FONT, textAlign: "center", background: "white", color: C.text, outline: "none" };
@@ -362,7 +405,10 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
             ))}
           </div>
 
-          <button onClick={doFight} style={{ width: "100%", height: 46, background: C.red, color: "white", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>⚔️  BOJOVAT</button>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button onClick={doFight} style={{ flex: 2, height: 46, background: C.red, color: "white", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>⚔️  BOJOVAT</button>
+            <button onClick={doFlee} style={{ flex: 1, height: 46, background: C.yellow, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>💨 ÚTĚK</button>
+          </div>
         </>
       ) : (
         <>
@@ -375,7 +421,7 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
               <div key={i} style={{ color: C.text, marginBottom: 2 }}>{line}</div>
             ))}
             <div style={{ fontWeight: 700, color: resultColor, marginTop: 6, fontSize: 12 }}>
-              {combatResult.result === "victory" ? "🏆" : combatResult.result === "fled" ? "💨" : "💀"} {resultLabel}
+              {combatResult.result === "victory" ? "🏆" : combatResult.result === "fled" || combatResult.result === "escape" || combatResult.result === "escape_hit" ? "💨" : "💀"} {resultLabel}
             </div>
           </div>
           <button onClick={doInsert} style={{ width: "100%", height: 46, background: C.red, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT DO TEXTU</button>
