@@ -89,21 +89,17 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
             if (res.wounded) {
               line += " → Poranění!";
               log.push(line);
+              if (!moraleChecked) {
+                const mor = rollMorale(eWil);
+                log.push(`  Morálka: WIL ${eWil}, d20=${mor.d20} → ${mor.stays ? "zůstává" : "UTÍKÁ!"}`);
+                moraleChecked = true;
+                if (!mor.stays) { result = "fled"; break; }
+              }
               result = "victory";
               break;
             }
           }
           log.push(line);
-          if (!moraleChecked && res.strAfter < res.strBefore) {
-            const mor = rollMorale(eWil);
-            const morLine = `  Morálka: WIL ${eWil}, d20=${mor.d20} → ${mor.stays ? "zůstává" : "UTÍKÁ!"}`;
-            log.push(morLine);
-            moraleChecked = true;
-            if (!mor.stays) {
-              result = "fled";
-              break;
-            }
-          }
         } else {
           const dmgRoll = rollWeapon(enemy.weapon);
           const res = resolveDamage(dmgRoll, playerArmor, pBo, pStr);
