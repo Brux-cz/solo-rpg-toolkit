@@ -620,9 +620,11 @@ JAK FUNGUJE:
 • Sleduj Progress Points na stupnici
 
 PROGRESS POINTS:
-• Standardní pokrok ve scéně → +2 body
+• Standardní pokrok ve scéně → +2 body (subjektivní volba hráče: "přiblížila tato scéna postavu k vyřešení threadu?")
 • Flashpoint (dramatický moment) → +2 body
 • Discovery Check Table → variabilní: +1, +2 nebo +3 body
+• Body se přidávají kdykoli (během scény i při bookkeepingu). Překročení hranice fáze = okamžitý Flashpoint.
+• Pravidla NEDEFINUJÍ snižování progress — body se pouze přidávají.
 
 FLASHPOINTS (zlomové momenty):
 • Dramatické události přímo spojené s threadem

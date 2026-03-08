@@ -244,7 +244,7 @@ const entities = {
       { name: "  → vaha", type: "number", note: "Kolikrát v seznamu (1-3)" },
       { name: "threadSeznam", type: "ThreadEntry[]", note: "Max 25, váhy 1-3×" },
       { name: "  → popis", type: "string", note: "Aktivní dějová linka" },
-      { name: "  → progressTrack", type: "number (0-10)", note: "2e! Lineární pokrok. Discovery Check: akce→Fate Q 'Je něco objeveno?'(min 50/50)→Yes=d10+progress na Thread Discovery Table→Meaning Tables." },
+      { name: "  → progressTrack", type: "{progress, total}", note: "2e! total: 10(krátký)/15(standard)/20(komplexní). Body: +2 standardní pokrok (volba hráče), +2 flashpoint, +1/+2/+3 Discovery Check. Fáze po 5 bodech → vynucený flashpoint na konci fáze. Konec tracku = Conclusion + Plot Armor zmizí. Body se jen přidávají (pravidla nedefinují snižování). Discovery Check: Fate Q 'Je něco objeveno?'(min 50/50)→Yes=Thread Discovery Table→+1/+2/+3 + Meaning Tables." },
       { name: "  → vaha", type: "number", note: "Kolikrát v seznamu" },
       { name: "-- 2e mechaniky --", type: "---", note: "" },
       { name: "keyedScenes", type: "KeyedScene[]", note: "Plánované události s triggerem (2e novinka)" },
