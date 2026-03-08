@@ -1,5 +1,13 @@
 import { C, FONT } from "../../constants/theme.js";
 
+function getZkMax(uroven) {
+  if (uroven <= 1) return 0;
+  if (uroven === 2) return 1000;
+  if (uroven === 3) return 3000;
+  if (uroven === 4) return 6000;
+  return 6000 + (uroven - 4) * 5000;
+}
+
 export default function Header({ onToggle, expanded, cf, sceneNum, character }) {
   const ch = character;
   return (
@@ -22,7 +30,7 @@ export default function Header({ onToggle, expanded, cf, sceneNum, character }) 
           </div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <span>Ďobky: <span style={{ color: C.yellow }}>{ch.dobky}</span></span>
-            <span>Úr. {ch.uroven}  ZK {ch.zk}/{ch.uroven * 6}</span>
+            <span>Úr. {ch.uroven}  ZK {ch.zk}/{getZkMax(ch.uroven)}</span>
           </div>
         </div>
       )}

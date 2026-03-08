@@ -694,9 +694,18 @@ function InventoryGrid({ inv, gridLabels, cols, editSlot, setEditSlot, updateSlo
   );
 }
 
+function getZkMax(uroven) {
+  if (uroven <= 1) return 0;
+  if (uroven === 2) return 1000;
+  if (uroven === 3) return 3000;
+  if (uroven === 4) return 6000;
+  // úr. 5+: předchozí + 5000
+  return 6000 + (uroven - 4) * 5000;
+}
+
 export default function PostavaTab({ character, onUpdate }) {
   const ch = character;
-  const zkMax = ch.uroven * 6;
+  const zkMax = getZkMax(ch.uroven);
   const [editSlot, setEditSlot] = useState(null);
   const [editHSlot, setEditHSlot] = useState(null); // "pomId:slotIdx"
   const [expandedPom, setExpandedPom] = useState(null);
@@ -768,11 +777,17 @@ export default function PostavaTab({ character, onUpdate }) {
       <div style={{ marginBottom: 10 }}>
         <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
           <input value={ch.jmeno} onChange={e => setField("jmeno", e.target.value)} placeholder="Jméno postavy" style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 8px", fontSize: 13, fontWeight: 700, fontFamily: FONT, background: "white", color: C.text, outline: "none" }} />
-          <span style={{ fontSize: 10, color: C.muted, alignSelf: "center", whiteSpace: "nowrap" }}>Úr. {ch.uroven}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 2, alignSelf: "center" }}>
+            <span style={{ fontSize: 10, color: C.muted, whiteSpace: "nowrap" }}>Úr.</span>
+            <input type="number" value={ch.uroven} onChange={e => setField("uroven", Math.max(1, Number(e.target.value) || 1))} style={{ ...statInput, width: 28, fontSize: 10, color: C.text, fontWeight: 700 }} />
+          </div>
         </div>
         <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
           <input value={ch.puvod} onChange={e => setField("puvod", e.target.value)} placeholder="Původ (Kuchařka...)" style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 8px", fontSize: 11, fontFamily: FONT, background: "white", color: C.muted, outline: "none" }} />
-          <span style={{ fontSize: 10, color: C.muted, whiteSpace: "nowrap" }}>ZK {ch.zk}/{zkMax}</span>
+          <span style={{ fontSize: 10, color: C.muted, whiteSpace: "nowrap" }}>ZK</span>
+          <input type="number" value={ch.zk} onChange={e => setField("zk", Math.max(0, Number(e.target.value) || 0))} style={{ ...statInput, width: 44, fontSize: 10, color: C.text }} />
+          <span style={{ fontSize: 10, color: C.muted }}>/</span>
+          <span style={{ fontSize: 10, color: C.muted }}>{zkMax}</span>
           <span style={{ fontSize: 10, color: C.muted, whiteSpace: "nowrap" }}>Ďobky</span>
           <input type="number" value={ch.dobky} onChange={e => setField("dobky", Math.max(0, Number(e.target.value) || 0))} style={{ ...statInput, width: 44, color: C.yellow, fontWeight: 700 }} />
         </div>
