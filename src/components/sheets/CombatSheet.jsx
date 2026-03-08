@@ -230,6 +230,7 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
     const dexRoll = roll(20);
     const success = dexRoll <= character.dex.akt;
     let pBo = character.bo.akt, pStr = character.str.akt;
+    let fleeWounded = false;
     const invChanges = {};
 
     log.push(`Útěk: DEX záchrana d20=${dexRoll} vs DEX ${character.dex.akt} → ${success ? "ÚSPĚCH" : "NEÚSPĚCH"}`);
@@ -256,15 +257,14 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
       }
       if (res.strSave !== null) {
         line += ` → STR save d20=${res.strSave} ${res.strSaveResult ? "OK" : "FAIL"}`;
-        if (res.wounded) line += " → Poranění!";
+        if (res.wounded) { line += " → Poranění!"; fleeWounded = true; }
       }
       if (res.dead) line += " → SMRT!";
       log.push(line);
       if (!res.dead) log.push("Únik po zásahu.");
     }
-
     const result = pStr <= 0 ? "death" : success ? "escape" : "escape_hit";
-    setCombatResult({ log, result, initText: "Pokus o útěk", enemy: { ...enemy }, playerWeapon, playerBoAfter: pBo, playerStrAfter: pStr, invChanges });
+    setCombatResult({ log, result, initText: "Pokus o útěk", enemy: { ...enemy }, playerWeapon, playerBoAfter: pBo, playerStrAfter: pStr, invChanges, playerWounded: fleeWounded });
     setStep("result");
   };
 
@@ -280,6 +280,16 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
         updatedChar.inventar = updatedChar.inventar.map((s, i) =>
           combatResult.invChanges[i] ? { ...s, ...combatResult.invChanges[i] } : s
         );
+      }
+      // Poranění do inventáře při wounded
+      const isWounded = combatResult.result === "wounded" || combatResult.playerWounded;
+      if (isWounded && updatedChar.inventar) {
+        const freeIdx = updatedChar.inventar.findIndex(s => !s.nazev && !s._occupied);
+        if (freeIdx !== -1) {
+          updatedChar.inventar = updatedChar.inventar.map((s, i) =>
+            i === freeIdx ? { typ: "stav", nazev: "Poranění", tecky: { akt: 0, max: 0 }, podminkaOdstraneni: "Odpočinek a ošetření" } : s
+          );
+        }
       }
       onCharUpdate(updatedChar);
     }
