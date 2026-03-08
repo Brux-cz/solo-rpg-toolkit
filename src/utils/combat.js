@@ -53,3 +53,9 @@ export function rollMorale(wil) {
   const d20 = roll(20);
   return { d20, stays: d20 <= wil };
 }
+
+export function rollMoraleAdvantage(wil) {
+  const d1 = roll(20), d2 = roll(20);
+  const best = Math.min(d1, d2);
+  return { d20a: d1, d20b: d2, best, stays: best <= wil };
+}
