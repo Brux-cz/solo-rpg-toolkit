@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { C, FONT } from "../../constants/theme.js";
+import { roll } from "../../utils/dice.js";
 
 const TYPY = ["zbraň", "zbroj", "kouzlo", "zásoby", "světlo", "nástroj", "poklad", "stav"];
 
@@ -76,14 +77,18 @@ const VLASTNI_HINT = {
   "nástroj": "Jiný nástroj nebo vybavení.",
 };
 
+// Mausritter tabulka pomocníků (přesně z knihy)
+// dostupnost = kostka na počet dostupných v osadě po úspěšném verbování
 const ROLE = [
-  { name: "světlonoš", mzda: 1 },
-  { name: "dělník", mzda: 3 },
-  { name: "průvodce", mzda: 5 },
-  { name: "zbrojmyš", mzda: 10 },
-  { name: "rytíř", mzda: 25 },
-  { name: "tlumočník", mzda: 30 },
-  { name: "špion", mzda: 20 },
+  { name: "světlonoš", mzda: 1, dostupnost: "d6" },
+  { name: "dělník", mzda: 2, dostupnost: "d6" },
+  { name: "kopáč chodeb", mzda: 5, dostupnost: "d4" },
+  { name: "zbrojíř/kovář", mzda: 8, dostupnost: "d2" },
+  { name: "místní průvodce", mzda: 10, dostupnost: "d4" },
+  { name: "zbrojmyš", mzda: 10, dostupnost: "d6" },
+  { name: "učenec", mzda: 20, dostupnost: "d2" },
+  { name: "rytíř", mzda: 25, dostupnost: "d3" },
+  { name: "tlumočník", mzda: 30, dostupnost: "d2" },
 ];
 
 const PLAYER_GRID = [
@@ -149,10 +154,12 @@ function recalcOccupied(inv, gridCols) {
 }
 
 function newPomocnik() {
+  // Mausritter: STR/DEX/WIL = 2d6, BO = d6
+  const s = roll(6) + roll(6), d = roll(6) + roll(6), w = roll(6) + roll(6), b = roll(6);
   return {
     id: Date.now().toString(36) + Math.random().toString(36).slice(2, 5),
     jmeno: "", role: "", vernost: "bezny", denniMzda: 0,
-    str: { akt: 0, max: 0 }, dex: { akt: 0, max: 0 }, wil: { akt: 0, max: 0 }, bo: { akt: 0, max: 0 },
+    str: { akt: s, max: s }, dex: { akt: d, max: d }, wil: { akt: w, max: w }, bo: { akt: b, max: b },
     inventar: Array.from({ length: 6 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
   };
 }
@@ -705,10 +712,11 @@ function getZkMax(uroven) {
 
 export default function PostavaTab({ character, onUpdate }) {
   const ch = character;
-  const zkMax = getZkMax(ch.uroven);
+  const zkMax = getZkMax(ch.uroven + 1);
   const [editSlot, setEditSlot] = useState(null);
   const [editHSlot, setEditHSlot] = useState(null); // "pomId:slotIdx"
   const [expandedPom, setExpandedPom] = useState(null);
+  const [levelUpResult, setLevelUpResult] = useState(null);
   const inv = ch.inventar || Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } }));
   const pomocnici = ch.pomocnici || [];
   const statInput = { border: `1px solid ${C.border}`, borderRadius: 4, padding: "2px 4px", fontSize: 11, fontFamily: FONT, textAlign: "center", width: 36, background: "white", color: C.text, outline: "none" };
@@ -719,6 +727,55 @@ export default function PostavaTab({ character, onUpdate }) {
   };
 
   const setField = (key, val) => onUpdate({ ...ch, [key]: val });
+
+  const handleLevelUp = () => {
+    const novaUroven = ch.uroven + 1;
+    const log = [];
+    const updated = { ...ch };
+
+    // 1) d20 per vlastnost — pokud hod > max → max +1
+    for (const key of ["str", "dex", "wil"]) {
+      const d = roll(20);
+      const label = key.toUpperCase();
+      if (d > updated[key].max) {
+        updated[key] = { ...updated[key], max: updated[key].max + 1, akt: updated[key].max + 1 };
+        log.push(`${label}: d20=${d} > ${updated[key].max - 1} → max +1 (${updated[key].max})`);
+      } else {
+        log.push(`${label}: d20=${d} ≤ ${updated[key].max} → beze změny`);
+      }
+    }
+
+    // 2) Nový hod BO: min(novaUroven, 4) kostek d6
+    const pocetKostek = Math.min(novaUroven, 4);
+    let noveBo = 0;
+    const boHody = [];
+    for (let i = 0; i < pocetKostek; i++) {
+      const d = roll(6);
+      noveBo += d;
+      boHody.push(d);
+    }
+    const staryMax = updated.bo.max;
+    if (noveBo > staryMax) {
+      updated.bo = { akt: noveBo, max: noveBo };
+      log.push(`BO: ${pocetKostek}d6=[${boHody.join(",")}]=${noveBo} > ${staryMax} → nové max ${noveBo}`);
+    } else {
+      updated.bo = { akt: staryMax + 1, max: staryMax + 1 };
+      log.push(`BO: ${pocetKostek}d6=[${boHody.join(",")}]=${noveBo} ≤ ${staryMax} → max +1 (${staryMax + 1})`);
+    }
+
+    // 3) Kuráž
+    const kurazTable = { 2: 1, 3: 2, 4: 2 };
+    const novaKuraz = novaUroven >= 5 ? 3 : (kurazTable[novaUroven] || 0);
+    updated.kuraz = novaKuraz;
+    log.push(`Kuráž: ${novaKuraz}`);
+
+    // 4) Úroveň +1, ZK = 0
+    updated.uroven = novaUroven;
+    updated.zk = 0;
+
+    setLevelUpResult(log);
+    onUpdate(updated);
+  };
 
   const updateSlot = (idx, patch) => {
     if (idx === "__swap__") {
@@ -810,6 +867,18 @@ export default function PostavaTab({ character, onUpdate }) {
             </div>
           );
         })}
+        {ch.zk >= zkMax && zkMax > 0 && (
+          <button onClick={handleLevelUp} style={{ width: "100%", padding: "8px 0", background: C.green, color: "white", border: "none", borderRadius: 6, fontSize: 12, fontFamily: FONT, fontWeight: 700, cursor: "pointer", marginTop: 4 }}>
+            ⬆ LEVEL UP → Úroveň {ch.uroven + 1}
+          </button>
+        )}
+        {levelUpResult && (
+          <div onClick={() => setLevelUpResult(null)} style={{ marginTop: 6, padding: "8px 10px", background: "#e8f5e8", border: `1px solid ${C.green}`, borderRadius: 6, fontSize: 10, fontFamily: FONT, color: C.text, cursor: "pointer" }}>
+            <div style={{ fontWeight: 700, marginBottom: 4, color: C.green }}>Level Up → Úroveň {ch.uroven}</div>
+            {levelUpResult.map((line, i) => <div key={i} style={{ marginBottom: 2 }}>{line}</div>)}
+            <div style={{ color: C.muted, marginTop: 4, fontSize: 9 }}>Klikni pro zavření</div>
+          </div>
+        )}
       </div>
 
       {/* Vzhled a detaily */}
