@@ -39,21 +39,40 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
   const playerArmor = armorOverride !== null ? armorOverride : autoArmor;
 
   const [playerDex, setPlayerDex] = useState(character.dex.akt);
+  const [modSurprise, setModSurprise] = useState(false);
+  const [modEnhanced, setModEnhanced] = useState(false);
+  const [modImpaired, setModImpaired] = useState(false);
+  const [modDualWield, setModDualWield] = useState(false);
   const [combatResult, setCombatResult] = useState(null);
 
   const enemy = source === "bestiary" ? BESTIARY[selectedIdx] : { ...custom, str: Number(custom.str), dex: Number(custom.dex), wil: Number(custom.wil), bo: Number(custom.bo), armor: Number(custom.armor) };
 
   const doFight = () => {
-    const init = rollInitiative(playerDex);
+    const init = modSurprise ? { d20: 0, playerFirst: true } : rollInitiative(playerDex);
     const log = [];
     let pBo = character.bo.akt, pStr = character.str.akt;
     let eBo = enemy.bo, eStr = enemy.str, eWil = enemy.wil;
     let result = null;
     let moraleChecked = false;
 
-    const initText = init.playerFirst
-      ? `Myši první (DEX ${playerDex}, d20=${init.d20})`
-      : `Nepřítel první (DEX ${playerDex}, d20=${init.d20})`;
+    const initText = modSurprise
+      ? "Myši první (překvapení)"
+      : init.playerFirst
+        ? `Myši první (DEX ${playerDex}, d20=${init.d20})`
+        : `Nepřítel první (DEX ${playerDex}, d20=${init.d20})`;
+
+    const rollPlayerDmg = (round) => {
+      const effectiveWeapon = modImpaired ? "d4" : (modEnhanced || (modSurprise && round === 1)) ? "d12" : playerWeapon;
+      let dmg = rollWeapon(effectiveWeapon);
+      let label = effectiveWeapon + "=" + dmg;
+      if (modDualWield) {
+        const dmg2 = rollWeapon(effectiveWeapon);
+        label += `, ${effectiveWeapon}=${dmg2}`;
+        if (dmg2 > dmg) dmg = dmg2;
+        label += ` → ${dmg}`;
+      }
+      return { dmg, label, effectiveWeapon };
+    };
 
     for (let round = 1; round <= 20; round++) {
       const attackOrder = init.playerFirst ? ["player", "enemy"] : ["enemy", "player"];
@@ -62,11 +81,11 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
         if (result) break;
 
         if (attacker === "player") {
-          const dmgRoll = rollWeapon(playerWeapon);
+          const { dmg: dmgRoll, label: dmgLabel } = rollPlayerDmg(round);
           const res = resolveDamage(dmgRoll, enemy.armor, eBo, eStr);
           eBo = res.boAfter;
           eStr = res.strAfter;
-          let line = `K${round}: Hráč ${playerWeapon}=${dmgRoll}`;
+          let line = `K${round}: Hráč ${dmgLabel}`;
           if (enemy.armor > 0) line += `-${enemy.armor}zbroj`;
           line += ` → ${res.totalDmg} dmg`;
           if (res.totalDmg > 0) {
@@ -326,6 +345,21 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
                 {[0, 1, 2, 3].map(a => <option key={a} value={a}>{a}</option>)}
               </select>
             </label>
+          </div>
+
+          <div style={{ fontSize: 9, color: C.muted, marginBottom: 4, fontFamily: FONT, letterSpacing: 0.8 }}>MODIFIKÁTORY:</div>
+          <div style={{ display: "flex", gap: 8, marginBottom: 12, flexWrap: "wrap" }}>
+            {[
+              ["Překvapení", modSurprise, setModSurprise],
+              ["Zesílený", modEnhanced, v => { setModEnhanced(v); if (v) setModImpaired(false); }],
+              ["Zeslabený", modImpaired, v => { setModImpaired(v); if (v) setModEnhanced(false); }],
+              ["Dvě zbraně", modDualWield, setModDualWield],
+            ].map(([label, val, setter]) => (
+              <label key={label} onClick={() => setter(!val)} style={{ fontSize: 10, fontFamily: FONT, color: val ? C.red : C.muted, cursor: "pointer", display: "flex", alignItems: "center", gap: 3 }}>
+                <span style={{ width: 14, height: 14, border: `1px solid ${val ? C.red : C.border}`, borderRadius: 3, background: val ? C.red + "22" : "transparent", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 9 }}>{val ? "✓" : ""}</span>
+                {label}
+              </label>
+            ))}
           </div>
 
           <button onClick={doFight} style={{ width: "100%", height: 46, background: C.red, color: "white", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>⚔️  BOJOVAT</button>
