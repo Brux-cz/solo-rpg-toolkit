@@ -13,6 +13,8 @@ import CombatSheet from "./components/sheets/CombatSheet.jsx";
 import NoteSheet from "./components/sheets/NoteSheet.jsx";
 import DetailCheckSheet from "./components/sheets/DetailCheckSheet.jsx";
 import DiceSheet from "./components/sheets/DiceSheet.jsx";
+import RestSheet from "./components/sheets/RestSheet.jsx";
+import DiscoveryCheckSheet from "./components/sheets/DiscoveryCheckSheet.jsx";
 import PostavaTab from "./components/tabs/PostavaTab.jsx";
 import SvetTab from "./components/tabs/SvetTab.jsx";
 import Lobby from "./components/Lobby.jsx";
@@ -110,6 +112,8 @@ export default function Prototype() {
           onCombatOpen={() => setSheet("combat")}
           onNoteOpen={() => setSheet("note")}
           onDiceOpen={() => setSheet("dice")}
+          onRestOpen={() => setSheet("rest")}
+          onDiscoveryOpen={() => setSheet("discovery")}
         />
       )}
 
@@ -123,6 +127,8 @@ export default function Prototype() {
       {sheet === "note" && <NoteSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}
       {sheet === "detail" && <DetailCheckSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}
       {sheet === "dice" && <DiceSheet onClose={() => setSheet(null)} onInsert={handleInsert} />}
+      {sheet === "rest" && <RestSheet onClose={() => setSheet(null)} onInsert={handleInsert} character={game.character} onCharUpdate={(ch) => updateGame({ character: ch })} />}
+      {sheet === "discovery" && <DiscoveryCheckSheet cf={game.cf} threads={game.threads} onThreadsChange={(t) => updateGame({ threads: t })} onInsert={handleInsert} onClose={() => setSheet(null)} />}
 
     </div>
   );
