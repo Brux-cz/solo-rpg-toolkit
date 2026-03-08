@@ -49,8 +49,8 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
     onThreadsChange(threads.map((t, i) => i === idx ? { ...t, weight: Math.max(1, Math.min(3, t.weight + delta)) } : t));
   };
 
-  const addProgress = (idx) => {
-    onThreadsChange(threads.map((t, i) => i === idx ? { ...t, progress: Math.min(t.total, t.progress + 2) } : t));
+  const changeProgress = (idx, delta) => {
+    onThreadsChange(threads.map((t, i) => i === idx ? { ...t, progress: Math.max(0, Math.min(t.total, t.progress + delta)) } : t));
   };
 
   const updateNpc = (idx, patch) => {
@@ -236,8 +236,10 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
                     <span style={{ flex: 1, fontWeight: isExpanded ? 700 : 400 }}>{t.name}</span>
                     {t.typ && t.typ !== "hlavní" && <span style={{ fontSize: 8, color: C.muted, border: `1px solid ${C.border}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>{t.typ}</span>}
                     <span style={{ fontSize: 8, color: stavColor, border: `1px solid ${stavColor}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>{t.stav || "aktivní"}</span>
-                    <span style={{ fontSize: 9, color: C.purple }}>{t.progress}/{t.total}</span>
-                    <button onClick={e => { e.stopPropagation(); addProgress(i); }} style={progressBtnStyle}>+2</button>
+                    <button onClick={e => { e.stopPropagation(); changeProgress(i, -1); }} style={progressBtnStyle}>−</button>
+                    <span style={{ fontSize: 9, color: C.purple, minWidth: 28, textAlign: "center" }}>{t.progress}/{t.total}</span>
+                    <button onClick={e => { e.stopPropagation(); changeProgress(i, 1); }} style={progressBtnStyle}>+1</button>
+                    <button onClick={e => { e.stopPropagation(); changeProgress(i, 2); }} style={progressBtnStyle}>+2</button>
                     <button onClick={e => { e.stopPropagation(); changeThreadWeight(i, -1); }} style={weightBtnStyle}>−</button>
                     <span style={{ fontSize: 10, color: C.yellow, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{t.weight}×</span>
                     <button onClick={e => { e.stopPropagation(); changeThreadWeight(i, 1); }} style={weightBtnStyle}>+</button>

@@ -43,8 +43,8 @@ export default function EndSceneSheet({ onClose, cf, sceneNum, onCFChange, npcs,
     onThreadsChange(threads.map((t, i) => i === idx ? { ...t, weight: Math.max(1, Math.min(3, t.weight + delta)) } : t));
   };
 
-  const addProgress = (idx) => {
-    onThreadsChange(threads.map((t, i) => i === idx ? { ...t, progress: Math.min(t.total, t.progress + 2) } : t));
+  const changeProgress = (idx, delta) => {
+    onThreadsChange(threads.map((t, i) => i === idx ? { ...t, progress: Math.max(0, Math.min(t.total, t.progress + delta)) } : t));
   };
 
   const doEnd = () => {
@@ -91,8 +91,10 @@ export default function EndSceneSheet({ onClose, cf, sceneNum, onCFChange, npcs,
       {threads.map((t, i) => (
         <div key={i} style={listItemStyle}>
           <span style={{ flex: 1 }}>{t.name}</span>
-          <span style={{ fontSize: 9, color: C.purple }}>{t.progress}/{t.total}</span>
-          <button onClick={() => addProgress(i)} style={progressBtnStyle}>+2</button>
+          <button onClick={() => changeProgress(i, -1)} style={progressBtnStyle}>−</button>
+          <span style={{ fontSize: 9, color: C.purple, minWidth: 28, textAlign: "center" }}>{t.progress}/{t.total}</span>
+          <button onClick={() => changeProgress(i, 1)} style={progressBtnStyle}>+1</button>
+          <button onClick={() => changeProgress(i, 2)} style={progressBtnStyle}>+2</button>
           <button onClick={() => changeThreadWeight(i, -1)} style={weightBtnStyle}>−</button>
           <span style={{ fontSize: 10, color: C.yellow, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{t.weight}×</span>
           <button onClick={() => changeThreadWeight(i, 1)} style={weightBtnStyle}>+</button>
