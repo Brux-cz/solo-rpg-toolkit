@@ -1,6 +1,6 @@
 const INDEX_KEY = "solorpg_index";
 const SAVE_PREFIX = "solorpg_";
-export const CURRENT_VERSION = 6;
+export const CURRENT_VERSION = 7;
 
 export const INITIAL_GAME = {
   version: CURRENT_VERSION,
@@ -19,6 +19,12 @@ export const INITIAL_GAME = {
     wil: { akt: 7, max: 7 },
     bo: { akt: 4, max: 4 },
     dobky: 0,
+    prijmeni: "",
+    barvaSrsti: "",
+    vzorSrsti: "",
+    vyraznyRys: "",
+    znameni: "",
+    kuraz: 0,
     inventar: Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
     pomocnici: [],
   },
@@ -77,6 +83,22 @@ const MIGRATIONS = {
         })),
       },
       version: 6,
+    };
+  },
+  6: (data) => {
+    const char = data.character || {};
+    return {
+      ...data,
+      character: {
+        ...char,
+        prijmeni: char.prijmeni || "",
+        barvaSrsti: char.barvaSrsti || "",
+        vzorSrsti: char.vzorSrsti || "",
+        vyraznyRys: char.vyraznyRys || "",
+        znameni: char.znameni || "",
+        kuraz: char.kuraz ?? 0,
+      },
+      version: 7,
     };
   },
 };

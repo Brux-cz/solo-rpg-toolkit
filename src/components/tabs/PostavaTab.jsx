@@ -812,6 +812,41 @@ export default function PostavaTab({ character, onUpdate }) {
         })}
       </div>
 
+      {/* Vzhled a detaily */}
+      <div style={{ marginBottom: 10 }}>
+        <div style={{ fontSize: 9, color: C.muted, marginBottom: 6, letterSpacing: 0.8 }}>VZHLED</div>
+        <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
+          <label style={{ flex: 1 }}>
+            <span style={{ color: C.muted, fontSize: 9 }}>Příjmení</span>
+            <input value={ch.prijmeni || ""} onChange={e => setField("prijmeni", e.target.value)} placeholder="d20" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+          </label>
+          <label style={{ flex: 1 }}>
+            <span style={{ color: C.muted, fontSize: 9 }}>Znamení</span>
+            <input value={ch.znameni || ""} onChange={e => setField("znameni", e.target.value)} placeholder="d6" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+          </label>
+        </div>
+        <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
+          <label style={{ flex: 1 }}>
+            <span style={{ color: C.muted, fontSize: 9 }}>Barva srsti</span>
+            <input value={ch.barvaSrsti || ""} onChange={e => setField("barvaSrsti", e.target.value)} placeholder="d6" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+          </label>
+          <label style={{ flex: 1 }}>
+            <span style={{ color: C.muted, fontSize: 9 }}>Vzor srsti</span>
+            <input value={ch.vzorSrsti || ""} onChange={e => setField("vzorSrsti", e.target.value)} placeholder="d6" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+          </label>
+        </div>
+        <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
+          <label style={{ flex: 2 }}>
+            <span style={{ color: C.muted, fontSize: 9 }}>Výrazný rys</span>
+            <input value={ch.vyraznyRys || ""} onChange={e => setField("vyraznyRys", e.target.value)} placeholder="d66" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+          </label>
+          <label style={{ flex: 1 }}>
+            <span style={{ color: C.muted, fontSize: 9 }}>Kuráž</span>
+            <input type="number" value={ch.kuraz ?? 0} onChange={e => setField("kuraz", Math.max(0, Number(e.target.value) || 0))} style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2, textAlign: "center" }} />
+          </label>
+        </div>
+      </div>
+
       {/* Inventář — Grid */}
       <div style={{ marginBottom: 10 }}>
         <div style={{ fontSize: 9, color: C.muted, marginBottom: 6, letterSpacing: 0.8 }}>INVENTÁŘ (10 slotů)</div>
