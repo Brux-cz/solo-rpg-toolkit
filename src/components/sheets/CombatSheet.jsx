@@ -152,11 +152,24 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
       const w = character.inventar[playerWeaponIdx];
       if (w && w.tecky?.max > 0) {
         const isImprov = w._preset === "Improvizovaná" || w.nazev === "Improvizovaná";
-        if (isImprov) {
+        const isAlwaysWear = isImprov || w.jePostribrena;
+        const isMagic = w.jeKouzelna;
+        if (isAlwaysWear) {
+          const reason = isImprov ? "improvizovaná" : "postříbřená";
           const newAkt = Math.max(0, w.tecky.akt - 1);
           invChanges[playerWeaponIdx] = { tecky: { ...w.tecky, akt: newAkt } };
-          wearLog.push(`Zbraň ${w.nazev}: improvizovaná → škrt tečky (${w.tecky.akt}→${newAkt})`);
+          wearLog.push(`Zbraň ${w.nazev}: ${reason} → škrt tečky (${w.tecky.akt}→${newAkt})`);
           if (newAkt === 0) wearLog.push(`  → ${w.nazev} zničena!`);
+        } else if (isMagic) {
+          const d = roll(6);
+          if (d === 6) {
+            const newAkt = Math.max(0, w.tecky.akt - 1);
+            invChanges[playerWeaponIdx] = { tecky: { ...w.tecky, akt: newAkt } };
+            wearLog.push(`Zbraň ${w.nazev}: d6=${d} (kouzelná, jen 6) → škrt tečky (${w.tecky.akt}→${newAkt})`);
+            if (newAkt === 0) wearLog.push(`  → ${w.nazev} zničena!`);
+          } else {
+            wearLog.push(`Zbraň ${w.nazev}: d6=${d} (kouzelná, jen 6) → OK`);
+          }
         } else {
           const d = roll(6);
           if (d >= 4) {

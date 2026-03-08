@@ -13,6 +13,9 @@ const PRESETY = {
     { nazev: "Těžká střelná (luk)", dmg: "d8", cena: 40, tecky: 3, hint: "2 sloty. V packách = připravený k boji.", sloty: 2, span: { rows: 2, cols: 1 } },
     { nazev: "Toulec šípů", dmg: "d6", cena: 5, tecky: 3, hint: "Munice k luku." },
     { nazev: "Váček kamenů", dmg: "d6", cena: 1, tecky: 3, hint: "Munice k praku." },
+    { nazev: "Postříbřená lehká", dmg: "d6", cena: 100, tecky: 3, hint: "Postříbřená. VŽDY škrtá tečku po boji (ne d6 test).", jePostribrena: true },
+    { nazev: "Postříbřená střední", dmg: "d8", cena: 200, tecky: 3, hint: "Postříbřená. VŽDY škrtá tečku po boji (ne d6 test).", jePostribrena: true },
+    { nazev: "Postříbřená těžká", dmg: "d10", cena: 400, tecky: 3, hint: "Postříbřená. VŽDY škrtá tečku po boji (ne d6 test).", jePostribrena: true, sloty: 2, span: { rows: 2, cols: 1 } },
   ],
   "zbroj": [
     { nazev: "Lehká zbroj", obrana: 1, cena: 150, tecky: 3, hint: "2 sloty (1×2). Na těle = připravená.", sloty: 2, span: { rows: 1, cols: 2 } },
@@ -479,7 +482,7 @@ function SlotEditor({ slot, slotIndex, gridCols, gridRows, gridLabels, inv, onUp
 
   const handlePresetChange = (val) => {
     if (val === "__vlastni__") {
-      const patch = { nazev: "", sloty: undefined, span: undefined, _preset: undefined };
+      const patch = { nazev: "", sloty: undefined, span: undefined, _preset: undefined, jePostribrena: undefined, jeKouzelna: undefined };
       if (typ === "zbraň") patch.dmg = "";
       if (typ === "zbroj") patch.obrana = "";
       onUpdate(patch);
@@ -488,7 +491,7 @@ function SlotEditor({ slot, slotIndex, gridCols, gridRows, gridLabels, inv, onUp
       if (!p) return;
       const fitIdx = findFitStart(p.span);
       if (fitIdx < 0) return;
-      const patch = { nazev: p.nazev, _preset: p.nazev, tecky: { akt: p.tecky, max: p.tecky }, sloty: p.sloty || undefined, span: p.span ? { ...p.span } : undefined };
+      const patch = { nazev: p.nazev, _preset: p.nazev, tecky: { akt: p.tecky, max: p.tecky }, sloty: p.sloty || undefined, span: p.span ? { ...p.span } : undefined, jePostribrena: p.jePostribrena || undefined, jeKouzelna: undefined };
       if (p.dmg) patch.dmg = p.dmg;
       if (p.obrana) patch.obrana = p.obrana;
       if (fitIdx !== slotIndex && onMoveAndUpdate) {
@@ -553,6 +556,18 @@ function SlotEditor({ slot, slotIndex, gridCols, gridRows, gridLabels, inv, onUp
           <div style={{ flex: 1 }} />
         )}
       </div>
+      {typ === "zbraň" && !isPreset && (
+        <div style={{ display: "flex", gap: 12, marginBottom: 6 }}>
+          <label style={{ fontSize: 9, color: C.muted, display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}>
+            <input type="checkbox" checked={!!slot.jeKouzelna} onChange={e => onUpdate({ jeKouzelna: e.target.checked || undefined, jePostribrena: e.target.checked ? undefined : slot.jePostribrena })} />
+            Kouzelná (tečka jen na 6)
+          </label>
+          <label style={{ fontSize: 9, color: C.muted, display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}>
+            <input type="checkbox" checked={!!slot.jePostribrena} onChange={e => onUpdate({ jePostribrena: e.target.checked || undefined, jeKouzelna: e.target.checked ? undefined : slot.jeKouzelna })} />
+            Postříbřená (vždy škrtá)
+          </label>
+        </div>
+      )}
       <div style={{ display: "flex", alignItems: "flex-end", gap: 6 }}>
         <label style={{ flex: 1 }}>
           <span style={{ color: C.muted, fontSize: 9 }}>Tečky</span>
