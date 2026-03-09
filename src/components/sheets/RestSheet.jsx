@@ -225,7 +225,7 @@ export default function RestSheet({ onClose, character, onCharUpdate, onInsert }
     fontWeight: 700, cursor: "pointer", marginBottom: 8,
   });
 
-  const descStyle = { fontSize: 10, color: C.muted, marginBottom: 8, lineHeight: 1.4 };
+  const descStyle = { fontSize: 10, color: C.muted, marginBottom: 8, lineHeight: 1.4, textAlign: "center" };
 
   const isHealPick = phase.startsWith("healPick-");
 
@@ -279,26 +279,31 @@ export default function RestSheet({ onClose, character, onCharUpdate, onInsert }
       <div style={{ padding: "0 16px 16px" }}>
         {phase === "choose" && (
           <>
+            {(ch.inventar || []).some(s => s.typ === "stav" && s.nazev === "Poranění") && (
+              <div style={{ fontSize: 9, color: C.muted, marginBottom: 8, fontStyle: "italic", lineHeight: 1.4, textAlign: "center" }}>
+                Poraněná postava potřebuje nejdřív ošetření jinou postavou
+              </div>
+            )}
+            <button onClick={doShortRest} style={btnStyle(C.green)}>Krátký odpočinek</button>
             <div style={descStyle}>
-              Krátký (10 min, voda): obnoví d6+1 BO{pomocnici.length > 0 ? " pro všechny" : ""}
+              10 min + voda → d6+1 BO{pomocnici.length > 0 ? " (všichni)" : ""}
             </div>
-            <button onClick={doShortRest} style={btnStyle(C.green)}>💤 Krátký odpočinek</button>
 
+            <button onClick={handleLongRest} style={btnStyle(C.green)}>Dlouhý odpočinek</button>
             <div style={descStyle}>
-              Dlouhý (6 hod, jídlo + spánek): obnoví BO{pomocnici.length > 0 ? " všem" : ""}. Pokud BO plné → léčí d6 vlastnosti.
+              6 hod + jídlo → BO max{pomocnici.length > 0 ? " (všichni)" : ""}. Plné BO → léčí d6 vlastnosti
             </div>
-            <button onClick={handleLongRest} style={btnStyle(C.blue)}>🛏️ Dlouhý odpočinek</button>
 
-            <div style={descStyle}>
-              Úplný (týden v bezpečí): obnoví vše na maximum{pomocnici.length > 0 ? " všem" : ""}, odstraní stavy.
+            <button onClick={doFullRest} style={btnStyle(C.green)}>Úplný odpočinek</button>
+            <div style={{ ...descStyle, marginBottom: 0 }}>
+              Týden v bezpečí → vše na max{pomocnici.length > 0 ? " (všichni)" : ""}, odstraní stavy
             </div>
-            <button onClick={doFullRest} style={btnStyle(C.purple)}>🏠 Úplný odpočinek</button>
           </>
         )}
 
         {isHealPick && currentEntity && (
           <>
-            <div style={{ fontSize: 11, color: C.text, marginBottom: 10, fontWeight: 700 }}>
+            <div style={{ fontSize: 11, color: C.text, marginBottom: 10, fontWeight: 700, textAlign: "center" }}>
               {currentHealEntry.jmeno}: BO plné — vyber vlastnost k léčení (d6):
             </div>
             {["str", "dex", "wil"].map(key => {
