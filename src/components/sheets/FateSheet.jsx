@@ -23,7 +23,8 @@ export default function FateSheet({ onClose, cf, npcs, threads, onInsert }) {
     setStep("result");
   };
 
-  const doInsert = () => {
+  const insertResult = () => {
+    if (!result) return;
     const entry = {
       type: "fate",
       question: result.question,
@@ -32,6 +33,8 @@ export default function FateSheet({ onClose, cf, npcs, threads, onInsert }) {
       yes: result.yes,
       exceptional: result.exceptional,
       randomEvent: result.randomEvent,
+      cf,
+      threshold: result.threshold,
     };
     if (result.eventData) {
       entry.eventFocus = result.eventData.focus;
@@ -44,6 +47,10 @@ export default function FateSheet({ onClose, cf, npcs, threads, onInsert }) {
       }
     }
     onInsert(entry);
+  };
+
+  const handleClose = () => {
+    if (step === "result") insertResult();
     onClose();
   };
 
@@ -101,7 +108,7 @@ export default function FateSheet({ onClose, cf, npcs, threads, onInsert }) {
   );
 
   return (
-    <Sheet title="❓ FATE QUESTION" onClose={onClose} help={helpContent}>
+    <Sheet title="❓ FATE QUESTION" onClose={handleClose} help={helpContent}>
       {step === "input" ? (
         <>
           <div style={{ fontSize: 9, color: C.muted, marginBottom: 3 }}>OTÁZKA:</div>
@@ -153,10 +160,7 @@ export default function FateSheet({ onClose, cf, npcs, threads, onInsert }) {
               )}
             </div>
           )}
-          <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={() => { setStep("input"); setResult(null); }} style={{ flex: 1, height: 46, background: "transparent", color: C.muted, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>HODIT ZNOVU</button>
-            <button onClick={doInsert} style={{ flex: 2, height: 46, background: C.green, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT DO TEXTU</button>
-          </div>
+          <button onClick={() => { setStep("input"); setResult(null); }} style={{ width: "100%", height: 46, background: "transparent", color: C.muted, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>HODIT ZNOVU</button>
         </>
       )}
     </Sheet>

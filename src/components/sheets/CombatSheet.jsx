@@ -521,7 +521,8 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
     setStep("result");
   };
 
-  const doInsert = () => {
+  const insertResult = () => {
+    if (!combatResult) return;
     if (onCharUpdate) {
       const updatedChar = {
         ...character,
@@ -572,6 +573,10 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
       hirelingName: combatResult.hirelingName,
       hirelingResult: combatResult.hirelingResult,
     });
+  };
+
+  const handleClose = () => {
+    if (step === "result") insertResult();
     onClose();
   };
 
@@ -581,8 +586,49 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
 
   const inputStyle = { width: 50, border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 11, fontFamily: FONT, textAlign: "center", background: "white", color: C.text, outline: "none" };
 
+  const helpContent = (
+    <>
+      <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8, color: C.text }}>Boj — nebezpečný svět myší</div>
+      <div style={{ marginBottom: 12 }}>
+        Simulace souboje podle pravidel Mausritteru. Vyber nepřítele, nastav zbraň a zbroj, a nech appku rozhodnout.
+      </div>
+
+      <div style={{ fontSize: 10, color: C.muted, marginBottom: 10, padding: "6px 8px", background: C.red + "12", borderRadius: 6, fontStyle: "italic" }}>
+        Představ si: myš narazí v mlýně na agresivní krysu. Boj je nevyhnutelný!
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.red }}>1. Přidej nepřátele</div>
+      <div style={{ marginBottom: 10 }}>
+        Vyber z bestiáře (12 tvorů) nebo vytvoř vlastního nepřítele. Můžeš přidat až 5 nepřátel najednou.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.red }}>2. Nastav svou výbavu</div>
+      <div style={{ marginBottom: 10 }}>
+        Appka automaticky načte tvou zbraň a zbroj z inventáře. Můžeš přepsat ručně nebo zapnout modifikátory (překvapení, zesílený útok...).
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.red }}>3. Bojuj</div>
+      <div style={{ marginBottom: 4 }}>
+        Appka simuluje celý boj kolo po kole — iniciativa, útoky, zranění, morálka. Výsledek může být vítězství, útěk nepřítele, poranění, nebo smrt.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        Krysa útočí d6=4, zbroj 1 → 3 dmg → BO 3→0, STR 8→5. Myš útočí d6=5 → krysa padá!
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.red }}>4. Výsledek</div>
+      <div style={{ marginBottom: 10 }}>
+        Zranění se automaticky zapíše na tvou postavu. Zbraně a zbroje se mohou opotřebit. Výsledek se vloží do deníku.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.text }}>Co dál?</div>
+      <div>
+        Boj je smrtelný — zvažuj útěk (DEX záchrana). Pokud přežiješ, odpočinek ti vyléčí zranění.
+      </div>
+    </>
+  );
+
   return (
-    <Sheet title="⚔️ BOJ" onClose={onClose}>
+    <Sheet title="⚔️ BOJ" onClose={handleClose} help={helpContent}>
       {step === "setup" ? (
         <>
           <div style={{ fontSize: 9, color: C.muted, marginBottom: 4, fontFamily: FONT, letterSpacing: 0.8 }}>NEPŘÁTELÉ:</div>
@@ -747,7 +793,6 @@ export default function CombatSheet({ onClose, onInsert, character, onCharUpdate
               </div>
             )}
           </div>
-          <button onClick={doInsert} style={{ width: "100%", height: 46, background: C.red, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT DO TEXTU</button>
         </>
       )}
     </Sheet>

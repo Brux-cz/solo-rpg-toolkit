@@ -477,8 +477,57 @@ export default function CharCreateSheet({ onComplete, onClose }) {
 
   const STEP_TITLES = ["", "Vlastnosti", "BO a Ďobky", "Původ", "Zbraň", "Vzhled"];
 
+  const helpContent = (
+    <>
+      <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8, color: C.text }}>Tvorba postavy — tvá myš se rodí</div>
+      <div style={{ marginBottom: 12 }}>
+        Pět kroků k nové myší postavě. Hoď si na staty, zjisti odkud pocházíš, vyber si zbraň a vymysli jak vypadáš.
+      </div>
+
+      <div style={{ fontSize: 10, color: C.muted, marginBottom: 10, padding: "6px 8px", background: C.green + "12", borderRadius: 6, fontStyle: "italic" }}>
+        Představ si: každá myš má jiný příběh. Kostky rozhodnou kde jsi vyrůstal a co umíš — zbytek je na tobě.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.green }}>1. Vlastnosti (STR/DEX/WIL)</div>
+      <div style={{ marginBottom: 4 }}>
+        Hoď 3d6 a ponech dvě nejlepší pro každou vlastnost. Můžeš kliknout na dvě vlastnosti a prohodit je.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        STR 8, DEX 11, WIL 6 → prohodíš DEX a WIL → STR 8, DEX 6, WIL 11.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.green }}>2. Body odolnosti a ďobky</div>
+      <div style={{ marginBottom: 10 }}>
+        BO (d6) určuje kolik zásahů vydržíš než začneš ztrácet vlastnosti. Ďobky (d6) jsou peníze.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.green }}>3. Původ</div>
+      <div style={{ marginBottom: 4 }}>
+        Podle BO a ďobků se určí tvůj původ — každý má dva startovní předměty. Slabé myši (nízké staty) mají bonus navíc.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        BO 3, Ďobky 4 → „Mlynář" → Pytel mouky + Sekáček d6.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.green }}>4. Zbraň</div>
+      <div style={{ marginBottom: 10 }}>
+        Vyber si startovní zbraň. Silnější zbraně zabírají víc místa v inventáři.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.green }}>5. Vzhled</div>
+      <div style={{ marginBottom: 10 }}>
+        Znamení, barva srsti, vzor, výrazný rys a jméno. Všechno můžeš hodit náhodně nebo napsat ručně.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.text }}>Co dál?</div>
+      <div>
+        Po dokončení se postava uloží a můžeš začít hrát. Otevři novou scénu a pusť se do dobrodružství!
+      </div>
+    </>
+  );
+
   return (
-    <Sheet title="TVORBA POSTAVY" onClose={onClose}>
+    <Sheet title="TVORBA POSTAVY" onClose={onClose} help={helpContent}>
       <div style={S.stepInfo}>{step} / 5 — {STEP_TITLES[step]}</div>
       {step === 1 && renderStep1()}
       {step === 2 && renderStep2()}

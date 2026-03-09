@@ -67,8 +67,47 @@ export default function EndSceneSheet({ onClose, cf, sceneNum, onCFChange, npcs,
   const weightBtnStyle = { background: "none", border: `1px solid ${C.border}`, borderRadius: 4, fontSize: 10, cursor: "pointer", padding: "1px 5px", lineHeight: 1, fontFamily: FONT, color: C.text };
   const progressBtnStyle = { background: C.purple + "22", border: `1px solid ${C.purple}`, borderRadius: 4, fontSize: 9, cursor: "pointer", padding: "1px 5px", lineHeight: 1, fontFamily: FONT, color: C.purple, fontWeight: 700 };
 
+  const helpContent = (
+    <>
+      <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8, color: C.text }}>Konec scény — bookkeeping</div>
+      <div style={{ marginBottom: 12 }}>
+        Scéna skončila. Teď je čas zhodnotit co se stalo — appka upraví Chaos Faktor a ty spravíš seznamy NPC a příběhových linek.
+      </div>
+
+      <div style={{ fontSize: 10, color: C.muted, marginBottom: 10, padding: "6px 8px", background: C.text + "12", borderRadius: 6, fontStyle: "italic" }}>
+        Představ si: myš prohledala mlýn, potkala krysu, utekla. Co to znamená pro příběh?
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.text }}>1. Měla postava kontrolu?</div>
+      <div style={{ marginBottom: 4 }}>
+        Pokud tvá postava ovládala situaci → CF klesá (příběh je klidnější). Pokud ne → CF stoupá (víc chaosu příště).
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        Myš utekla krysám bez plánu → NE → CF stoupá z 5 na 6.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.text }}>2. Uprav NPC seznam</div>
+      <div style={{ marginBottom: 10 }}>
+        Přidej nové postavy, které se objevily. Váha (1-3×) určuje jak moc jsou důležité pro příběh — čím víc, tím častěji se objeví v náhodných událostech.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.text }}>3. Uprav příběhové linky</div>
+      <div style={{ marginBottom: 4 }}>
+        Přidej nové thready nebo posuň progress stávajících. Váha (1-3×) ovlivňuje šanci na náhodné zapojení.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        Nový thread: „Proč jsou v mlýně krysy?" — progress 0/10, váha 1×.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.text }}>Co dál?</div>
+      <div>
+        CF ovlivňuje příští scénu — vyšší CF = větší šance na zvrat. Po ukončení pokračuj novou scénou.
+      </div>
+    </>
+  );
+
   return (
-    <Sheet title={`📕 KONEC SCÉNY ${sceneNum}`} onClose={onClose}>
+    <Sheet title={`📕 KONEC SCÉNY ${sceneNum}`} onClose={onClose} help={helpContent}>
       <div style={{ fontSize: 9, color: C.muted, marginBottom: 8, fontFamily: FONT }}>MĚLA POSTAVA KONTROLU?</div>
       <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
         <button onClick={() => setChoice("minus")} style={{ flex: 1, padding: "10px 0", border: `1px solid ${choice==="minus" ? C.green : C.border}`, background: choice==="minus" ? C.green + "22" : "transparent", borderRadius: 8, fontSize: 11, fontFamily: FONT, cursor: "pointer", color: C.green, fontWeight: choice==="minus" ? 700 : 400 }}>ANO → CF−1<br /><span style={{ fontSize: 10 }}>{cf} → {Math.max(1, cf - 1)}</span></button>

@@ -17,7 +17,8 @@ export default function SceneSheet({ onClose, cf, sceneNum, npcs, threads, onIns
     setStep("result");
   };
 
-  const doInsert = () => {
+  const insertResult = () => {
+    if (!result) return;
     onInsert({
       type: "scene",
       sceneNum: sceneNum + 1,
@@ -35,6 +36,10 @@ export default function SceneSheet({ onClose, cf, sceneNum, npcs, threads, onIns
         eventTargetEmpty: result.target.empty || false,
       } : {}),
     });
+  };
+
+  const handleClose = () => {
+    if (step === "result") insertResult();
     onClose();
   };
 
@@ -91,7 +96,7 @@ export default function SceneSheet({ onClose, cf, sceneNum, npcs, threads, onIns
   );
 
   return (
-    <Sheet title="🎬 NOVÁ SCÉNA" onClose={onClose} help={helpContent}>
+    <Sheet title="🎬 NOVÁ SCÉNA" onClose={handleClose} help={helpContent}>
       {step === "input" ? (
         <>
           <div style={{ fontSize: 9, color: C.muted, marginBottom: 3, fontFamily: FONT }}>CO OČEKÁVÁŠ?</div>
@@ -134,10 +139,7 @@ export default function SceneSheet({ onClose, cf, sceneNum, npcs, threads, onIns
               )}
             </div>
           )}
-          <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={() => { setStep("input"); setResult(null); }} style={{ flex: 1, height: 46, background: "transparent", color: C.muted, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>ZNOVU</button>
-            <button onClick={doInsert} style={{ flex: 2, height: 46, background: C.blue, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT SCÉNU</button>
-          </div>
+          <button onClick={() => { setStep("input"); setResult(null); }} style={{ width: "100%", height: 46, background: "transparent", color: C.muted, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>ZNOVU</button>
         </>
       )}
     </Sheet>

@@ -235,8 +235,47 @@ export default function RestSheet({ onClose, character, onCharUpdate, onInsert }
     ? (currentHealEntry.type === "char" ? pendingUpdates.char : pendingUpdates.pom[currentHealEntry.idx])
     : null;
 
+  const helpContent = (
+    <>
+      <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8, color: C.text }}>Odpočinek — léčení a obnova</div>
+      <div style={{ marginBottom: 12 }}>
+        Tři druhy odpočinku s různou délkou a účinkem. Automaticky se spotřebuje jídlo a vyléčí zranění.
+      </div>
+
+      <div style={{ fontSize: 10, color: C.muted, marginBottom: 10, padding: "6px 8px", background: C.green + "12", borderRadius: 6, fontStyle: "italic" }}>
+        Představ si: po boji s krysou v mlýně si myš potřebuje odpočinout a ošetřit rány.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.green }}>1. Krátký odpočinek</div>
+      <div style={{ marginBottom: 4 }}>
+        Pár minut a voda. Obnoví d6+1 Body odolnosti (BO). Nic jiného neléčí.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        Myš si sedne, napije se → BO 0→4. Vlastnosti zůstávají poraněné.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.blue }}>2. Dlouhý odpočinek</div>
+      <div style={{ marginBottom: 4 }}>
+        6 hodin spánku + jídlo. BO se obnoví na maximum. Pokud je BO plné, vyber jednu vlastnost (STR/DEX/WIL) k léčení d6.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        Myš přenocuje v mlýně → BO na max, STR 5→8 (d6=3). Spotřebuje 1 zásoby z inventáře.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.purple }}>3. Úplný odpočinek</div>
+      <div style={{ marginBottom: 10 }}>
+        Týden v bezpečí (osada, úkryt). Vše se obnoví na maximum, odstraní se stavy (poranění, otrávení...).
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.text }}>Co dál?</div>
+      <div>
+        Jídlo se spotřebovává automaticky z inventáře. Bez jídla nemůžeš dlouze odpočívat. Pomocníci odpočívají společně s tebou.
+      </div>
+    </>
+  );
+
   return (
-    <Sheet title="Odpočinek" onClose={onClose}>
+    <Sheet title="Odpočinek" onClose={onClose} help={helpContent}>
       <div style={{ padding: "0 16px 16px" }}>
         {phase === "choose" && (
           <>

@@ -79,8 +79,56 @@ export default function DiscoveryCheckSheet({ cf, threads, npcs, onThreadsChange
     onClose();
   };
 
+  const helpContent = (
+    <>
+      <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8, color: C.text }}>Discovery Check — jak daleko jsi v příběhu?</div>
+      <div style={{ marginBottom: 12 }}>
+        Pokročilá mechanika pro sledování příběhových linek. Nejdřív se zeptáš osudu jestli najdeš vodítko, a pak zjistíš jakého typu je.
+      </div>
+
+      <div style={{ fontSize: 10, color: C.muted, marginBottom: 10, padding: "6px 8px", background: C.green + "12", borderRadius: 6, fontStyle: "italic" }}>
+        Představ si: myš hledá v mlýně stopy po zmizelém mlynáři (příběhová linka „Kam zmizel mlynář?").
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.green }}>1. Vyber příběhovou linku</div>
+      <div style={{ marginBottom: 10 }}>
+        Každá linka má progress (0–10). Čím víc bodů, tím blíž k rozuzlení.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.green }}>2. Fate otázka</div>
+      <div style={{ marginBottom: 4 }}>
+        „Je něco objeveno?" — hoď jako normální Fate otázku (odds min. 50/50). Pokud NE, nic nenajdeš.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        Odds: Likely, d100=35 → ANO, něco je tu!
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.green }}>3. Discovery roll</div>
+      <div style={{ marginBottom: 4 }}>
+        d10 + aktuální progress = celkový výsledek. Typ nálezu závisí na součtu:
+      </div>
+      <div style={{ marginBottom: 4, fontSize: 10 }}>
+        <span style={{ color: C.purple, fontWeight: 600 }}>Strengthen (0–3)</span> — posílí linku, zatím nejasné
+      </div>
+      <div style={{ marginBottom: 4, fontSize: 10 }}>
+        <span style={{ color: C.yellow, fontWeight: 600 }}>Track (4–7)</span> — jsi na stopě, vodítko
+      </div>
+      <div style={{ marginBottom: 4, fontSize: 10 }}>
+        <span style={{ color: C.green, fontWeight: 600 }}>Progress (8–12)</span> — velký posun vpřed
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10 }}>
+        <span style={{ color: C.red, fontWeight: 600 }}>Flashpoint (13+)</span> — klíčový moment, průlom!
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.text }}>Co dál?</div>
+      <div>
+        Body se přičtou k lince. Když linka dosáhne 10 bodů, je vyřešená. Meaning tabulka ti dá inspiraci k interpretaci nálezu.
+      </div>
+    </>
+  );
+
   return (
-    <Sheet title="🔍 DISCOVERY CHECK" onClose={onClose}>
+    <Sheet title="🔍 DISCOVERY CHECK" onClose={onClose} help={helpContent}>
       {step === 1 && (
         <>
           <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>VYBER THREAD:</div>

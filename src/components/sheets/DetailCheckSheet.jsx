@@ -20,7 +20,8 @@ export default function DetailCheckSheet({ onClose, onInsert }) {
     setResult(rollMeaning(selectedElement));
   };
 
-  const doInsert = () => {
+  const insertResult = () => {
+    if (!result) return;
     onInsert({
       type: "detail",
       word1: result.word1,
@@ -31,13 +32,56 @@ export default function DetailCheckSheet({ onClose, onInsert }) {
       d2: result.d2,
       table: selectedType === "Elements" ? selectedElement : selectedType,
     });
+  };
+
+  const handleClose = () => {
+    insertResult();
     onClose();
   };
 
   const tabs = ["Actions", "Descriptions", "Elements"];
 
+  const helpContent = (
+    <>
+      <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8, color: C.text }}>Detail Check — co se skrývá v detailech?</div>
+      <div style={{ marginBottom: 12 }}>
+        Generátor detailů scény. Neřeší ano/ne — dává ti dva pojmy pro inspiraci k tomu, co vidíš, slyšíš nebo najdeš.
+      </div>
+
+      <div style={{ fontSize: 10, color: C.muted, marginBottom: 10, padding: "6px 8px", background: C.yellow + "12", borderRadius: 6, fontStyle: "italic" }}>
+        Představ si: myš vstoupí do zadní místnosti mlýna. Co tam najde? Jaké zvuky slyší? Detail Check ti dá inspiraci.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.yellow }}>1. Vyber tabulku</div>
+      <div style={{ marginBottom: 4 }}>
+        Actions (co se děje), Descriptions (jak to vypadá), nebo Elements (konkrétní téma — zvuky, vůně, pachy...).
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        Chceš vědět co se děje za zavřenými dveřmi → Actions. Jak vypadá stará pec → Descriptions.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.yellow }}>2. Hoď</div>
+      <div style={{ marginBottom: 4 }}>
+        Appka hodí 2×d100 a vybere dvě slova z tabulky.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        Padne „Abandon + Old" (Opustit + Starý) → místnost vypadá jako kdyby ji někdo narychlo opustil před lety.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.yellow }}>3. Interpretuj výsledek</div>
+      <div style={{ marginBottom: 10 }}>
+        Spoj ta dvě slova s tím, co tvá postava právě dělá. Výsledek nemusí dávat smysl doslova — hledáš inspiraci.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.text }}>Co dál?</div>
+      <div>
+        Vlož výsledek do deníku a pokračuj ve scéně. Detail Check můžeš použít kolikrát chceš — kdykoliv potřebuješ inspiraci.
+      </div>
+    </>
+  );
+
   return (
-    <Sheet title="🔍 DETAIL CHECK" onClose={onClose}>
+    <Sheet title="🔍 DETAIL CHECK" onClose={handleClose} help={helpContent}>
       <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 10, fontFamily: FONT }}>Co se děje? Jak to vypadá? Generuj obsah bez Ano/Ne.</div>
       <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
         {tabs.map((t, i) => (
@@ -66,7 +110,6 @@ export default function DetailCheckSheet({ onClose, onInsert }) {
             {result.cz1 && <div style={{ fontSize: 11, color: C.muted, marginTop: 4, fontFamily: FONT }}>{result.cz1} + {result.cz2}</div>}
           </div>
           <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 12, fontFamily: FONT }}>Interpretuj v kontextu scény</div>
-          <button onClick={doInsert} style={{ width: "100%", height: 46, background: C.yellow, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT DO TEXTU</button>
         </>
       ) : (
         <div style={{ fontSize: 11, color: C.muted, textAlign: "center", fontFamily: FONT, marginTop: 20 }}>

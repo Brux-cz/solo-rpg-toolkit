@@ -20,7 +20,8 @@ export default function MeaningSheet({ onClose, onInsert }) {
     setResult(rollMeaning(selectedElement));
   };
 
-  const doInsert = () => {
+  const insertResult = () => {
+    if (!result) return;
     onInsert({
       type: "meaning",
       word1: result.word1,
@@ -31,6 +32,10 @@ export default function MeaningSheet({ onClose, onInsert }) {
       d2: result.d2,
       table: selectedType === "Elements" ? selectedElement : selectedType,
     });
+  };
+
+  const handleClose = () => {
+    insertResult();
     onClose();
   };
 
@@ -84,7 +89,7 @@ export default function MeaningSheet({ onClose, onInsert }) {
   );
 
   return (
-    <Sheet title="🔮 MEANING TABLES" onClose={onClose} help={helpContent}>
+    <Sheet title="🔮 MEANING TABLES" onClose={handleClose} help={helpContent}>
       <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
         {tabs.map((t, i) => (
           <button key={i} onClick={() => doSelect(t)} style={{ flex: 1, padding: "6px 0", border: `1px solid ${selectedType === t ? C.purple : C.border}`, background: selectedType === t ? C.purple : "transparent", color: selectedType === t ? "white" : C.muted, borderRadius: 6, fontSize: 10, fontFamily: FONT, cursor: "pointer" }}>{t}</button>
@@ -112,7 +117,6 @@ export default function MeaningSheet({ onClose, onInsert }) {
             {result.cz1 && <div style={{ fontSize: 11, color: C.muted, marginTop: 4, fontFamily: FONT }}>{result.cz1} + {result.cz2}</div>}
           </div>
           <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 12, fontFamily: FONT }}>Interpretuj v kontextu scény</div>
-          <button onClick={doInsert} style={{ width: "100%", height: 46, background: C.purple, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT DO TEXTU</button>
         </>
       ) : (
         <div style={{ fontSize: 11, color: C.muted, textAlign: "center", fontFamily: FONT, marginTop: 20 }}>

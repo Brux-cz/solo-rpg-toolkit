@@ -22,7 +22,8 @@ export default function BehaviorSheet({ onClose, onInsert, npcList }) {
     setResult({ ...m, context });
   };
 
-  const doInsert = () => {
+  const insertResult = () => {
+    if (!result) return;
     const ctxLabel = CONTEXT_OPTIONS.find(c => c.key === result.context)?.label || "";
     onInsert({
       type: "behavior",
@@ -35,11 +36,51 @@ export default function BehaviorSheet({ onClose, onInsert, npcList }) {
       d2: result.d2,
       context: ctxLabel,
     });
+  };
+
+  const handleClose = () => {
+    insertResult();
     onClose();
   };
 
+  const helpContent = (
+    <>
+      <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8, color: C.text }}>NPC Chování — co ta postava dělá?</div>
+      <div style={{ marginBottom: 12 }}>
+        Generátor akcí a chování pro neherní postavy. Místo otázky ano/ne se zeptáš „co NPC dělá?" a appka ti dá inspiraci.
+      </div>
+
+      <div style={{ fontSize: 10, color: C.muted, marginBottom: 10, padding: "6px 8px", background: C.orange + "12", borderRadius: 6, fontStyle: "italic" }}>
+        Představ si: myš potkala v mlýně starou myšku. Co dělá? Jak reaguje?
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.orange }}>1. Zadej jméno NPC</div>
+      <div style={{ marginBottom: 10 }}>
+        Napiš jméno nebo vyber z nabídky (NPC ze seznamu). Jméno se zapíše do deníku.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.orange }}>2. Vyber kontext</div>
+      <div style={{ marginBottom: 4 }}>
+        Různé tabulky pro různé situace — obecné akce, boj, rozhovor, zvířecí chování, motivace.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        Stará myška v mlýně → „Rozhovor". Divoká kočka → „Zvíře / tvor".
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.orange }}>3. Hoď a interpretuj</div>
+      <div style={{ marginBottom: 10 }}>
+        Dostaneš dva pojmy — spoj je s kontextem situace. Výsledek nemusí být doslova přesný, hledáš inspiraci.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.text }}>Co dál?</div>
+      <div>
+        Kombinuj s Fate Question — nejdřív „Je přátelská?" (Fate), pak „Co dělá?" (Behavior). Vlož do deníku a pokračuj.
+      </div>
+    </>
+  );
+
   return (
-    <Sheet title="🎭 NPC AKCE" onClose={onClose}>
+    <Sheet title="🎭 NPC AKCE" onClose={handleClose} help={helpContent}>
       <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 10, fontFamily: FONT }}>Co NPC dělá? Vyber kontext a hoď na tabulku.</div>
       <input
         type="text"
@@ -75,7 +116,6 @@ export default function BehaviorSheet({ onClose, onInsert, npcList }) {
             {result.cz1 && <div style={{ fontSize: 11, color: C.muted, marginTop: 4, fontFamily: FONT }}>{result.cz1} + {result.cz2}</div>}
           </div>
           <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 12, fontFamily: FONT }}>Interpretuj chování NPC v kontextu scény</div>
-          <button onClick={doInsert} style={{ width: "100%", height: 46, background: C.orange, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT DO TEXTU</button>
         </>
       ) : (
         <div style={{ fontSize: 11, color: C.muted, textAlign: "center", fontFamily: FONT, marginTop: 20 }}>Zadej jméno NPC a klikni HODIT ↑</div>
