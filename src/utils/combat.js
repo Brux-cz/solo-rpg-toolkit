@@ -54,6 +54,24 @@ export function rollMorale(wil) {
   return { d20, stays: d20 <= wil };
 }
 
+export function assessDanger({ playerBo, playerStr, playerArmor, hirelingBo, hirelingStr, hirelingArmor }, enemies) {
+  const hasHireling = hirelingBo > 0;
+  const pHP = playerBo + playerStr + (hasHireling ? hirelingBo + hirelingStr : 0);
+  const pAttacks = 1 + (hasHireling ? 1 : 0);
+  const eHP = enemies.reduce((s, e) => s + e.bo + e.str, 0);
+  const eAttacks = enemies.length;
+  const ratio = (pHP / (eHP || 1)) / (eAttacks / (pAttacks || 1));
+
+  let level, color, text;
+  if (ratio >= 1.5) { level = "safe"; color = "#4a7a4a"; text = "Máš výhodu"; }
+  else if (ratio >= 0.8) { level = "even"; color = "#c89030"; text = "Vyrovnaný boj"; }
+  else if (ratio >= 0.4) { level = "danger"; color = "#aa4444"; text = "Nebezpečné!"; }
+  else { level = "deadly"; color = "#771111"; text = "Téměř jistá smrt!"; }
+
+  const soloWarning = !hasHireling && enemies.length >= 2 ? "Jsi sám — vyřazení = smrt!" : null;
+  return { level, color, text, ratio, soloWarning };
+}
+
 export function rollMoraleAdvantage(wil) {
   const d1 = roll(20), d2 = roll(20);
   const best = Math.min(d1, d2);
