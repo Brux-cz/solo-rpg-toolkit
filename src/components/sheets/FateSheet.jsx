@@ -47,8 +47,61 @@ export default function FateSheet({ onClose, cf, npcs, threads, onInsert }) {
     onClose();
   };
 
+  const helpContent = (
+    <>
+      <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8, color: C.text }}>Fate Question — otázka osudu</div>
+      <div style={{ marginBottom: 12 }}>
+        Toto je tvé orákulum — náhrada za Game Mastera. Když potřebuješ rozhodnutí, které bys normálně nechal na GM, polož otázku s odpovědí Ano/Ne.
+      </div>
+
+      <div style={{ fontSize: 10, color: C.muted, marginBottom: 10, padding: "6px 8px", background: C.green + "12", borderRadius: 6, fontStyle: "italic" }}>
+        Představ si: tvá myš prohledává opuštěný mlýn. Vstoupila do tmavé místnosti a chce vědět víc. Všechny příklady níže se odehrávají tady.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.green }}>1. Polož otázku</div>
+      <div style={{ marginBottom: 4 }}>
+        Napiš otázku, na kterou jde odpovědět Ano nebo Ne. Čím konkrétnější, tím lépe.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        „Je v téhle místnosti někdo?" nebo „Najdu tady jídlo?" nebo „Jsou dveře zamčené?"
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.green }}>2. Zvol pravděpodobnost (Odds)</div>
+      <div style={{ marginBottom: 4 }}>
+        Odhadni, jak moc je Ano pravděpodobné vzhledem k situaci. Když nevíš, nech 50/50.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        „Je v opuštěném mlýně jídlo?" — mlýn zpracovával obilí, takže zásoby jsou pravděpodobné → Likely. „Čeká tu na mě past?" — nikdo nečekal návštěvu → Unlikely.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.green }}>3. Výsledek</div>
+      <div style={{ marginBottom: 6 }}>
+        <span style={{ color: C.green, fontWeight: 600 }}>ANO / NE</span> — jednoznačná odpověď. Hraj podle ní.
+      </div>
+      <div style={{ marginBottom: 4 }}>
+        <span style={{ color: C.green, fontWeight: 600 }}>EXCEPTIONAL</span> — extrémní výsledek, víc než jsi čekal.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        „Najdu tady jídlo?" → Exceptional Ano = celý pytel obilí, čerstvý, jako by ho tu někdo nechal včera. Exceptional Ne = zásoby jsou tu, ale plesnivé a otrávené — pozor.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.yellow }}>Random Event ⚡</div>
+      <div style={{ marginBottom: 4 }}>
+        Někdy se při hodu spustí náhodná událost — něco nečekaného se stane navíc, nezávisle na tvé otázce. Odpověď stále platí, ale přibyde zvrat.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        Ptal ses na jídlo a dostal Ano, ale navíc ⚡ Random Event: „NPC Action: Arrive + Mistrust (Přijít + Nedůvěra)" → někdo právě vešel do mlýna a nevypadá přátelsky. Jídlo máš, ale máš i problém.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.text }}>Chaos Faktor (CF)</div>
+      <div>
+        CF ovlivňuje šanci na Ano i na Random Event. Vyšší CF = víc chaosu a nečekaných zvratů. CF se mění na konci každé scény — pokud měla tvá postava kontrolu, CF klesá, pokud ne, stoupá.
+      </div>
+    </>
+  );
+
   return (
-    <Sheet title="❓ FATE QUESTION" onClose={onClose}>
+    <Sheet title="❓ FATE QUESTION" onClose={onClose} help={helpContent}>
       {step === "input" ? (
         <>
           <div style={{ fontSize: 9, color: C.muted, marginBottom: 3 }}>OTÁZKA:</div>

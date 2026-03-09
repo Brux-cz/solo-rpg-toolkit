@@ -45,8 +45,53 @@ export default function SceneSheet({ onClose, cf, sceneNum, npcs, threads, onIns
     : result?.type === "altered" ? C.yellow
     : C.red;
 
+  const helpContent = (
+    <>
+      <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8, color: C.text }}>Nová scéna — začátek další části příběhu</div>
+      <div style={{ marginBottom: 12 }}>
+        Příběh se skládá ze scén — jako v knize nebo filmu. Každá scéna je situace, kterou tvá postava prožívá. Tady rozhodneš co se bude dít, a chaos rozhodne jestli to půjde podle plánu.
+      </div>
+
+      <div style={{ fontSize: 10, color: C.muted, marginBottom: 10, padding: "6px 8px", background: C.blue + "12", borderRadius: 6, fontStyle: "italic" }}>
+        Představ si: tvá myš právě dorazila k opuštěnému mlýnu. Chce ho prohledat a najít zásoby. Všechny příklady níže ukazují co se může stát.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.blue }}>1. Napiš co očekáváš</div>
+      <div style={{ marginBottom: 4 }}>
+        Co by se teď logicky mělo stát? Kam jde tvá postava, co chce udělat?
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        Napíšeš: „Myšák prohledá mlýn a hledá zásoby."
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.blue }}>2. Test chaosu</div>
+      <div style={{ marginBottom: 4 }}>
+        Appka hodí d10 proti tvému Chaos Faktoru (CF). CF ukazuje, jak moc je příběh nepředvídatelný. Čím vyšší CF, tím větší šance na zvrat.
+      </div>
+      <div style={{ marginBottom: 10, fontSize: 10, color: C.muted, fontStyle: "italic" }}>
+        Tvé CF je 5. Appka hodí d10 — padne 3. To je pod CF, takže se něco změní!
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.blue }}>3. Tři možné výsledky</div>
+      <div style={{ marginBottom: 6 }}>
+        <span style={{ color: C.blue, fontWeight: 600 }}>Očekávaná</span> — scéna proběhne podle plánu. Myšák v klidu prohledá mlýn.
+      </div>
+      <div style={{ marginBottom: 6 }}>
+        <span style={{ color: C.yellow, fontWeight: 600 }}>Pozměněná</span> — něco je jinak. Appka napoví co: třeba „Přidej postavu" → v mlýně už někdo je! Zásoby hledáš, ale nejsi sám.
+      </div>
+      <div style={{ marginBottom: 10 }}>
+        <span style={{ color: C.red, fontWeight: 600 }}>Přerušená</span> — plán padá, stane se něco úplně jiného. Appka vygeneruje typ události a dvě slova pro inspiraci → třeba „NPC Action: Betray + Trust (Zradit + Důvěra)" → někdo koho jsi považoval za přítele tě zradil právě tady.
+      </div>
+
+      <div style={{ fontWeight: 700, fontSize: 11, marginBottom: 4, color: C.text }}>Co dál?</div>
+      <div>
+        Klikni „Vložit scénu" — do deníku se zapíše nadpis. Pak hraj: piš co se děje, pokládej otázky osudu (Fate), používej Meaning Tables pro inspiraci. Až bude scéna u konce, klikni na ⋯ → „Konec scény".
+      </div>
+    </>
+  );
+
   return (
-    <Sheet title="🎬 NOVÁ SCÉNA" onClose={onClose}>
+    <Sheet title="🎬 NOVÁ SCÉNA" onClose={onClose} help={helpContent}>
       {step === "input" ? (
         <>
           <div style={{ fontSize: 9, color: C.muted, marginBottom: 3, fontFamily: FONT }}>CO OČEKÁVÁŠ?</div>

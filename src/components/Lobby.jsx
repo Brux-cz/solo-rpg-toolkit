@@ -97,7 +97,19 @@ export default function Lobby({ onPlay }) {
 
       <div style={{ flex: 1, overflowY: "auto", padding: "0 16px 20px" }}>
         {index.saves.length === 0 && !creating && (
-          <div style={{ textAlign: "center", marginTop: 60, color: C.muted, fontSize: 11 }}>Zatím žádné hry. Vytvoř novou!</div>
+          <div style={{ marginTop: 20, padding: "14px 16px", background: C.green + "10", borderRadius: 10, fontSize: 11, lineHeight: 1.7, color: C.text }}>
+            <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 8 }}>Vítej v Solo RPG Companion!</div>
+            <div style={{ marginBottom: 8, color: C.muted }}>
+              Tahle appka ti umožňuje hrát stolní RPG úplně sám. Nemusíš čekat na partu — appka simuluje Game Mastera za tebe. Ty jsi hráč i vypravěč zároveň.
+            </div>
+            <div style={{ marginBottom: 8, color: C.muted }}>
+              Píšeš příběh své postavy — malé myši ve velkém světě (Mausritter). Když potřebuješ rozhodnutí, ptáš se orákula: „Je tu nepřítel?" — a osud odpoví.
+            </div>
+            <div style={{ fontWeight: 600, marginBottom: 4 }}>Jak začít?</div>
+            <div style={{ color: C.muted }}>
+              Klikni <span style={{ color: C.green, fontWeight: 600 }}>+ Nová hra</span> níže. Pojmenuj si kampaň a jsi v deníku — tam se odehrává celý příběh. Neboj se, všude najdeš nápovědu <span style={{ color: C.blue, fontWeight: 700, border: `1px solid ${C.border}`, borderRadius: 12, padding: "0 5px", fontSize: 10 }}>?</span> která tě provede.
+            </div>
+          </div>
         )}
 
         {index.saves.map((s) => (
