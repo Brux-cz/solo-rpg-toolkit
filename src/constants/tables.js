@@ -244,6 +244,38 @@ export const NAMES = [
   "Tis", "Vavřinec", "Vilík", "Višňa", "Vlnka", "Vrbena", "Vřesena", "Vřesík", "Zuzanka",
 ];
 
+// Tabulka počasí (2d6) — podle ročního období
+export const WEATHER_TABLE = {
+  jaro: [
+    { min: 2, max: 2, text: "Přívalové deště", adverse: true },
+    { min: 3, max: 5, text: "Mrholení", adverse: false },
+    { min: 6, max: 8, text: "Zataženo", adverse: false },
+    { min: 9, max: 11, text: "Jasno a slunečno", adverse: false },
+    { min: 12, max: 12, text: "Jasno", adverse: false },
+  ],
+  léto: [
+    { min: 2, max: 2, text: "Bouřka", adverse: true },
+    { min: 3, max: 5, text: "Úmorné vedro", adverse: true },
+    { min: 6, max: 8, text: "Jasno a teplo", adverse: false },
+    { min: 9, max: 11, text: "Příjemně slunečno", adverse: false },
+    { min: 12, max: 12, text: "Krásně", adverse: false },
+  ],
+  podzim: [
+    { min: 2, max: 2, text: "Silný vítr", adverse: true },
+    { min: 3, max: 5, text: "Slejvák", adverse: true },
+    { min: 6, max: 8, text: "Chladno", adverse: false },
+    { min: 9, max: 11, text: "Přeháňky", adverse: false },
+    { min: 12, max: 12, text: "Jasno", adverse: false },
+  ],
+  zima: [
+    { min: 2, max: 2, text: "Vánice", adverse: true },
+    { min: 3, max: 5, text: "Mrznoucí déšť", adverse: true },
+    { min: 6, max: 8, text: "Třeskutá zima", adverse: true },
+    { min: 9, max: 11, text: "Zataženo", adverse: false },
+    { min: 12, max: 12, text: "Jasno", adverse: false },
+  ],
+};
+
 // Mateřská jména / příjmení (d20)
 export const SURNAMES = [
   "Bílý/á", "Černý/á", "Čihař/ová", "Darček/ová", "Durman/ová",

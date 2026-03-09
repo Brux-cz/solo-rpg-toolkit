@@ -1,4 +1,4 @@
-import { FATE_DIAG, ACTIONS, ACTIONS_CZ, DESCRIPTIONS, DESCRIPTIONS_CZ, SCENE_ADJ, EVENT_FOCUS, THREAD_DISCOVERY } from "../constants/tables.js";
+import { FATE_DIAG, ACTIONS, ACTIONS_CZ, DESCRIPTIONS, DESCRIPTIONS_CZ, SCENE_ADJ, EVENT_FOCUS, THREAD_DISCOVERY, WEATHER_TABLE } from "../constants/tables.js";
 import { ELEMENTS } from "../constants/elements.js";
 
 export function roll(sides) {
@@ -78,6 +78,14 @@ export function rollDiscoveryCheck(progress, meaningTable = "actions") {
   const last = THREAD_DISCOVERY[THREAD_DISCOVERY.length - 1];
   const meaning = rollMeaning(meaningTable);
   return { d10, total, type: last[1], points: last[2], description: last[3], meaning };
+}
+
+export function rollWeather(season) {
+  const d1 = roll(6);
+  const d2 = roll(6);
+  const total = d1 + d2;
+  const entry = WEATHER_TABLE[season].find(e => total >= e.min && total <= e.max);
+  return { d1, d2, total, text: entry.text, adverse: entry.adverse };
 }
 
 // Resolve Event Target — automatický výběr NPC/Thread dle Event Focus

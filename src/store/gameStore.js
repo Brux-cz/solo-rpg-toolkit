@@ -1,6 +1,6 @@
 const INDEX_KEY = "solorpg_index";
 const SAVE_PREFIX = "solorpg_";
-export const CURRENT_VERSION = 9;
+export const CURRENT_VERSION = 10;
 
 export const INITIAL_GAME = {
   version: CURRENT_VERSION,
@@ -28,6 +28,15 @@ export const INITIAL_GAME = {
     kurazSloty: [],
     inventar: Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
     pomocnici: [],
+  },
+  cas: {
+    den: 1,
+    hlidka: "ráno",
+    smena: 1,
+    rocniObdobi: "podzim",
+    pocasi: "",
+    jeNepriznive: false,
+    odpocinutoDnes: false,
   },
 };
 
@@ -126,6 +135,15 @@ const MIGRATIONS = {
       version: 9,
     };
   },
+  9: (data) => ({
+    ...data,
+    cas: {
+      den: 1, hlidka: "ráno", smena: 1,
+      rocniObdobi: "podzim", pocasi: "", jeNepriznive: false,
+      odpocinutoDnes: false,
+    },
+    version: 10,
+  }),
 };
 
 export function genId() {

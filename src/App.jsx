@@ -18,6 +18,7 @@ import RestSheet from "./components/sheets/RestSheet.jsx";
 import DiscoveryCheckSheet from "./components/sheets/DiscoveryCheckSheet.jsx";
 import CharCreateSheet from "./components/sheets/CharCreateSheet.jsx";
 import BehaviorSheet from "./components/sheets/BehaviorSheet.jsx";
+import TimeTracker from "./components/ui/TimeTracker.jsx";
 import PostavaTab from "./components/tabs/PostavaTab.jsx";
 import SvetTab from "./components/tabs/SvetTab.jsx";
 import Lobby from "./components/Lobby.jsx";
@@ -111,7 +112,7 @@ export default function Prototype() {
       `}</style>
 
       {!showKeyboard && (
-        <Header expanded={headerExpanded} onToggle={() => setHeaderExpanded(x => !x)} cf={game.cf} sceneNum={game.sceneNum} character={game.character} tab={tab} />
+        <Header expanded={headerExpanded} onToggle={() => setHeaderExpanded(x => !x)} cf={game.cf} sceneNum={game.sceneNum} character={game.character} tab={tab} cas={game.cas} onTimeOpen={() => setSheet("time")} />
       )}
 
       <div style={{ flex: 1, overflow: "hidden", maxHeight: sheetOpen ? "calc(50% - 10px)" : undefined }}>
@@ -150,6 +151,7 @@ export default function Prototype() {
       {sheet === "discovery" && <DiscoveryCheckSheet cf={game.cf} threads={game.threads} npcs={game.npcs} onThreadsChange={(t) => updateGame({ threads: t })} onInsert={handleInsert} onClose={() => setSheet(null)} />}
       {sheet === "charcreate" && <CharCreateSheet onClose={() => setSheet(null)} onComplete={(ch) => { updateGame({ character: ch }); setSheet(null); }} />}
       {sheet === "behavior" && <BehaviorSheet onClose={() => setSheet(null)} onInsert={handleInsert} npcList={game.npcs} />}
+      {sheet === "time" && <TimeTracker cas={game.cas || {}} onCasChange={(c) => updateGame({ cas: c })} onClose={() => setSheet(null)} onInsert={handleInsert} />}
 
     </div>
   );

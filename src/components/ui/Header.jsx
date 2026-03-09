@@ -101,7 +101,7 @@ const HELP = {
   ),
 };
 
-export default function Header({ onToggle, expanded, cf, sceneNum, character, tab }) {
+export default function Header({ onToggle, expanded, cf, sceneNum, character, tab, cas, onTimeOpen }) {
   const [showHelp, setShowHelp] = useState(false);
   const ch = character;
   const inv = ch.inventar || [];
@@ -120,8 +120,11 @@ export default function Header({ onToggle, expanded, cf, sceneNum, character, ta
             <span style={{ color: C.text }}>CF <span style={{ color: C.yellow, fontWeight: 700 }}>{cf}</span></span>
           </span>
           <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ color: C.muted }}>
-              Den 2 · ráno{expanded && <span> · <span style={{ color: C.blue }}>Zataženo</span></span>}
+            <span onClick={(e) => { e.stopPropagation(); onTimeOpen?.(); }} style={{ color: C.muted, cursor: "pointer" }}>
+              Den {cas?.den || 1} · {cas?.hlidka || "ráno"}
+              {expanded && cas?.pocasi && (
+                <span> · <span style={{ color: cas.jeNepriznive ? C.red : C.blue }}>{cas.pocasi}{cas.jeNepriznive ? " ★" : ""}</span></span>
+              )}
             </span>
             <button onClick={(e) => { e.stopPropagation(); setShowHelp(v => !v); }} style={{ position: "relative", zIndex: showHelp ? 21 : "auto", background: showHelp ? C.blue + "18" : "none", border: `1px solid ${showHelp ? C.blue : C.border}`, borderRadius: 12, fontSize: 10, color: showHelp ? C.blue : C.muted, cursor: "pointer", padding: "1px 8px", fontFamily: FONT, fontWeight: 700, lineHeight: "16px" }}>?</button>
           </span>
