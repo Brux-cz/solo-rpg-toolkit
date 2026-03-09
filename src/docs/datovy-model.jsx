@@ -214,7 +214,7 @@ const entities = {
       { name: "znameni", type: "string", note: "d6 (základní povaha)" },
       { name: "motivace", type: "string", note: "d20 (po čem touží)" },
       { name: "vztah", type: "string", note: "d20 (k jiným NPC)" },
-      { name: "reakce", type: "{hod, stav}", note: "2d6 → stav: 2=Agresivní, 3-5=Nepřátelský, 6-8=Opatrný, 9-11=Povídavý, 12=Nápomocný" },
+      { name: "reakce", type: "{hod, stav}", note: "2d6 → stav: 2=Agresivní, 3-5=Nepřátelská, 6-8=Nejistá, 9-11=Povídavá, 12=Nápomocná" },
       { name: "osadaId", type: "string?", note: "Kde žije" },
       { name: "frakceId", type: "string?", note: "Kam patří" },
       { name: "-- bojové staty --", type: "---", note: "" },

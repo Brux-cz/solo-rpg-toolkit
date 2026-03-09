@@ -1253,9 +1253,9 @@ export default function PostavaTab({ character, onUpdate, onCharCreate }) {
                   <button onClick={() => setStat(key, "akt", Math.max(0, s.akt - 1))} style={{ border: `1px solid ${C.red}40`, borderRadius: 4, background: `${C.red}10`, color: C.red, fontSize: 16, fontFamily: FONT, fontWeight: 700, width: 28, height: 28, cursor: "pointer", lineHeight: 1, padding: 0 }}>−</button>
                   <button onClick={() => setStat(key, "akt", Math.min(s.max, s.akt + 1))} style={{ border: `1px solid ${C.green}40`, borderRadius: 4, background: `${C.green}10`, color: C.green, fontSize: 16, fontFamily: FONT, fontWeight: 700, width: 28, height: 28, cursor: "pointer", lineHeight: 1, padding: 0 }}>+</button>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
-                  <span style={{ fontSize: 9, color: C.muted }}>max</span>
-                  <input type="number" value={s.max} onChange={e => setStat(key, "max", e.target.value)} style={{ ...statInput, width: 28, fontSize: 12, color: C.muted, textAlign: "center" }} />
+                <div style={{ display: "flex", alignItems: "center", gap: 3, marginTop: 2, padding: "3px 6px", background: `${col}08`, borderRadius: 4 }}>
+                  <span style={{ fontSize: 9, color: C.muted, fontFamily: FONT }}>max</span>
+                  <input type="number" value={s.max} onChange={e => setStat(key, "max", e.target.value)} style={{ ...statInput, width: 42, fontSize: 14, color: col, fontWeight: 700, textAlign: "center" }} />
                 </div>
               </div>
             );
