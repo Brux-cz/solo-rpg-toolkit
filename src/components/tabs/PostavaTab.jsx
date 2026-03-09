@@ -100,6 +100,12 @@ const HIRELING_GRID = [
   "Packa", "Tělo", "Batoh",
 ];
 
+const LABEL_COLOR = {
+  "Packa L": C.red, "Packa R": C.red, "Packa": C.red,
+  "Tělo": C.blue,
+  "Batoh": C.green,
+};
+
 const TYPE_COLOR = {
   "zbraň": C.red,
   "zbroj": C.blue,
@@ -358,6 +364,7 @@ function InventoryCard({ slot, index, label, isEditing, onEdit, onDotToggle, dra
       <div style={{
         padding: "3px 5px 2px",
         borderBottom: `1px solid ${color}30`,
+        background: `${color}12`,
         fontSize: 9,
         fontWeight: 700,
         color: C.text,
@@ -714,10 +721,18 @@ export default function PostavaTab({ character, onUpdate, onCharCreate }) {
   const ch = character;
   const zkMax = getZkMax(ch.uroven + 1);
   const [editSlot, setEditSlot] = useState(null);
+  const [editKurazSlot, setEditKurazSlot] = useState(null);
+  const [kurazOpen, setKurazOpen] = useState(false);
+  const [vzhledOpen, setVzhledOpen] = useState(false);
+  const [inventarOpen, setInventarOpen] = useState(true);
+  const [dobkyModal, setDobkyModal] = useState(false);
+  const [statyModal, setStatyModal] = useState(false);
+  const [zkModal, setZkModal] = useState(false);
   const [editHSlot, setEditHSlot] = useState(null); // "pomId:slotIdx"
   const [expandedPom, setExpandedPom] = useState(null);
   const [levelUpResult, setLevelUpResult] = useState(null);
   const inv = ch.inventar || Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } }));
+  const kurazSloty = ch.kurazSloty || Array.from({ length: ch.kuraz || 0 }, () => ({ ...EMPTY_SLOT }));
   const pomocnici = ch.pomocnici || [];
   const statInput = { border: `1px solid ${C.border}`, borderRadius: 4, padding: "2px 4px", fontSize: 11, fontFamily: FONT, textAlign: "center", width: 36, background: "white", color: C.text, outline: "none" };
 
@@ -769,6 +784,13 @@ export default function PostavaTab({ character, onUpdate, onCharCreate }) {
     const kurazTable = { 2: 1, 3: 2, 4: 2 };
     const novaKuraz = novaUroven >= 5 ? 3 : (kurazTable[novaUroven] || 0);
     updated.kuraz = novaKuraz;
+    // Resize kurazSloty array (keep existing, add empty or trim)
+    const oldSloty = updated.kurazSloty || [];
+    if (novaKuraz > oldSloty.length) {
+      updated.kurazSloty = [...oldSloty, ...Array.from({ length: novaKuraz - oldSloty.length }, () => ({ ...EMPTY_SLOT }))];
+    } else if (novaKuraz < oldSloty.length) {
+      updated.kurazSloty = oldSloty.slice(0, novaKuraz);
+    }
     log.push(`Kuráž: ${novaKuraz}`);
 
     // 4) Úroveň +1 (ZK zůstává)
@@ -791,6 +813,16 @@ export default function PostavaTab({ character, onUpdate, onCharCreate }) {
     const next = inv.map((s, i) => i === idx ? { ...EMPTY_SLOT } : s);
     onUpdate({ ...ch, inventar: recalcOccupied(next, 5) });
     setEditSlot(null);
+  };
+
+  const updateKurazSlot = (idx, patch) => {
+    const next = kurazSloty.map((s, i) => i === idx ? { ...s, ...patch } : s);
+    onUpdate({ ...ch, kurazSloty: next });
+  };
+  const clearKurazSlot = (idx) => {
+    const next = kurazSloty.map((s, i) => i === idx ? { ...EMPTY_SLOT } : s);
+    onUpdate({ ...ch, kurazSloty: next });
+    setEditKurazSlot(null);
   };
 
   const pridatPomocnika = () => {
@@ -838,44 +870,46 @@ export default function PostavaTab({ character, onUpdate, onCharCreate }) {
         </button>
       )}
       {/* Identita */}
-      <div style={{ marginBottom: 10 }}>
+      <div style={{ marginBottom: 6 }}>
         <div style={{ display: "flex", gap: 6, marginBottom: 6 }}>
-          <input value={ch.jmeno} onChange={e => setField("jmeno", e.target.value)} placeholder="Jméno postavy" style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 8px", fontSize: 13, fontWeight: 700, fontFamily: FONT, background: "white", color: C.text, outline: "none" }} />
-          <div style={{ display: "flex", alignItems: "center", gap: 2, alignSelf: "center" }}>
-            <span style={{ fontSize: 10, color: C.muted, whiteSpace: "nowrap" }}>Úr.</span>
-            <input type="number" value={ch.uroven} onChange={e => setField("uroven", Math.max(1, Number(e.target.value) || 1))} style={{ ...statInput, width: 28, fontSize: 10, color: C.text, fontWeight: 700 }} />
+          <div style={{ flex: 1, display: "flex", border: `1px solid ${C.border}`, borderRadius: 4, overflow: "hidden", background: "white" }}>
+            <input value={ch.jmeno} onChange={e => setField("jmeno", e.target.value)} placeholder="Jméno" style={{ flex: 1, border: "none", padding: "4px 8px", fontSize: 13, fontWeight: 700, fontFamily: FONT, background: "transparent", color: C.text, outline: "none", minWidth: 0 }} />
+            <input value={ch.prijmeni || ""} onChange={e => setField("prijmeni", e.target.value)} placeholder="Příjmení" style={{ flex: 1, border: "none", borderLeft: `1px solid ${C.border}`, padding: "4px 8px", fontSize: 13, fontFamily: FONT, background: "transparent", color: C.muted, outline: "none", minWidth: 0 }} />
           </div>
         </div>
-        <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-          <input value={ch.puvod} onChange={e => setField("puvod", e.target.value)} placeholder="Původ (Kuchařka...)" style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 8px", fontSize: 11, fontFamily: FONT, background: "white", color: C.muted, outline: "none" }} />
-          <span style={{ fontSize: 10, color: C.muted, whiteSpace: "nowrap" }}>ZK</span>
-          <input type="number" value={ch.zk} onChange={e => setField("zk", Math.max(0, Number(e.target.value) || 0))} style={{ ...statInput, width: 54, fontSize: 10, color: C.text }} />
-          <span style={{ fontSize: 10, color: C.muted }}>/</span>
-          <span style={{ fontSize: 10, color: C.muted }}>{zkMax}</span>
-          <span style={{ fontSize: 10, color: C.muted, whiteSpace: "nowrap" }}>Ďobky</span>
-          <input type="number" value={ch.dobky} onChange={e => setField("dobky", Math.max(0, Number(e.target.value) || 0))} style={{ ...statInput, width: 44, color: C.yellow, fontWeight: 700 }} />
-        </div>
+        <input value={ch.puvod} onChange={e => setField("puvod", e.target.value)} placeholder="Původ (Kuchařka...)" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 8px", fontSize: 11, fontFamily: FONT, background: "white", color: C.muted, outline: "none", boxSizing: "border-box" }} />
       </div>
 
-      {/* Staty */}
-      <div style={{ marginBottom: 10 }}>
+      {/* Staty 2×2 grid — klikatelné, otevře modal */}
+      <div onClick={() => setStatyModal(true)} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4, marginBottom: 6, cursor: "pointer" }}>
         {[["str","STR",C.green],["dex","DEX",C.green],["wil","WIL",C.green],["bo","BO",C.red]].map(([key, label, col]) => {
           const s = ch[key];
-          const pct = s.max > 0 ? (s.akt / s.max) * 100 : 0;
           return (
-            <div key={key} style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-              <span style={{ width: 28, fontSize: 10, fontWeight: 700, color: col }}>{label}</span>
-              <div style={{ flex: 1, height: 6, background: C.border, borderRadius: 3, overflow: "hidden" }}>
-                <div style={{ width: `${Math.min(100, pct)}%`, height: "100%", background: col, borderRadius: 3 }} />
-              </div>
-              <input type="number" value={s.akt} onChange={e => setStat(key, "akt", e.target.value)} style={{ ...statInput, color: col }} />
-              <span style={{ fontSize: 10, color: C.muted }}>/</span>
-              <input type="number" value={s.max} onChange={e => setStat(key, "max", e.target.value)} style={{ ...statInput, color: C.muted }} />
+            <div key={key} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, padding: "5px 6px", border: `1px solid ${col}50`, borderRadius: 4, background: `${col}12` }}>
+              <span style={{ fontSize: 9, fontWeight: 700, color: col }}>{label}</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: col, fontFamily: FONT }}>{s.akt}</span>
+              <span style={{ fontSize: 9, color: C.muted }}>/{s.max}</span>
             </div>
           );
         })}
+      </div>
+      {/* Ďobky / ZK+Úroveň — grid 1fr 1fr jako staty */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4, marginBottom: 6 }}>
+        <div onClick={() => setDobkyModal(true)} style={{ display: "flex", alignItems: "center", justifyContent: "center", padding: "5px 6px", border: `1px solid ${C.yellow}50`, borderRadius: 4, background: `${C.yellow}08`, cursor: "pointer" }}>
+          <span style={{ fontSize: 14, color: C.yellow, fontWeight: 700, fontFamily: FONT }}>{ch.dobky}</span>
+        </div>
+        <div onClick={() => setZkModal(true)} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4, padding: "5px 6px", border: `1px solid ${C.border}`, borderRadius: 4, background: "white", cursor: "pointer" }}>
+          <span style={{ fontSize: 13, fontWeight: 700, color: C.text, fontFamily: FONT }}>{ch.zk}</span>
+          <span style={{ fontSize: 8, color: C.muted }}>/{zkMax}</span>
+          <span style={{ color: C.border, fontSize: 12 }}>│</span>
+          <span style={{ fontSize: 9, color: C.muted }}>Úr.</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: C.text, fontFamily: FONT }}>{ch.uroven}</span>
+        </div>
+      </div>
+      {/* Level up */}
+      <div style={{ marginBottom: 10 }}>
         {ch.zk >= zkMax && zkMax > 0 && (
-          <button onClick={handleLevelUp} style={{ width: "100%", padding: "8px 0", background: C.green, color: "white", border: "none", borderRadius: 6, fontSize: 12, fontFamily: FONT, fontWeight: 700, cursor: "pointer", marginTop: 4 }}>
+          <button onClick={handleLevelUp} style={{ width: "100%", padding: "8px 0", background: C.green, color: "white", border: "none", borderRadius: 6, fontSize: 12, fontFamily: FONT, fontWeight: 700, cursor: "pointer" }}>
             ⬆ LEVEL UP → Úroveň {ch.uroven + 1}
           </button>
         )}
@@ -890,43 +924,41 @@ export default function PostavaTab({ character, onUpdate, onCharCreate }) {
 
       {/* Vzhled a detaily */}
       <div style={{ marginBottom: 10 }}>
-        <div style={{ fontSize: 9, color: C.muted, marginBottom: 6, letterSpacing: 0.8 }}>VZHLED</div>
-        <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
-          <label style={{ flex: 1 }}>
-            <span style={{ color: C.muted, fontSize: 9 }}>Příjmení</span>
-            <input value={ch.prijmeni || ""} onChange={e => setField("prijmeni", e.target.value)} placeholder="d20" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
-          </label>
-          <label style={{ flex: 1 }}>
-            <span style={{ color: C.muted, fontSize: 9 }}>Znamení</span>
-            <input value={ch.znameni || ""} onChange={e => setField("znameni", e.target.value)} placeholder="d6" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
-          </label>
+        <div onClick={() => setVzhledOpen(!vzhledOpen)} style={{ fontSize: 9, color: C.muted, marginBottom: vzhledOpen ? 6 : 0, letterSpacing: 0.8, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>
+          <span style={{ fontSize: 8, transition: "transform 0.15s", display: "inline-block", transform: vzhledOpen ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
+          VZHLED
         </div>
-        <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
-          <label style={{ flex: 1 }}>
-            <span style={{ color: C.muted, fontSize: 9 }}>Barva srsti</span>
-            <input value={ch.barvaSrsti || ""} onChange={e => setField("barvaSrsti", e.target.value)} placeholder="d6" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
-          </label>
-          <label style={{ flex: 1 }}>
-            <span style={{ color: C.muted, fontSize: 9 }}>Vzor srsti</span>
-            <input value={ch.vzorSrsti || ""} onChange={e => setField("vzorSrsti", e.target.value)} placeholder="d6" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
-          </label>
-        </div>
-        <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
-          <label style={{ flex: 2 }}>
-            <span style={{ color: C.muted, fontSize: 9 }}>Výrazný rys</span>
-            <input value={ch.vyraznyRys || ""} onChange={e => setField("vyraznyRys", e.target.value)} placeholder="d66" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
-          </label>
-          <label style={{ flex: 1 }}>
-            <span style={{ color: C.muted, fontSize: 9 }}>Kuráž</span>
-            <input type="number" value={ch.kuraz ?? 0} onChange={e => setField("kuraz", Math.max(0, Number(e.target.value) || 0))} style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2, textAlign: "center" }} />
-          </label>
-        </div>
+        {vzhledOpen && <>
+          <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
+            <label style={{ flex: 1 }}>
+              <span style={{ color: C.muted, fontSize: 9 }}>Znamení</span>
+              <input value={ch.znameni || ""} onChange={e => setField("znameni", e.target.value)} placeholder="d6" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+            </label>
+            <label style={{ flex: 1 }}>
+              <span style={{ color: C.muted, fontSize: 9 }}>Výrazný rys</span>
+              <input value={ch.vyraznyRys || ""} onChange={e => setField("vyraznyRys", e.target.value)} placeholder="d66" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+            </label>
+          </div>
+          <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
+            <label style={{ flex: 1 }}>
+              <span style={{ color: C.muted, fontSize: 9 }}>Barva srsti</span>
+              <input value={ch.barvaSrsti || ""} onChange={e => setField("barvaSrsti", e.target.value)} placeholder="d6" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+            </label>
+            <label style={{ flex: 1 }}>
+              <span style={{ color: C.muted, fontSize: 9 }}>Vzor srsti</span>
+              <input value={ch.vzorSrsti || ""} onChange={e => setField("vzorSrsti", e.target.value)} placeholder="d6" style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+            </label>
+          </div>
+        </>}
       </div>
 
       {/* Inventář — Grid */}
       <div style={{ marginBottom: 10 }}>
-        <div style={{ fontSize: 9, color: C.muted, marginBottom: 6, letterSpacing: 0.8 }}>INVENTÁŘ (10 slotů)</div>
-        <InventoryGrid
+        <div onClick={() => setInventarOpen(!inventarOpen)} style={{ fontSize: 9, color: C.muted, marginBottom: inventarOpen ? 6 : 0, letterSpacing: 0.8, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}>
+          <span style={{ fontSize: 8, transition: "transform 0.15s", display: "inline-block", transform: inventarOpen ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
+          INVENTÁŘ ({inv.filter(s => s.nazev && !s._occupied).length}/10)
+        </div>
+        {inventarOpen && <InventoryGrid
           inv={inv}
           gridLabels={PLAYER_GRID}
           cols={5}
@@ -935,8 +967,100 @@ export default function PostavaTab({ character, onUpdate, onCharCreate }) {
           updateSlot={updateSlot}
           clearSlot={clearSlot}
           gridId="player"
-        />
+        />}
       </div>
+
+      {/* Kuráž sloty */}
+        <div style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: 9, color: C.muted, marginBottom: kurazOpen ? 6 : 0, letterSpacing: 0.8, display: "flex", alignItems: "center", gap: 4 }}>
+            <span onClick={() => { if (ch.kuraz > 0) setKurazOpen(!kurazOpen); }} style={{ cursor: ch.kuraz > 0 ? "pointer" : "default", display: "flex", alignItems: "center", gap: 4 }}>
+              {ch.kuraz > 0 && <span style={{ fontSize: 8, transition: "transform 0.15s", display: "inline-block", transform: kurazOpen ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>}
+              KURÁŽ ({kurazSloty.filter(s => s.nazev).length}/{ch.kuraz})
+            </span>
+            <span style={{ marginLeft: "auto", display: "flex", gap: 2 }}>
+              <button onClick={() => {
+                const nk = Math.max(0, (ch.kuraz || 0) - 1);
+                const ns = kurazSloty.slice(0, nk);
+                onUpdate({ ...ch, kuraz: nk, kurazSloty: ns });
+                if (nk === 0) setKurazOpen(false);
+              }} style={{ border: `1px solid ${C.border}`, background: "white", color: C.muted, fontSize: 10, fontFamily: FONT, width: 18, height: 18, lineHeight: "16px", textAlign: "center", borderRadius: 3, cursor: "pointer", padding: 0 }}>−</button>
+              <button onClick={() => {
+                const nk = (ch.kuraz || 0) + 1;
+                const ns = [...kurazSloty, { ...EMPTY_SLOT }];
+                onUpdate({ ...ch, kuraz: nk, kurazSloty: ns });
+              }} style={{ border: `1px solid ${C.border}`, background: "white", color: C.muted, fontSize: 10, fontFamily: FONT, width: 18, height: 18, lineHeight: "16px", textAlign: "center", borderRadius: 3, cursor: "pointer", padding: 0 }}>+</button>
+            </span>
+          </div>
+          {kurazOpen && <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(kurazSloty.length, 3)}, 1fr)`, border: `1px solid ${C.yellow}60`, background: `${C.yellow}10`, gap: 1 }}>
+            {kurazSloty.map((slot, idx) => {
+              if (editKurazSlot === idx) {
+                const stavPresets = PRESETY["stav"] || [];
+                const fSt = { width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 };
+                return (
+                  <div key={idx} style={{ gridColumn: "1 / -1", border: `1px solid ${C.yellow}`, padding: "8px 10px", background: C.bg }}>
+                    <div style={{ display: "flex", gap: 6, marginBottom: 4 }}>
+                      <label style={{ flex: 1 }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Podmínka</span>
+                        <select
+                          value={stavPresets.some(p => p.nazev === slot.nazev) ? slot.nazev : "__vlastni__"}
+                          onChange={e => {
+                            if (e.target.value === "__vlastni__") {
+                              updateKurazSlot(idx, { nazev: "", typ: "stav", tecky: { akt: 0, max: 0 } });
+                            } else {
+                              const p = stavPresets.find(p => p.nazev === e.target.value);
+                              if (p) updateKurazSlot(idx, { nazev: p.nazev, typ: "stav", tecky: { akt: p.tecky, max: p.tecky } });
+                            }
+                          }}
+                          style={fSt}
+                        >
+                          {stavPresets.map(p => <option key={p.nazev} value={p.nazev}>{p.nazev}</option>)}
+                          <option value="__vlastni__">jiný stav...</option>
+                        </select>
+                      </label>
+                    </div>
+                    {stavPresets.some(p => p.nazev === slot.nazev) && (
+                      <div style={{ fontSize: 9, color: C.muted, fontStyle: "italic", marginBottom: 4, lineHeight: 1.3 }}>
+                        {stavPresets.find(p => p.nazev === slot.nazev)?.hint}
+                      </div>
+                    )}
+                    {!stavPresets.some(p => p.nazev === slot.nazev) && (
+                      <div style={{ marginBottom: 4 }}>
+                        <label>
+                          <span style={{ color: C.muted, fontSize: 9 }}>Název</span>
+                          <input value={slot.nazev} onChange={e => updateKurazSlot(idx, { nazev: e.target.value, typ: "stav" })} placeholder="Vlastní podmínka" style={fSt} />
+                        </label>
+                      </div>
+                    )}
+                    <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                      <button onClick={() => clearKurazSlot(idx)} style={{ border: "none", background: "none", color: C.red, fontSize: 10, fontFamily: FONT, cursor: "pointer", padding: "2px 4px" }}>smazat</button>
+                      <button onClick={() => setEditKurazSlot(null)} style={{ border: "none", background: "none", color: C.green, fontSize: 10, fontFamily: FONT, cursor: "pointer", padding: "2px 4px", fontWeight: 700 }}>✓</button>
+                    </div>
+                  </div>
+                );
+              }
+              const isEmpty = !slot.nazev;
+              return (
+                <div
+                  key={idx}
+                  onClick={() => setEditKurazSlot(idx)}
+                  style={{
+                    display: "flex", flexDirection: "column", cursor: "pointer",
+                    minHeight: 44, background: C.bg, overflow: "hidden",
+                    boxShadow: `inset 0 0 0 1px ${isEmpty ? C.yellow + "40" : C.red + "60"}`,
+                  }}
+                >
+                  <div style={{ padding: "3px 5px 2px", fontSize: 9, fontWeight: 700, color: isEmpty ? C.muted : C.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", lineHeight: 1.3 }}>
+                    {isEmpty ? "—" : slot.nazev}
+                  </div>
+                  <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "0 5px" }}>
+                    {!isEmpty && <span style={{ fontSize: 7, color: C.red, opacity: 0.7 }}>stav</span>}
+                    {isEmpty && <span style={{ fontSize: 7, color: C.yellow, opacity: 0.5 }}>kuráž</span>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>}
+        </div>
 
       {/* Pomocníci */}
       <div style={{ marginBottom: 10 }}>
@@ -1040,6 +1164,163 @@ export default function PostavaTab({ character, onUpdate, onCharCreate }) {
           style={{ width: "100%", padding: "8px 0", border: `1px dashed ${C.border}`, borderRadius: 6, background: "transparent", fontFamily: FONT, fontSize: 11, color: C.muted, cursor: "pointer" }}
         >+ Přidat pomocníka</button>
       </div>
+
+      {/* Ďobky modal */}
+      {dobkyModal && <div
+        onClick={() => setDobkyModal(false)}
+        style={{
+          position: "fixed", inset: 0, zIndex: 9999,
+          background: "rgba(0,0,0,0.5)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          animation: "dobkyFadeIn 0.2s ease-out",
+        }}
+      >
+        <style>{`
+          @keyframes dobkyFadeIn { from { opacity: 0; } to { opacity: 1; } }
+          @keyframes dobkyScaleIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        `}</style>
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{
+            background: C.bg, borderRadius: 12, padding: "24px 20px",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 16,
+            minWidth: 260, boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+            animation: "dobkyScaleIn 0.2s ease-out",
+          }}
+        >
+          <span style={{ fontSize: 11, fontWeight: 700, color: C.muted, fontFamily: FONT, letterSpacing: 1 }}>ĎOBKY</span>
+          <span style={{ fontSize: 48, fontWeight: 700, color: C.yellow, fontFamily: FONT, lineHeight: 1 }}>{ch.dobky}</span>
+          <div style={{ display: "flex", gap: 6 }}>
+            {[[-100,"−100",C.red],[-10,"−10",C.red],[-1,"−",C.red],[1,"+",C.green],[10,"+10",C.green],[100,"+100",C.green]].map(([delta, label, col]) => (
+              <button
+                key={delta}
+                onClick={() => setField("dobky", Math.max(0, ch.dobky + delta))}
+                style={{
+                  border: `1px solid ${col}40`, borderRadius: 6,
+                  background: `${col}10`, color: col,
+                  fontSize: Math.abs(delta) === 1 ? 16 : Math.abs(delta) === 10 ? 12 : 10,
+                  fontFamily: FONT, fontWeight: 700,
+                  padding: "8px 10px", cursor: "pointer", lineHeight: 1,
+                  minWidth: 36, textAlign: "center",
+                }}
+              >{label}</button>
+            ))}
+          </div>
+          <input
+            type="number" value={ch.dobky}
+            onChange={e => setField("dobky", Math.max(0, Number(e.target.value) || 0))}
+            style={{
+              width: 120, textAlign: "center", fontSize: 18, fontWeight: 700,
+              fontFamily: FONT, color: C.yellow, border: `1px solid ${C.yellow}40`,
+              borderRadius: 6, padding: "6px 8px", background: `${C.yellow}08`, outline: "none",
+            }}
+          />
+          <button
+            onClick={() => setDobkyModal(false)}
+            style={{
+              border: "none", background: "none", color: C.muted,
+              fontSize: 11, fontFamily: FONT, cursor: "pointer", padding: "4px 12px",
+            }}
+          >Zavřít</button>
+        </div>
+      </div>}
+
+      {/* Staty modal — 4 staty vedle sebe */}
+      {statyModal && <div
+        onClick={() => setStatyModal(false)}
+        style={{
+          position: "fixed", inset: 0, zIndex: 9999,
+          background: "rgba(0,0,0,0.5)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          animation: "dobkyFadeIn 0.2s ease-out",
+        }}
+      >
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{
+            background: C.bg, borderRadius: 12, padding: "20px 16px",
+            display: "flex", gap: 8, boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+            animation: "dobkyScaleIn 0.2s ease-out",
+          }}
+        >
+          {[["str","STR",C.green],["dex","DEX",C.green],["wil","WIL",C.green],["bo","BO",C.red]].map(([key, label, col]) => {
+            const s = ch[key];
+            return (
+              <div key={key} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, padding: "8px 6px", border: `1px solid ${col}50`, borderRadius: 8, background: `${col}12`, minWidth: 62 }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: C.muted, fontFamily: FONT }}>{label}</span>
+                <span style={{ fontSize: 28, fontWeight: 700, color: col, fontFamily: FONT, lineHeight: 1 }}>{s.akt}</span>
+                <div style={{ display: "flex", gap: 4 }}>
+                  <button onClick={() => setStat(key, "akt", Math.max(0, s.akt - 1))} style={{ border: `1px solid ${C.red}40`, borderRadius: 4, background: `${C.red}10`, color: C.red, fontSize: 16, fontFamily: FONT, fontWeight: 700, width: 28, height: 28, cursor: "pointer", lineHeight: 1, padding: 0 }}>−</button>
+                  <button onClick={() => setStat(key, "akt", Math.min(s.max, s.akt + 1))} style={{ border: `1px solid ${C.green}40`, borderRadius: 4, background: `${C.green}10`, color: C.green, fontSize: 16, fontFamily: FONT, fontWeight: 700, width: 28, height: 28, cursor: "pointer", lineHeight: 1, padding: 0 }}>+</button>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <span style={{ fontSize: 9, color: C.muted }}>max</span>
+                  <input type="number" value={s.max} onChange={e => setStat(key, "max", e.target.value)} style={{ ...statInput, width: 28, fontSize: 12, color: C.muted, textAlign: "center" }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>}
+
+      {/* ZK modal */}
+      {zkModal && <div
+        onClick={() => setZkModal(false)}
+        style={{
+          position: "fixed", inset: 0, zIndex: 9999,
+          background: "rgba(0,0,0,0.5)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          animation: "dobkyFadeIn 0.2s ease-out",
+        }}
+      >
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{
+            background: C.bg, borderRadius: 12, padding: "24px 20px",
+            display: "flex", flexDirection: "column", alignItems: "center", gap: 16,
+            minWidth: 260, boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+            animation: "dobkyScaleIn 0.2s ease-out",
+          }}
+        >
+          <span style={{ fontSize: 11, fontWeight: 700, color: C.muted, fontFamily: FONT, letterSpacing: 1 }}>ZKUŠENOSTI</span>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+            <span style={{ fontSize: 48, fontWeight: 700, color: C.text, fontFamily: FONT, lineHeight: 1 }}>{ch.zk}</span>
+            <span style={{ fontSize: 16, color: C.muted, fontFamily: FONT }}>/ {zkMax}</span>
+          </div>
+          <div style={{ display: "flex", gap: 6 }}>
+            {[[-100,"−100",C.red],[-10,"−10",C.red],[-1,"−",C.red],[1,"+",C.green],[10,"+10",C.green],[100,"+100",C.green]].map(([delta, label, col]) => (
+              <button
+                key={delta}
+                onClick={() => setField("zk", Math.max(0, ch.zk + delta))}
+                style={{
+                  border: `1px solid ${col}40`, borderRadius: 6,
+                  background: `${col}10`, color: col,
+                  fontSize: Math.abs(delta) === 1 ? 16 : Math.abs(delta) === 10 ? 12 : 10,
+                  fontFamily: FONT, fontWeight: 700,
+                  padding: "8px 10px", cursor: "pointer", lineHeight: 1,
+                  minWidth: 36, textAlign: "center",
+                }}
+              >{label}</button>
+            ))}
+          </div>
+          <input
+            type="number" value={ch.zk}
+            onChange={e => setField("zk", Math.max(0, Number(e.target.value) || 0))}
+            style={{
+              width: 120, textAlign: "center", fontSize: 18, fontWeight: 700,
+              fontFamily: FONT, color: C.text, border: `1px solid ${C.border}`,
+              borderRadius: 6, padding: "6px 8px", background: "white", outline: "none",
+            }}
+          />
+          <button
+            onClick={() => setZkModal(false)}
+            style={{
+              border: "none", background: "none", color: C.muted,
+              fontSize: 11, fontFamily: FONT, cursor: "pointer", padding: "4px 12px",
+            }}
+          >Zavřít</button>
+        </div>
+      </div>}
     </div>
   );
 }
