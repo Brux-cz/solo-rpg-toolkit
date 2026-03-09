@@ -104,6 +104,12 @@ const HELP = {
 export default function Header({ onToggle, expanded, cf, sceneNum, character, tab }) {
   const [showHelp, setShowHelp] = useState(false);
   const ch = character;
+  const inv = ch.inventar || [];
+  const inventarUsed = inv.filter(s => s.nazev || s._occupied).length;
+  const dobkySlots = ch.dobky > 250 ? Math.ceil((ch.dobky - 250) / 250) : 0;
+  const totalDemand = inventarUsed + dobkySlots;
+  const overloaded = totalDemand > 10;
+  const invFull = inventarUsed >= 10;
   return (
     <>
       <div style={{ padding: "9px 16px", borderBottom: `1px solid ${C.border}`, background: C.bg, flexShrink: 0, fontFamily: FONT }}>
@@ -127,8 +133,8 @@ export default function Header({ onToggle, expanded, cf, sceneNum, character, ta
               <span><span style={{ color: C.red }}>BO</span> {ch.bo.akt}/{ch.bo.max}</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span>Ďobky: <span style={{ color: C.yellow }}>{ch.dobky}</span></span>
-              <span>Úr. {ch.uroven}  ZK {ch.zk}/{getZkMax(ch.uroven)}</span>
+              <span>Ďobky: <span style={{ color: C.yellow }}>{ch.dobky}</span> <span style={{ color: C.border }}>·</span> <span style={{ color: overloaded ? C.red : invFull ? C.yellow : C.muted, fontWeight: overloaded ? 700 : 400 }}>{overloaded ? "⚠ " : ""}INV {inventarUsed}/10</span></span>
+              <span>Úr. {ch.uroven}  ZK {ch.zk}/{getZkMax(ch.uroven + 1)}</span>
             </div>
           </div>
         )}

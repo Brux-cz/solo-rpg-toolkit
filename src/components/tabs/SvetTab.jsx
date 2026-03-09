@@ -4,14 +4,17 @@ import { C, FONT } from "../../constants/theme.js";
 const DatovyModel = lazy(() => import("../../docs/datovy-model.jsx"));
 const SoloRpgDiagram = lazy(() => import("../../docs/solo-rpg-diagram.jsx"));
 
-export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, onThreadsChange }) {
+export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, onGoToLobby, onNpcsChange, onThreadsChange, onKeyedScenesChange, onPerilPointsChange }) {
   const [sub, setSub] = useState("mythic");
   const [newNpc, setNewNpc] = useState("");
   const [newThread, setNewThread] = useState("");
   const [expandedNpc, setExpandedNpc] = useState(null);
   const [expandedThread, setExpandedThread] = useState(null);
   const [docView, setDocView] = useState("model");
-  const subs = [["mythic","Mythic"],["npc","NPC"],["thready","Thready"],["mapa","Mapa"],["docs","Docs"]];
+  const [newKsTrigger, setNewKsTrigger] = useState("");
+  const [newKsUdalost, setNewKsUdalost] = useState("");
+  const [expandedKs, setExpandedKs] = useState(null);
+  const subs = [["mythic","Mythic"],["npc","NPC"],["thready","Thready"],["klicove","Klíčové"],["mapa","Mapa"],["docs","Docs"]];
 
   const addNpc = () => {
     const name = newNpc.trim();
@@ -93,6 +96,16 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
               </div>
               <span style={{ fontSize: 9, color: C.muted }}>1–9</span>
             </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, padding: "8px 10px", border: `1px solid ${C.red}30`, borderRadius: 6, background: C.red + "08" }}>
+              <span style={{ fontSize: 9, color: C.red, fontWeight: 700, whiteSpace: "nowrap" }}>PERIL POINTS</span>
+              <button onClick={() => onPerilPointsChange({ ...perilPoints, aktualni: Math.max(0, perilPoints.aktualni - 1) })} style={{ background: "none", border: `1px solid ${C.red}`, borderRadius: 4, fontSize: 11, cursor: "pointer", padding: "1px 6px", fontFamily: FONT, color: C.red, fontWeight: 700 }}>−</button>
+              <span style={{ fontSize: 18, fontWeight: 700, color: C.red, minWidth: 36, textAlign: "center" }}>{perilPoints.aktualni}/{perilPoints.max}</span>
+              <button onClick={() => onPerilPointsChange({ ...perilPoints, aktualni: Math.min(perilPoints.max, perilPoints.aktualni + 1) })} style={{ background: "none", border: `1px solid ${C.red}`, borderRadius: 4, fontSize: 11, cursor: "pointer", padding: "1px 6px", fontFamily: FONT, color: C.red, fontWeight: 700 }}>+</button>
+              <span style={{ fontSize: 9, color: C.muted, marginLeft: "auto" }}>max:</span>
+              <button onClick={() => { const m = Math.max(0, perilPoints.max - 1); onPerilPointsChange({ ...perilPoints, max: m, aktualni: Math.min(perilPoints.aktualni, m) }); }} style={{ background: "none", border: `1px solid ${C.border}`, borderRadius: 4, fontSize: 10, cursor: "pointer", padding: "1px 5px", fontFamily: FONT, color: C.muted }}>−</button>
+              <span style={{ fontSize: 11, color: C.muted, minWidth: 14, textAlign: "center" }}>{perilPoints.max}</span>
+              <button onClick={() => onPerilPointsChange({ ...perilPoints, max: Math.min(10, perilPoints.max + 1) })} style={{ background: "none", border: `1px solid ${C.border}`, borderRadius: 4, fontSize: 10, cursor: "pointer", padding: "1px 5px", fontFamily: FONT, color: C.muted }}>+</button>
+            </div>
             <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>NPC SEZNAM ({npcs.filter(n => n.weight >= 1).length}/25)</div>
             {npcs.map((n, origIdx) => {
               if (n.weight < 1) return null;
@@ -104,6 +117,24 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
                 </div>
               );
             })}
+            {npcs.some(n => n.weight === 0) && (
+              <>
+                <div style={{ fontSize: 9, color: C.muted, margin: "10px 0 6px", display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ flex: 1, borderBottom: `1px dashed ${C.border}` }} />
+                  <span>WIKI-ONLY</span>
+                  <span style={{ flex: 1, borderBottom: `1px dashed ${C.border}` }} />
+                </div>
+                {npcs.map((n, origIdx) => {
+                  if (n.weight !== 0) return null;
+                  return (
+                    <div key={origIdx} style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 10px", border: `1px solid ${C.border}`, borderRadius: 6, marginBottom: 4, fontSize: 11, opacity: 0.7 }}>
+                      <span style={{ flex: 1, color: C.muted }}>{n.name}</span>
+                      <button onClick={() => changeNpcWeight(origIdx, 1)} style={{ background: "none", border: `1px solid ${C.green}`, borderRadius: 4, fontSize: 9, cursor: "pointer", padding: "1px 6px", fontFamily: FONT, color: C.green }}>→ aktivovat</button>
+                    </div>
+                  );
+                })}
+              </>
+            )}
             <div style={{ fontSize: 9, color: C.muted, margin: "12px 0 6px" }}>THREAD SEZNAM ({threads.length}/25)</div>
             {threads.map((t, i) => (
               <div key={i} style={{ padding: "6px 10px", border: `1px solid ${C.border}`, borderRadius: 6, marginBottom: 4 }}>
@@ -123,7 +154,8 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
         {sub === "npc" && (
           <>
             <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>NPC WIKI ({npcs.length}) · aktivní: {npcs.filter(n => n.weight >= 1).length}</div>
-            {npcs.map((n, i) => {
+            {npcs.filter(n => n.weight >= 1).map((n) => {
+              const i = npcs.indexOf(n);
               const isExpanded = expandedNpc === i;
               const vztahColor = n.vztah === "přátelský" ? C.green : n.vztah === "nepřátelský" ? C.red : C.muted;
               return (
@@ -220,11 +252,64 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
                         style={{ background: "none", border: `1px dashed ${C.border}`, borderRadius: 4, padding: "3px 8px", fontSize: 9, fontFamily: FONT, color: C.muted, cursor: "pointer", width: "100%" }}>
                         + Přidat předmět
                       </button>
+                      <button onClick={() => { changeNpcWeight(i, n.weight >= 1 ? -n.weight : 1); }}
+                        style={{ marginTop: 8, width: "100%", padding: "5px 0", border: `1px solid ${n.weight >= 1 ? C.muted : C.green}`, background: "transparent", borderRadius: 4, fontSize: 9, fontFamily: FONT, color: n.weight >= 1 ? C.muted : C.green, cursor: "pointer" }}>
+                        {n.weight >= 1 ? "Odebrat ze seznamu (→ wiki-only)" : "Aktivovat v seznamu"}
+                      </button>
                     </div>
                   )}
                 </div>
               );
             })}
+            {npcs.some(n => n.weight === 0) && (
+              <>
+                <div style={{ fontSize: 9, color: C.muted, margin: "12px 0 6px", display: "flex", alignItems: "center", gap: 6 }}>
+                  <span style={{ flex: 1, borderBottom: `1px dashed ${C.border}` }} />
+                  <span>WIKI-ONLY</span>
+                  <span style={{ flex: 1, borderBottom: `1px dashed ${C.border}` }} />
+                </div>
+                {npcs.filter(n => n.weight === 0).map((n) => {
+                  const i = npcs.indexOf(n);
+                  const isExpanded = expandedNpc === i;
+                  const vztahColor = n.vztah === "přátelský" ? C.green : n.vztah === "nepřátelský" ? C.red : C.muted;
+                  return (
+                    <div key={i} style={{ marginBottom: 4 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 10px", border: `1px solid ${isExpanded ? C.muted : C.border}`, borderRadius: isExpanded ? "6px 6px 0 0" : 6, fontSize: 11, cursor: "pointer", background: isExpanded ? C.bg : "transparent", opacity: 0.8 }}
+                        onClick={() => setExpandedNpc(isExpanded ? null : i)}>
+                        <span style={{ flex: 1, fontWeight: isExpanded ? 700 : 400, color: C.muted }}>{n.name}</span>
+                        <span style={{ fontSize: 8, color: C.muted, border: `1px solid ${C.border}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>jen wiki</span>
+                        {n.vztah && <span style={{ fontSize: 8, color: vztahColor, border: `1px solid ${vztahColor}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>{n.vztah}</span>}
+                        <button onClick={e => { e.stopPropagation(); changeNpcWeight(i, 1); }} style={{ ...weightBtnStyle, color: C.green, borderColor: C.green, fontSize: 9 }}>→ aktivovat</button>
+                        <button onClick={e => { e.stopPropagation(); onNpcsChange(npcs.filter((_, j) => j !== i)); if (expandedNpc === i) setExpandedNpc(null); }} style={delBtnStyle}>✕</button>
+                      </div>
+                      {isExpanded && (
+                        <div style={{ border: `1px solid ${C.muted}`, borderTop: "none", borderRadius: "0 0 6px 6px", padding: 10, background: C.bg, fontSize: 10 }}>
+                          <label style={{ display: "block", marginBottom: 6 }}>
+                            <span style={{ color: C.muted, fontSize: 9 }}>Popis</span>
+                            <textarea value={n.popis || ""} onChange={e => updateNpc(i, { popis: e.target.value })} rows={2}
+                              style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                          </label>
+                          <label style={{ display: "block", marginBottom: 6 }}>
+                            <span style={{ color: C.muted, fontSize: 9 }}>Lokace</span>
+                            <input value={n.lokace || ""} onChange={e => updateNpc(i, { lokace: e.target.value })}
+                              style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                          </label>
+                          <label style={{ display: "block", marginBottom: 6 }}>
+                            <span style={{ color: C.muted, fontSize: 9 }}>Poznámky</span>
+                            <textarea value={n.poznamky || ""} onChange={e => updateNpc(i, { poznamky: e.target.value })} rows={2}
+                              style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                          </label>
+                          <button onClick={() => changeNpcWeight(i, 1)}
+                            style={{ width: "100%", padding: "5px 0", border: `1px solid ${C.green}`, background: "transparent", borderRadius: 4, fontSize: 9, fontFamily: FONT, color: C.green, cursor: "pointer" }}>
+                            Aktivovat v seznamu
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </>
+            )}
             <div style={{ display: "flex", gap: 4, marginTop: 8 }}>
               <input value={newNpc} onChange={e => setNewNpc(e.target.value)} onKeyDown={e => e.key === "Enter" && addNpc()} placeholder="Nový NPC..." style={addInputStyle} />
               <button onClick={addNpc} style={addBtnStyle}>+ NPC</button>
@@ -295,6 +380,57 @@ export default function SvetTab({ cf, npcs, threads, onGoToLobby, onNpcsChange, 
             <div style={{ display: "flex", gap: 4, marginTop: 8 }}>
               <input value={newThread} onChange={e => setNewThread(e.target.value)} onKeyDown={e => e.key === "Enter" && addThread()} placeholder="Nový Thread..." style={addInputStyle} />
               <button onClick={addThread} style={addBtnStyle}>+ Thread</button>
+            </div>
+          </>
+        )}
+        {sub === "klicove" && (
+          <>
+            <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>KLÍČOVÉ SCÉNY ({keyedScenes.length})</div>
+            {keyedScenes.map((ks, i) => {
+              const isExpanded = expandedKs === i;
+              return (
+                <div key={ks.id} style={{ marginBottom: 4 }}>
+                  <div
+                    onClick={() => setExpandedKs(isExpanded ? null : i)}
+                    style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", border: `1px solid ${isExpanded ? C.blue : C.border}`, borderRadius: isExpanded ? "6px 6px 0 0" : 6, fontSize: 11, cursor: "pointer", background: isExpanded ? C.blue + "08" : "transparent" }}
+                  >
+                    <span
+                      onClick={e => { e.stopPropagation(); onKeyedScenesChange(keyedScenes.map((k, j) => j === i ? { ...k, spustena: !k.spustena } : k)); }}
+                      style={{ fontSize: 14, cursor: "pointer", lineHeight: 1 }}
+                    >{ks.spustena ? "✅" : "⬜"}</span>
+                    <span style={{ flex: 1, fontWeight: isExpanded ? 700 : 400, textDecoration: ks.spustena ? "line-through" : "none", color: ks.spustena ? C.muted : C.text }}>{ks.trigger}</span>
+                    <button onClick={e => { e.stopPropagation(); onKeyedScenesChange(keyedScenes.filter((_, j) => j !== i)); if (expandedKs === i) setExpandedKs(null); }} style={delBtnStyle}>✕</button>
+                  </div>
+                  {!isExpanded && ks.udalost && (
+                    <div style={{ padding: "2px 10px 4px 32px", fontSize: 10, color: C.muted }}>{ks.udalost}</div>
+                  )}
+                  {isExpanded && (
+                    <div style={{ border: `1px solid ${C.blue}`, borderTop: "none", borderRadius: "0 0 6px 6px", padding: 10, background: C.bg, fontSize: 10 }}>
+                      <label style={{ display: "block", marginBottom: 6 }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Trigger</span>
+                        <input value={ks.trigger} onChange={e => onKeyedScenesChange(keyedScenes.map((k, j) => j === i ? { ...k, trigger: e.target.value } : k))}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                      </label>
+                      <label style={{ display: "block" }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Událost</span>
+                        <textarea value={ks.udalost} onChange={e => onKeyedScenesChange(keyedScenes.map((k, j) => j === i ? { ...k, udalost: e.target.value } : k))} rows={2}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                      </label>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            <div style={{ display: "flex", flexDirection: "column", gap: 4, marginTop: 8 }}>
+              <input value={newKsTrigger} onChange={e => setNewKsTrigger(e.target.value)} placeholder="Trigger (kdy se spustí)..." style={addInputStyle} />
+              <input value={newKsUdalost} onChange={e => setNewKsUdalost(e.target.value)} placeholder="Událost (co se stane)..." style={addInputStyle} />
+              <button onClick={() => {
+                const trigger = newKsTrigger.trim();
+                if (!trigger) return;
+                onKeyedScenesChange([...keyedScenes, { id: Date.now().toString(36), trigger, udalost: newKsUdalost.trim(), spustena: false }]);
+                setNewKsTrigger("");
+                setNewKsUdalost("");
+              }} style={{ ...addBtnStyle, width: "100%" }}>+ Klíčová scéna</button>
             </div>
           </>
         )}

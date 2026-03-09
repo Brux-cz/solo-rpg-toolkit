@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { C, FONT } from "../../constants/theme.js";
 import FateBlock from "../blocks/FateBlock.jsx";
 import MeaningBlock from "../blocks/MeaningBlock.jsx";
@@ -9,9 +10,26 @@ import DiceBlock from "../blocks/DiceBlock.jsx";
 import EndSceneBlock from "../blocks/EndSceneBlock.jsx";
 import DiscoveryBlock from "../blocks/DiscoveryBlock.jsx";
 import BehaviorBlock from "../blocks/BehaviorBlock.jsx";
+import SwipeableBlock from "./SwipeableBlock.jsx";
+import { canReroll } from "../../utils/reroll.js";
 
-export default function EditorArea({ entries }) {
+function renderBlock(entry, i) {
+  if (entry.type === "text") return <TextBlock key={i} entry={entry} />;
+  if (entry.type === "fate") return <FateBlock key={i} entry={entry} />;
+  if (entry.type === "meaning") return <MeaningBlock key={i} entry={entry} />;
+  if (entry.type === "scene") return <SceneBlock key={i} entry={entry} />;
+  if (entry.type === "combat") return <CombatBlock key={i} entry={entry} />;
+  if (entry.type === "detail") return <DetailBlock key={i} entry={entry} />;
+  if (entry.type === "dice") return <DiceBlock key={i} entry={entry} />;
+  if (entry.type === "endscene") return <EndSceneBlock key={i} entry={entry} />;
+  if (entry.type === "discovery") return <DiscoveryBlock key={i} entry={entry} />;
+  if (entry.type === "behavior") return <BehaviorBlock key={i} entry={entry} />;
+  return null;
+}
+
+export default function EditorArea({ entries, onDeleteEntry, onRerollEntry }) {
   const isEmpty = entries.length === 0;
+  const [openSwipeIdx, setOpenSwipeIdx] = useState(null);
 
   return (
     <div style={{ padding: "14px 16px", fontFamily: FONT, fontSize: 13, lineHeight: 1.7, color: C.text, overflowY: "auto", height: "100%" }}>
@@ -36,19 +54,19 @@ export default function EditorArea({ entries }) {
           </div>
         </div>
       )}
-      {entries.map((e, i) => {
-        if (e.type === "text") return <TextBlock key={i} entry={e} />;
-        if (e.type === "fate") return <FateBlock key={i} entry={e} />;
-        if (e.type === "meaning") return <MeaningBlock key={i} entry={e} />;
-        if (e.type === "scene") return <SceneBlock key={i} entry={e} />;
-        if (e.type === "combat") return <CombatBlock key={i} entry={e} />;
-        if (e.type === "detail") return <DetailBlock key={i} entry={e} />;
-        if (e.type === "dice") return <DiceBlock key={i} entry={e} />;
-        if (e.type === "endscene") return <EndSceneBlock key={i} entry={e} />;
-        if (e.type === "discovery") return <DiscoveryBlock key={i} entry={e} />;
-        if (e.type === "behavior") return <BehaviorBlock key={i} entry={e} />;
-        return null;
-      })}
+      {entries.map((e, i) => (
+        <SwipeableBlock
+          key={i}
+          isOpen={openSwipeIdx === i}
+          onOpen={() => setOpenSwipeIdx(i)}
+          onClose={() => setOpenSwipeIdx(null)}
+          canReroll={canReroll(e)}
+          onDelete={() => { setOpenSwipeIdx(null); onDeleteEntry(i); }}
+          onReroll={() => { setOpenSwipeIdx(null); onRerollEntry(i); }}
+        >
+          {renderBlock(e, i)}
+        </SwipeableBlock>
+      ))}
       <span style={{ display: "inline-block", width: 2, height: 14, background: C.green, verticalAlign: "text-bottom", animation: "blink 1s step-end infinite" }} />
     </div>
   );

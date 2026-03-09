@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { C, FONT } from "./constants/theme.js";
 import { loadIndex, saveIndex, loadGameById, saveGameById, INITIAL_GAME } from "./store/gameStore.js";
+import { rerollEntry } from "./utils/reroll.js";
 import Header from "./components/ui/Header.jsx";
 import EditorArea from "./components/ui/EditorArea.jsx";
 import ActionToolbar from "./components/ui/ActionToolbar.jsx";
@@ -67,6 +68,21 @@ export default function Prototype() {
     }));
   };
 
+  const handleDeleteEntry = (index) => {
+    setGame(g => ({ ...g, entries: g.entries.filter((_, i) => i !== index) }));
+  };
+
+  const handleRerollEntry = (index) => {
+    setGame(g => {
+      const entry = g.entries[index];
+      const newEntry = rerollEntry(entry, g.cf, g.npcs, g.threads);
+      if (!newEntry) return g;
+      const entries = [...g.entries];
+      entries[index] = newEntry;
+      return { ...g, entries };
+    });
+  };
+
   const handlePlay = (id, gameData) => {
     setActiveId(id);
     setGame(gameData);
@@ -99,9 +115,9 @@ export default function Prototype() {
       )}
 
       <div style={{ flex: 1, overflow: "hidden", maxHeight: sheetOpen ? "calc(50% - 10px)" : undefined }}>
-        {tab === "diary" && <EditorArea entries={game.entries} />}
+        {tab === "diary" && <EditorArea entries={game.entries} onDeleteEntry={handleDeleteEntry} onRerollEntry={handleRerollEntry} />}
         {tab === "char" && <PostavaTab character={game.character} onUpdate={(ch) => updateGame({ character: ch })} onCharCreate={() => setSheet("charcreate")} />}
-        {tab === "world" && <SvetTab cf={game.cf} npcs={game.npcs} threads={game.threads} onGoToLobby={handleGoToLobby} onNpcsChange={(npcs) => updateGame({ npcs })} onThreadsChange={(threads) => updateGame({ threads })} />}
+        {tab === "world" && <SvetTab cf={game.cf} npcs={game.npcs} threads={game.threads} keyedScenes={game.keyedScenes || []} perilPoints={game.perilPoints || { aktualni: 2, max: 2 }} onGoToLobby={handleGoToLobby} onNpcsChange={(npcs) => updateGame({ npcs })} onThreadsChange={(threads) => updateGame({ threads })} onKeyedScenesChange={(ks) => updateGame({ keyedScenes: ks })} onPerilPointsChange={(pp) => updateGame({ perilPoints: pp })} />}
       </div>
 
       {tab === "diary" && (

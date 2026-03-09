@@ -6,7 +6,7 @@ export default function EndSceneBlock({ entry }) {
       borderLeft: `3px solid`,
       borderImage: `linear-gradient(${C.red}, ${C.blue}) 1`,
       padding: "6px 10px",
-      margin: "6px 0",
+      margin: 0,
       fontSize: 11,
       fontFamily: FONT,
       color: C.muted,

@@ -10,7 +10,7 @@ const TYPE_COLORS = {
 export default function DiscoveryBlock({ entry }) {
   const color = TYPE_COLORS[entry.discoveryType] || C.green;
   return (
-    <div style={{ borderLeft: `3px solid ${color}`, background: color + "18", borderRadius: "0 4px 4px 0", padding: "4px 10px", margin: "6px 0", fontSize: 11, color: C.muted }}>
+    <div style={{ borderLeft: `3px solid ${color}`, background: color + "18", borderRadius: "0 4px 4px 0", padding: "4px 10px", margin: 0, fontSize: 11, color: C.muted }}>
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
         <span>🔍</span>
         <span>{entry.threadName}</span>
