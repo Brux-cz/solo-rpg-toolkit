@@ -1,5 +1,25 @@
 import { useState, lazy, Suspense } from "react";
 import { C, FONT } from "../../constants/theme.js";
+import { roll, rollMeaning } from "../../utils/dice.js";
+
+const REAKCE_TABLE = [
+  [2, "Agresivní"], [5, "Nepřátelská"], [8, "Nejistá"], [11, "Povídavá"], [12, "Nápomocná"]
+];
+
+function rollReakce() {
+  const hod = roll(6) + roll(6);
+  for (const [max, stav] of REAKCE_TABLE) {
+    if (hod <= max) return `${hod} → ${stav}`;
+  }
+  return `${hod} → Nápomocná`;
+}
+
+function reakceColor(text) {
+  if (!text) return C.muted;
+  if (text.includes("Agresivní") || text.includes("Nepřátelská")) return C.red;
+  if (text.includes("Nejistá")) return C.yellow;
+  return C.green;
+}
 
 const DatovyModel = lazy(() => import("../../docs/datovy-model.jsx"));
 const SoloRpgDiagram = lazy(() => import("../../docs/solo-rpg-diagram.jsx"));
@@ -200,6 +220,36 @@ export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, o
                         <textarea value={n.poznamky || ""} onChange={e => updateNpc(i, { poznamky: e.target.value })} rows={2}
                           style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
                       </label>
+                      <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+                        <div style={{ flex: 1 }}>
+                          <span style={{ color: C.muted, fontSize: 9 }}>Reakce</span>
+                          <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 2 }}>
+                            {n.reakce ? (
+                              <>
+                                <span style={{ fontSize: 10, color: reakceColor(n.reakce), fontWeight: 700, border: `1px solid ${reakceColor(n.reakce)}`, borderRadius: 4, padding: "2px 6px" }}>{n.reakce}</span>
+                                <button onClick={e => { e.stopPropagation(); updateNpc(i, { reakce: rollReakce() }); }} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12, padding: 0, lineHeight: 1 }}>🎲</button>
+                              </>
+                            ) : (
+                              <button onClick={e => { e.stopPropagation(); updateNpc(i, { reakce: rollReakce() }); }}
+                                style={{ background: "none", border: `1px dashed ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 9, fontFamily: FONT, color: C.muted, cursor: "pointer" }}>🎲 Hoď reakci (2d6)</button>
+                            )}
+                          </div>
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <span style={{ color: C.muted, fontSize: 9 }}>Motivace</span>
+                          <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 2 }}>
+                            {n.motivace ? (
+                              <>
+                                <span style={{ fontSize: 10, color: C.purple, fontWeight: 700 }}>{n.motivace}</span>
+                                <button onClick={e => { e.stopPropagation(); const m = rollMeaning("actions"); updateNpc(i, { motivace: `${m.cz1} + ${m.cz2}` }); }} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12, padding: 0, lineHeight: 1 }}>🎲</button>
+                              </>
+                            ) : (
+                              <button onClick={e => { e.stopPropagation(); const m = rollMeaning("actions"); updateNpc(i, { motivace: `${m.cz1} + ${m.cz2}` }); }}
+                                style={{ background: "none", border: `1px dashed ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 9, fontFamily: FONT, color: C.muted, cursor: "pointer" }}>🎲 Hoď motivaci</button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
                       <div style={{ fontSize: 9, color: C.muted, marginBottom: 4, fontWeight: 700 }}>BOJOVÉ STATY</div>
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 4, marginBottom: 6 }}>
                         {["str", "dex", "wil", "bo"].map(stat => (
@@ -299,6 +349,36 @@ export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, o
                             <textarea value={n.poznamky || ""} onChange={e => updateNpc(i, { poznamky: e.target.value })} rows={2}
                               style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
                           </label>
+                          <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+                            <div style={{ flex: 1 }}>
+                              <span style={{ color: C.muted, fontSize: 9 }}>Reakce</span>
+                              <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 2 }}>
+                                {n.reakce ? (
+                                  <>
+                                    <span style={{ fontSize: 10, color: reakceColor(n.reakce), fontWeight: 700, border: `1px solid ${reakceColor(n.reakce)}`, borderRadius: 4, padding: "2px 6px" }}>{n.reakce}</span>
+                                    <button onClick={e => { e.stopPropagation(); updateNpc(i, { reakce: rollReakce() }); }} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12, padding: 0, lineHeight: 1 }}>🎲</button>
+                                  </>
+                                ) : (
+                                  <button onClick={e => { e.stopPropagation(); updateNpc(i, { reakce: rollReakce() }); }}
+                                    style={{ background: "none", border: `1px dashed ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 9, fontFamily: FONT, color: C.muted, cursor: "pointer" }}>🎲 Hoď reakci (2d6)</button>
+                                )}
+                              </div>
+                            </div>
+                            <div style={{ flex: 1 }}>
+                              <span style={{ color: C.muted, fontSize: 9 }}>Motivace</span>
+                              <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 2 }}>
+                                {n.motivace ? (
+                                  <>
+                                    <span style={{ fontSize: 10, color: C.purple, fontWeight: 700 }}>{n.motivace}</span>
+                                    <button onClick={e => { e.stopPropagation(); const m = rollMeaning("actions"); updateNpc(i, { motivace: `${m.cz1} + ${m.cz2}` }); }} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 12, padding: 0, lineHeight: 1 }}>🎲</button>
+                                  </>
+                                ) : (
+                                  <button onClick={e => { e.stopPropagation(); const m = rollMeaning("actions"); updateNpc(i, { motivace: `${m.cz1} + ${m.cz2}` }); }}
+                                    style={{ background: "none", border: `1px dashed ${C.border}`, borderRadius: 4, padding: "3px 6px", fontSize: 9, fontFamily: FONT, color: C.muted, cursor: "pointer" }}>🎲 Hoď motivaci</button>
+                                )}
+                              </div>
+                            </div>
+                          </div>
                           <button onClick={() => changeNpcWeight(i, 1)}
                             style={{ width: "100%", padding: "5px 0", border: `1px solid ${C.green}`, background: "transparent", borderRadius: 4, fontSize: 9, fontFamily: FONT, color: C.green, cursor: "pointer" }}>
                             Aktivovat v seznamu
