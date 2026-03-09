@@ -27,7 +27,8 @@ const entities = {
       { name: "dobky", type: "number", note: "Měna. Prvních 250 zdarma, pak 1 slot/250ď!" },
       { name: "inventar", type: "Slot[10]", note: "2 packy + 2 tělo + 6 batoh" },
       { name: "stavy", type: "Stav[]", note: "Podmínky zabírající sloty! Každý má podmínku odstranění." },
-      { name: "kuraz", type: "number (0-3+)", note: "Grit: úr.2=1, úr.3=2, úr.4=2, úr.5+=3+. Stav v kuráži nezabírá inventář, ale stále platí podmínka odstranění!" },
+      { name: "kuraz", type: "number (0-3+)", note: "Grit: úr.2=1, úr.3=2, úr.4=2, úr.5+=3+. Počet kuráž slotů." },
+      { name: "kurazSloty", type: "Slot[]", note: "Pole délky `kuraz`. Každý slot = stejná struktura jako inventář (nazev, typ, tecky...). Přijímá POUZE typ 'stav'. Stav v kuráži nezabírá inventář, ale stále platí podmínka odstranění!" },
     ],
     ada: {
       jmeno: "Ada", prijmeni: "Katzenreiserová",

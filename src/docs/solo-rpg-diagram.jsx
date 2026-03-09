@@ -77,6 +77,7 @@ PODMÍNKY (stavy):
 
 KURÁŽ (od úrovně 2):
 • Speciální sloty (1 na úr.2, roste až na 3 na úr.5+)
+• Data: kurazSloty: Slot[] (délka = kuraz). Stejná struktura jako inventář, ale přijímá POUZE typ 'stav'.
 • Podmínka v kuráži NEMÁ negativní efekt, ale stále existuje
 • Musíš ji stejně odstranit splněním podmínky
 

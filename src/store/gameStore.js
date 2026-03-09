@@ -1,6 +1,6 @@
 const INDEX_KEY = "solorpg_index";
 const SAVE_PREFIX = "solorpg_";
-export const CURRENT_VERSION = 8;
+export const CURRENT_VERSION = 9;
 
 export const INITIAL_GAME = {
   version: CURRENT_VERSION,
@@ -25,6 +25,7 @@ export const INITIAL_GAME = {
     vyraznyRys: "",
     znameni: "",
     kuraz: 0,
+    kurazSloty: [],
     inventar: Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } })),
     pomocnici: [],
   },
@@ -112,6 +113,19 @@ const MIGRATIONS = {
     })),
     version: 8,
   }),
+  8: (data) => {
+    const char = data.character || {};
+    const kuraz = char.kuraz || 0;
+    const emptySlot = () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } });
+    return {
+      ...data,
+      character: {
+        ...char,
+        kurazSloty: Array.from({ length: kuraz }, emptySlot),
+      },
+      version: 9,
+    };
+  },
 };
 
 export function genId() {
