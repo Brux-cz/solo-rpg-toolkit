@@ -1,4 +1,4 @@
-import{r as v,j as t}from"./index-DxPlbsBH.js";const C={_intro:{title:"Solo RPG Toolkit — Kompletní přehled",text:`Toto je diagram aplikace pro sólové hraní stolních RPG (Mausritter + Mythic GME 2. edice).
+import{r as v,j as t}from"./index-DTSop0CP.js";const C={_intro:{title:"Solo RPG Toolkit — Kompletní přehled",text:`Toto je diagram aplikace pro sólové hraní stolních RPG (Mausritter + Mythic GME 2. edice).
 
 Hráč je zároveň vypravěč — nemá Game Mastera. Místo toho používá sadu mechanik a nástrojů z Mythic GME, které simulují rozhodování GM a vnáší do příběhu nepředvídatelnost.
 

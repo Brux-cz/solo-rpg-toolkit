@@ -1,4 +1,4 @@
-import{r as c,j as o}from"./index-DxPlbsBH.js";const M={_intro:{title:"AI Našeptávač — Koncept",text:`Našeptávač je AI asistent, který po hodu na Meaning Tables jemně nahodí 2–3 poetické střípky, co by výsledek mohl evokovat.
+import{r as c,j as o}from"./index-DTSop0CP.js";const M={_intro:{title:"AI Našeptávač — Koncept",text:`Našeptávač je AI asistent, který po hodu na Meaning Tables jemně nahodí 2–3 poetické střípky, co by výsledek mohl evokovat.
 
 Jako nápověda v divadle — neříká co to JE, jen šeptá možnosti. Hráč si vybere jestli ho to inspiruje nebo ne.
 
