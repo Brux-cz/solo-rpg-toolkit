@@ -22,9 +22,11 @@ export default function DiscoveryBlock({ entry }) {
       </div>
       <div style={{ fontSize: 10, marginTop: 2 }}>
         <span>{entry.discoveryDesc}</span>
-        <span> · </span>
-        <span style={{ color: C.purple }}>{entry.meaning.word1} + {entry.meaning.word2}</span>
-        {entry.meaning.cz1 && <span style={{ color: C.muted, fontSize: 9 }}> ({entry.meaning.cz1} + {entry.meaning.cz2})</span>}
+        {entry.meaning && <>
+          <span> · </span>
+          <span style={{ color: C.purple }}>{entry.meaning.word1} + {entry.meaning.word2}</span>
+          {entry.meaning.cz1 && <span style={{ color: C.muted, fontSize: 9 }}> ({entry.meaning.cz1} + {entry.meaning.cz2})</span>}
+        </>}
       </div>
       {entry.randomEvent && <div style={{ fontSize: 10, marginTop: 2, color: C.yellow }}>⚡ {entry.eventFocus}{entry.eventMeaning ? ` · ${entry.eventMeaning.word1} + ${entry.eventMeaning.word2}` : ""}{entry.eventMeaning?.cz1 ? ` (${entry.eventMeaning.cz1} + ${entry.eventMeaning.cz2})` : ""}</div>}
     </div>
