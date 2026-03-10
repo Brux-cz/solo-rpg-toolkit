@@ -134,9 +134,9 @@ export default function Prototype() {
       )}
 
       <div style={{ flex: 1, overflow: "hidden", maxHeight: sheetOpen ? "calc(50% - 10px)" : undefined }}>
-        {tab === "diary" && <EditorArea entries={game.entries} onDeleteEntry={handleDeleteEntry} onRerollEntry={handleRerollEntry} onUpdateEntry={handleUpdateEntry} swipeSeen={game.hints?.swipeSeen} onSwipeSeen={() => updateGame({ hints: { ...game.hints, swipeSeen: true } })} />}
+        {tab === "diary" && <EditorArea entries={game.entries || []} onDeleteEntry={handleDeleteEntry} onRerollEntry={handleRerollEntry} onUpdateEntry={handleUpdateEntry} swipeSeen={game.hints?.swipeSeen} onSwipeSeen={() => updateGame({ hints: { ...game.hints, swipeSeen: true } })} />}
         {tab === "char" && <PostavaTab character={game.character} onUpdate={(ch) => updateGame({ character: ch })} onCharCreate={() => setSheet("charcreate")} />}
-        {tab === "world" && <SvetTab cf={game.cf} npcs={game.npcs} threads={game.threads} keyedScenes={game.keyedScenes || []} perilPoints={game.perilPoints || { aktualni: 2, max: 2 }} onGoToLobby={handleGoToLobby} onNpcsChange={(npcs) => updateGame({ npcs })} onThreadsChange={(threads) => updateGame({ threads })} onKeyedScenesChange={(ks) => updateGame({ keyedScenes: ks })} onPerilPointsChange={(pp) => updateGame({ perilPoints: pp })} />}
+        {tab === "world" && <SvetTab cf={game.cf} npcs={game.npcs || []} threads={game.threads || []} keyedScenes={game.keyedScenes || []} perilPoints={game.perilPoints || { aktualni: 2, max: 2 }} onGoToLobby={handleGoToLobby} onNpcsChange={(npcs) => updateGame({ npcs })} onThreadsChange={(threads) => updateGame({ threads })} onKeyedScenesChange={(ks) => updateGame({ keyedScenes: ks })} onPerilPointsChange={(pp) => updateGame({ perilPoints: pp })} />}
       </div>
 
       {tab === "diary" && (
