@@ -21,7 +21,7 @@ function renderBlock(entry, i, onUpdateEntry) {
   if (entry.type === "combat") return <CombatBlock key={i} entry={entry} />;
   if (entry.type === "detail") return <DetailBlock key={i} entry={entry} />;
   if (entry.type === "dice") return <DiceBlock key={i} entry={entry} />;
-  if (entry.type === "endscene") return <EndSceneBlock key={i} entry={entry} />;
+  if (entry.type === "endscene" || entry.type === "endScene") return <EndSceneBlock key={i} entry={entry} />;
   if (entry.type === "discovery") return <DiscoveryBlock key={i} entry={entry} />;
   if (entry.type === "behavior") return <BehaviorBlock key={i} entry={entry} />;
   return null;

@@ -3,6 +3,7 @@ import { C } from "../../constants/theme.js";
 
 export default function MeaningBlock({ entry }) {
   const [expanded, setExpanded] = useState(false);
+  if (!entry?.word1) return null;
   return (
     <div onClick={() => setExpanded(!expanded)} style={{ borderLeft: `3px solid ${C.purple}`, background: C.purple + "18", borderRadius: "0 4px 4px 0", padding: "4px 10px", margin: 0, fontSize: 11, color: C.purple, cursor: "pointer" }}>
       {entry.context && (
