@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { C, FONT } from "../constants/theme.js";
 import { loadIndex, saveIndex, loadGameById, saveGameById, deleteGameById, exportGame, formatDate, genId, INITIAL_GAME, CURRENT_VERSION } from "../store/gameStore.js";
-import demoGameData from "../data/demo-game-orisek.json";
-
 export default function Lobby({ onPlay }) {
   const [index, setIndex] = useState(loadIndex);
   const [newName, setNewName] = useState("");
@@ -49,19 +47,6 @@ export default function Lobby({ onPlay }) {
     exportGame(id, save?.name, game);
   };
 
-  const handleLoadDemo = () => {
-    const id = genId();
-    const game = { ...INITIAL_GAME, ...demoGameData.game, version: CURRENT_VERSION };
-    const name = demoGameData.name || "Ukázková hra";
-    saveGameById(id, game);
-    const newIndex = {
-      ...index,
-      saves: [...index.saves, { id, name, lastPlayed: Date.now(), sceneNum: game.sceneNum, cf: game.cf }],
-    };
-    saveIndex(newIndex);
-    setIndex(newIndex);
-    onPlay(id, game);
-  };
 
   const handleImport = () => {
     const input = document.createElement("input");
@@ -173,7 +158,6 @@ export default function Lobby({ onPlay }) {
           <button onClick={() => setCreating(true)} style={{ width: "100%", padding: "10px 0", border: `1px dashed ${C.green}`, background: "transparent", borderRadius: 8, fontSize: 11, color: C.green, fontWeight: 600, fontFamily: FONT, cursor: "pointer", marginBottom: 8 }}>+ Nová hra</button>
         )}
 
-        <button onClick={handleLoadDemo} style={{ width: "100%", padding: "8px 0", border: `1px solid ${C.purple}`, background: C.purple + "10", borderRadius: 6, fontSize: 10, color: C.purple, fontWeight: 600, fontFamily: FONT, cursor: "pointer", marginBottom: 8 }}>Příběh Oříška — ukázková hra</button>
         <button onClick={handleImport} style={{ width: "100%", padding: "8px 0", border: `1px solid ${C.border}`, background: "transparent", borderRadius: 6, fontSize: 10, color: C.muted, fontFamily: FONT, cursor: "pointer" }}>Importovat</button>
         {importError && <div style={{ fontSize: 10, color: C.red, textAlign: "center", marginTop: 6 }}>{importError}</div>}
       </div>
