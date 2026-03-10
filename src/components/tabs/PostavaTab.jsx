@@ -741,8 +741,8 @@ export default function PostavaTab({ character, onUpdate, onCharCreate }) {
   const [expandedPom, setExpandedPom] = useState(null);
   const [levelUpResult, setLevelUpResult] = useState(null);
   const [dotWarning, setDotWarning] = useState(null);
-  const inv = ch.inventar || Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } }));
-  const kurazSloty = ch.kurazSloty || Array.from({ length: ch.kuraz || 0 }, () => ({ ...EMPTY_SLOT }));
+  const inv = (ch.inventar || Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } }))).map(s => s || { ...EMPTY_SLOT });
+  const kurazSloty = (ch.kurazSloty || Array.from({ length: ch.kuraz || 0 }, () => ({ ...EMPTY_SLOT }))).map(s => s || { ...EMPTY_SLOT });
   const pomocnici = ch.pomocnici || [];
   const statInput = { border: `1px solid ${C.border}`, borderRadius: 4, padding: "2px 4px", fontSize: 11, fontFamily: FONT, textAlign: "center", width: 36, background: "white", color: C.text, outline: "none" };
 
