@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/solo-rpg-toolkit/sw.js', { scope: '/solo-rpg-toolkit/' })})}

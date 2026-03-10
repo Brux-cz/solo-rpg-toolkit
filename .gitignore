@@ -1,0 +1,25 @@
+# deps
+node_modules/
+
+# build
+dist/
+dist-ssr/
+
+# env
+*.local
+.env
+.env.*
+
+# editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PWA dev
+dev-dist/
