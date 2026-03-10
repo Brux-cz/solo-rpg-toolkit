@@ -1,0 +1,40 @@
+{
+  "eval_id": 3,
+  "run_type": "with_skill",
+  "expectations": [
+    {
+      "text": "Klasifikoval změnu jako DATA",
+      "passed": true,
+      "evidence": "Explicitně: 'Kategorie: DATA'"
+    },
+    {
+      "text": "Přečetl datovy-model.jsx NPC sekci (ř. 200-233)",
+      "passed": true,
+      "evidence": "Přečetl r. 200-233, vylistoval všechna pole NPC entity"
+    },
+    {
+      "text": "Zjistil že pole povolani v modelu NEEXISTUJE",
+      "passed": true,
+      "evidence": "Explicitně: 'Pole povolani v datovem modelu NEEXISTUJE'"
+    },
+    {
+      "text": "Vydal verdikt CHYBI V DOCS (ne SEDI)",
+      "passed": true,
+      "evidence": "Explicitně: 'CHYBI V DOCS'"
+    },
+    {
+      "text": "Formuloval NOTEBOOKLM DOTAZ s kontextem, otázkou a zdrojem",
+      "passed": false,
+      "evidence": "Řekl 'Neexistuje NOTEBOOKLM dotaz — Mausritter pravidla NPC povolani nedefinuji, je to ciste uzivatelsky pozadavek'. Rozumné zdůvodnění, ale skill říká formulovat dotaz při CHYBI V DOCS."
+    },
+    {
+      "text": "NEZACAL implementovat bez vyřešení chybějícího pole",
+      "passed": true,
+      "evidence": "Celý report je verifikace, žádný kód. Explicitně říká 'Pred implementaci je nutne nejdriv aktualizovat oba referencni dokumenty.'"
+    }
+  ],
+  "bonus_findings": [
+    "Položil cennou otázku: není povolani redundantní s existujícím polem popis?",
+    "Navrhl konkrétní kroky pro aktualizaci docs pokud uživatel potvrdí"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "eval_id": 1,
+  "run_type": "with_skill",
+  "expectations": [
+    {
+      "text": "Klasifikoval změnu jako DATA",
+      "passed": true,
+      "evidence": "Explicitně: 'Kategorie: DATA'"
+    },
+    {
+      "text": "Přečetl datovy-model.jsx NPC sekci (ř. 200-233)",
+      "passed": true,
+      "evidence": "Explicitně cituje r. 200-233, uvádí přesné pole"
+    },
+    {
+      "text": "Našel existující pole reakce: {hod, stav} s poznámkou o 2d6",
+      "passed": true,
+      "evidence": "Cituje přesnou definici z modelu včetně tabulky stavů"
+    },
+    {
+      "text": "Vydal verdikt SEDI",
+      "passed": true,
+      "evidence": "Explicitně: 'SEDI (s drobnou poznamkou)'"
+    },
+    {
+      "text": "Upozornil na potřebu migrace",
+      "passed": true,
+      "evidence": "Adresoval migraci — odůvodněně vysvětlil proč NENÍ nutná (NPC pole jsou volitelná s fallbackem, konzistentní s popis/lokace/zbran). Správná analýza."
+    }
+  ],
+  "bonus_findings": [
+    "Našel nesrovnalost mezi docs: model říká 'Opatrný', diagram říká 'Nejistá' pro hod 6-8. Toto baseline nezachytil."
+  ]
+}

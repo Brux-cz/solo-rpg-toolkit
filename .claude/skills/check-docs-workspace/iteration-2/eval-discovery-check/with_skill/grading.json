@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "run_type": "with_skill",
+  "expectations": [
+    { "text": "Klasifikoval změnu jako MECHANIC (nebo MIX)", "passed": true, "evidence": "MIX (DATA + MECHANIC)" },
+    { "text": "Přečetl diagram sekci Thread Progress Track", "passed": true, "evidence": "Přečetl r. 615-645, r. 636-640, r. 297-302, r. 802-805, r. 1026" },
+    { "text": "Popsal mechaniku Discovery Check", "passed": true, "evidence": "Kompletní popis včetně ExcNo" },
+    { "text": "Přečetl datovy-model.jsx Mythic sekci", "passed": true, "evidence": "Cituje r. 243-246" },
+    { "text": "Vydal strukturovaný verdikt", "passed": true, "evidence": "NESROVNALOST + CHYBI V DOCS s 5 konkrétními body" },
+    { "text": "Cross-check mezi docs", "passed": true, "evidence": "Explicitní Phase 2b s 5 nesrovnalostmi v tabulkách" },
+    { "text": "Formuloval NOTEBOOKLM DOTAZ", "passed": true, "evidence": "Konkrétní dotaz na Thread Discovery Table" }
+  ]
+}

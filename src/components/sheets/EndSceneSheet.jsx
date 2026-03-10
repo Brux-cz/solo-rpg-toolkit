@@ -108,7 +108,8 @@ export default function EndSceneSheet({ onClose, cf, sceneNum, onCFChange, npcs,
 
   return (
     <Sheet title={`📕 KONEC SCÉNY ${sceneNum}`} onClose={onClose} help={helpContent}>
-      <div style={{ fontSize: 9, color: C.muted, marginBottom: 8, fontFamily: FONT }}>MĚLA POSTAVA KONTROLU?</div>
+      <div style={{ fontSize: 9, color: C.muted, marginBottom: 4, fontFamily: FONT }}>MĚLA POSTAVA KONTROLU NAD PRŮBĚHEM SCÉNY?</div>
+      <div style={{ fontSize: 9, color: C.muted, marginBottom: 8, fontFamily: FONT, fontStyle: "italic" }}>ANO (hráč řídil děj) → CF−1 · NE (chaos převládl) → CF+1</div>
       <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
         <button onClick={() => setChoice("minus")} style={{ flex: 1, padding: "10px 0", border: `1px solid ${choice==="minus" ? C.green : C.border}`, background: choice==="minus" ? C.green + "22" : "transparent", borderRadius: 8, fontSize: 11, fontFamily: FONT, cursor: "pointer", color: C.green, fontWeight: choice==="minus" ? 700 : 400 }}>ANO → CF−1<br /><span style={{ fontSize: 10 }}>{cf} → {Math.max(1, cf - 1)}</span></button>
         <button onClick={() => setChoice("plus")} style={{ flex: 1, padding: "10px 0", border: `1px solid ${choice==="plus" ? C.red : C.border}`, background: choice==="plus" ? C.red + "22" : "transparent", borderRadius: 8, fontSize: 11, fontFamily: FONT, cursor: "pointer", color: C.red, fontWeight: choice==="plus" ? 700 : 400 }}>NE → CF+1<br /><span style={{ fontSize: 10 }}>{cf} → {Math.min(9, cf + 1)}</span></button>
@@ -158,6 +159,10 @@ export default function EndSceneSheet({ onClose, cf, sceneNum, onCFChange, npcs,
       <div style={addRowStyle}>
         <input value={newThread} onChange={e => setNewThread(e.target.value)} onKeyDown={e => e.key === "Enter" && addThread()} placeholder="Nový Thread..." style={addInputStyle} />
         <button onClick={addThread} style={addBtnStyle}>+ Thread</button>
+      </div>
+
+      <div style={{ fontSize: 10, color: C.muted, marginBottom: 8, fontFamily: FONT, fontStyle: "italic" }}>
+        💡 Nezapomeň aktualizovat NPC wiki karty po setkání
       </div>
 
       <button onClick={doEnd} style={{ width: "100%", height: 46, background: C.text, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>UKONČIT SCÉNU</button>

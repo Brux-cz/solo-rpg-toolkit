@@ -1,0 +1,26 @@
+{
+  "skill_name": "check-docs",
+  "evals": [
+    {
+      "id": 1,
+      "name": "npc-reakce",
+      "prompt": "Přidej pole `reakce` k NPC v SvetTab — chci ukládat výsledek 2d6 hodu na reakci",
+      "expected_output": "Přečte datovy-model.jsx NPC sekci, najde pole reakce: {hod, stav}, potvrdí SEDI, upozorní na migraci",
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "discovery-check",
+      "prompt": "Implementuj Discovery Check mechaniku pro thready",
+      "expected_output": "Přečte diagram sekci Thread Progress Track (ř. 538-570), popíše mechaniku, ověří plán proti docs",
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "npc-povolani",
+      "prompt": "Přidej ke každému NPC pole `povolani` kde si hráč zapíše čím se NPC živí",
+      "expected_output": "Přečte model NPC sekci, zjistí že pole povolani neexistuje, vydá verdikt CHYBI V DOCS a formuluje NOTEBOOKLM DOTAZ",
+      "assertions": []
+    }
+  ]
+}

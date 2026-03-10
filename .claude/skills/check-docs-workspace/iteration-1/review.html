@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eval Review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --bg: #faf9f5;
+      --surface: #ffffff;
+      --border: #e8e6dc;
+      --text: #141413;
+      --text-muted: #b0aea5;
+      --accent: #d97757;
+      --accent-hover: #c4613f;
+      --green: #788c5d;
+      --green-bg: #eef2e8;
+      --red: #c44;
+      --red-bg: #fceaea;
+      --header-bg: #141413;
+      --header-text: #faf9f5;
+      --radius: 6px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Header ---- */
+    .header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+    .header .instructions {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.25rem;
+    }
+    .header .progress {
+      font-size: 0.875rem;
+      opacity: 0.8;
+      text-align: right;
+    }
+
+    /* ---- Main content ---- */
+    .main {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    /* ---- Sections ---- */
+    .section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+    .section-header {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .section-body {
+      padding: 1rem;
+    }
+
+    /* ---- Config badge ---- */
+    .config-badge {
+      display: inline-block;
+      padding: 0.2rem 0.625rem;
+      border-radius: 9999px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-left: 0.75rem;
+      vertical-align: middle;
+    }
+    .config-badge.config-primary {
+      background: rgba(33, 150, 243, 0.12);
+      color: #1976d2;
+    }
+    .config-badge.config-baseline {
+      background: rgba(255, 193, 7, 0.15);
+      color: #f57f17;
+    }
+
+    /* ---- Prompt ---- */
+    .prompt-text {
+      white-space: pre-wrap;
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    /* ---- Outputs ---- */
+    .output-file {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .output-file + .output-file {
+      margin-top: 1rem;
+    }
+    .output-file-header {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .output-file-header .dl-btn {
+      font-size: 0.7rem;
+      color: var(--accent);
+      text-decoration: none;
+      cursor: pointer;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+    .output-file-header .dl-btn:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+    .output-file-content {
+      padding: 0.75rem;
+      overflow-x: auto;
+    }
+    .output-file-content pre {
+      font-size: 0.8125rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+    .output-file-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+    .output-file-content iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+    }
+    .output-file-content table {
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+      width: 100%;
+    }
+    .output-file-content table td,
+    .output-file-content table th {
+      border: 1px solid var(--border);
+      padding: 0.375rem 0.5rem;
+      text-align: left;
+    }
+    .output-file-content table th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .output-file-content .download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+    }
+    .output-file-content .download-link:hover {
+      background: var(--border);
+    }
+    .empty-state {
+      color: var(--text-muted);
+      font-style: italic;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    /* ---- Feedback ---- */
+    .prev-feedback {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.625rem 0.75rem;
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    .prev-feedback-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+      color: var(--text-muted);
+    }
+    .feedback-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      resize: vertical;
+      color: var(--text);
+    }
+    .feedback-textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .feedback-status {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 0.5rem;
+      min-height: 1.1em;
+    }
+
+    /* ---- Grades (collapsible) ---- */
+    .grades-toggle {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .grades-toggle:hover {
+      color: var(--accent);
+    }
+    .grades-toggle .arrow {
+      margin-right: 0.5rem;
+      transition: transform 0.15s;
+      font-size: 0.75rem;
+    }
+    .grades-toggle .arrow.open {
+      transform: rotate(90deg);
+    }
+    .grades-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+    .grades-content.open {
+      display: block;
+    }
+    .grades-summary {
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .grade-badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .grade-pass { background: var(--green-bg); color: var(--green); }
+    .grade-fail { background: var(--red-bg); color: var(--red); }
+    .assertion-list {
+      list-style: none;
+    }
+    .assertion-item {
+      padding: 0.625rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8125rem;
+    }
+    .assertion-item:last-child { border-bottom: none; }
+    .assertion-status {
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .assertion-status.pass { color: var(--green); }
+    .assertion-status.fail { color: var(--red); }
+    .assertion-evidence {
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      padding-left: 1.5rem;
+    }
+
+    /* ---- View tabs ---- */
+    .view-tabs {
+      display: flex;
+      gap: 0;
+      padding: 0 2rem;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .view-tab {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      background: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      transition: all 0.15s;
+    }
+    .view-tab:hover { color: var(--text); }
+    .view-tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .view-panel { display: none; }
+    .view-panel.active { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+    /* ---- Benchmark view ---- */
+    .benchmark-view {
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .benchmark-table {
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.8125rem;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .benchmark-table th, .benchmark-table td {
+      padding: 0.625rem 0.75rem;
+      text-align: left;
+      border: 1px solid var(--border);
+    }
+    .benchmark-table th {
+      font-family: 'Poppins', sans-serif;
+      background: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 500;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .benchmark-table tr:hover { background: var(--bg); }
+    .benchmark-table tr.benchmark-row-with { background: rgba(33, 150, 243, 0.06); }
+    .benchmark-table tr.benchmark-row-without { background: rgba(255, 193, 7, 0.06); }
+    .benchmark-table tr.benchmark-row-with:hover { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-without:hover { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-table tr.benchmark-row-avg { font-weight: 600; border-top: 2px solid var(--border); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-with { background: rgba(33, 150, 243, 0.12); }
+    .benchmark-table tr.benchmark-row-avg.benchmark-row-without { background: rgba(255, 193, 7, 0.12); }
+    .benchmark-delta-positive { color: var(--green); font-weight: 600; }
+    .benchmark-delta-negative { color: var(--red); font-weight: 600; }
+    .benchmark-notes {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .benchmark-notes h3 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+    .benchmark-notes ul {
+      list-style: disc;
+      padding-left: 1.25rem;
+    }
+    .benchmark-notes li {
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      margin-bottom: 0.375rem;
+    }
+    .benchmark-empty {
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    /* ---- Navigation ---- */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+    .nav-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: all 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .nav-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .done-btn {
+      font-family: 'Poppins', sans-serif;
+      padding: 0.5rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s;
+    }
+    .done-btn:hover {
+      background: var(--bg);
+      border-color: var(--text-muted);
+    }
+    .done-btn.ready {
+      border: none;
+      background: var(--accent);
+      color: white;
+      font-weight: 600;
+    }
+    .done-btn.ready:hover {
+      background: var(--accent-hover);
+    }
+    /* ---- Done overlay ---- */
+    .done-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+    .done-overlay.visible {
+      display: flex;
+    }
+    .done-card {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 2rem 3rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 500px;
+    }
+    .done-card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .done-card p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .done-card .btn-row {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+    }
+    .done-card button {
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+    .done-card button:hover {
+      background: var(--bg);
+    }
+    /* ---- Toast ---- */
+    .toast {
+      position: fixed;
+      bottom: 5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 0.625rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 200;
+    }
+    .toast.visible {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" style="height:100vh; display:flex; flex-direction:column;">
+    <div class="header">
+      <div>
+        <h1>Eval Review: <span id="skill-name"></span></h1>
+        <div class="instructions">Review each output and leave feedback below. Navigate with arrow keys or buttons. When done, copy feedback and paste into Claude Code.</div>
+      </div>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <!-- View tabs (only shown when benchmark data exists) -->
+    <div class="view-tabs" id="view-tabs" style="display:none;">
+      <button class="view-tab active" onclick="switchView('outputs')">Outputs</button>
+      <button class="view-tab" onclick="switchView('benchmark')">Benchmark</button>
+    </div>
+
+    <!-- Outputs panel (qualitative review) -->
+    <div class="view-panel active" id="panel-outputs">
+    <div class="main">
+      <!-- Prompt -->
+      <div class="section">
+        <div class="section-header">Prompt <span class="config-badge" id="config-badge" style="display:none;"></span></div>
+        <div class="section-body">
+          <div class="prompt-text" id="prompt-text"></div>
+        </div>
+      </div>
+
+      <!-- Outputs -->
+      <div class="section">
+        <div class="section-header">Output</div>
+        <div class="section-body" id="outputs-body">
+          <div class="empty-state">No output files found</div>
+        </div>
+      </div>
+
+      <!-- Previous Output (collapsible) -->
+      <div class="section" id="prev-outputs-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="togglePrevOutputs()">
+            <span class="arrow" id="prev-outputs-arrow">&#9654;</span>
+            Previous Output
+          </div>
+        </div>
+        <div class="grades-content" id="prev-outputs-content"></div>
+      </div>
+
+      <!-- Grades (collapsible) -->
+      <div class="section" id="grades-section" style="display:none;">
+        <div class="section-header">
+          <div class="grades-toggle" onclick="toggleGrades()">
+            <span class="arrow" id="grades-arrow">&#9654;</span>
+            Formal Grades
+          </div>
+        </div>
+        <div class="grades-content" id="grades-content"></div>
+      </div>
+
+      <!-- Feedback -->
+      <div class="section">
+        <div class="section-header">Your Feedback</div>
+        <div class="section-body">
+          <textarea
+            class="feedback-textarea"
+            id="feedback"
+            placeholder="What do you think of this output? Any issues, suggestions, or things that look great?"
+          ></textarea>
+          <div class="feedback-status" id="feedback-status"></div>
+          <div class="prev-feedback" id="prev-feedback" style="display:none;">
+            <div class="prev-feedback-label">Previous feedback</div>
+            <div id="prev-feedback-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav" id="outputs-nav">
+      <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592; Previous</button>
+      <button class="done-btn" id="done-btn" onclick="showDoneDialog()">Submit All Reviews</button>
+      <button class="nav-btn" id="next-btn" onclick="navigate(1)">Next &#8594;</button>
+    </div>
+    </div><!-- end panel-outputs -->
+
+    <!-- Benchmark panel (quantitative stats) -->
+    <div class="view-panel" id="panel-benchmark">
+      <div class="benchmark-view" id="benchmark-content">
+        <div class="benchmark-empty">No benchmark data available. Run a benchmark to see quantitative results here.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Done overlay -->
+  <div class="done-overlay" id="done-overlay">
+    <div class="done-card">
+      <h2>Review Complete</h2>
+      <p>Your feedback has been saved. Go back to your Claude Code session and tell Claude you're done reviewing.</p>
+      <div class="btn-row">
+        <button onclick="closeDoneDialog()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---- Embedded data (injected by generate_review.py) ----
+    const EMBEDDED_DATA = {"skill_name": "check-docs", "runs": [{"id": "eval-npc-reakce-with_skill", "prompt": "P\u0159idej pole `reakce` k NPC v SvetTab \u2014 chci ukl\u00e1dat v\u00fdsledek 2d6 hodu na reakci", "eval_id": 1, "outputs": [{"name": "output.md", "type": "text", "content": "# Verifikacni report: Pridani pole `reakce` k NPC v SvetTab\n\n## Phase 1: Klasifikace zmeny\n\n**Kategorie: DATA**\n\nZadani pridava nove pole `reakce` k NPC entite zobrazene v SvetTab. Jde o datovou zmenu \u2014 nove pole na existujici entite.\n\n## Phase 2: Cteni relevantnich docs\n\n### Datovy model (`src/docs/datovy-model.jsx`, r. 200-233)\n\nPole `reakce` **JIZ EXISTUJE** v datovem modelu NPC entity:\n\n```\n{ name: \"reakce\", type: \"{hod, stav}\", note: \"2d6 \u2192 stav: 2=Agresivn\u00ed, 3-5=Nep\u0159\u00e1telsk\u00fd, 6-8=Opatrn\u00fd, 9-11=Pov\u00eddav\u00fd, 12=N\u00e1pomocn\u00fd\" }\n```\n\nTyp: objekt `{hod, stav}` \u2014 kde `hod` je vysledek 2d6, `stav` je textovy popis odvozeny z hodu.\n\n### Diagram (`src/docs/solo-rpg-diagram.jsx`, r. 1292-1300)\n\nSekce `reakce_npc` potvrzuje mechaniku:\n- Hod 2d6\n- Tabulka: 2=Agresivni, 3-5=Nepratelsk, 6-8=Nejista, 9-11=Povidava, 12=Napomocna\n\n**POZOR \u2014 drobna nesrovnalost v nazvu stavu pro 6-8:**\n- Datovy model rika: \"Opatrny\"\n- Diagram rika: \"Nejista\"\n\nJde o stejny koncept, ale nazev se lisi. Pri implementaci je treba rozhodnout ktery pouzit (doporucuji diagram \u2014 \"Nejista\" \u2014 protoze je to primo z pravidel Mausritter).\n\n### Aktualni stav implementace\n\n- **gameStore.js**: NPC v `npcs[]` maji strukturu `{ name, weight, flag }` + volitelna pole (popis, lokace, vztah, poznamky, bojove staty, zbran, dmg, zbroj, predmetyUSebe). Pole `reakce` **NENI** v INITIAL_GAME, ale NPC pouzivaji volnou strukturu (pole se pridavaji pres `updateNpc(idx, patch)`).\n- **SvetTab.jsx**: NPC wiki karta zobrazuje popis, lokaci, vztah, poznamky, bojove staty, zbran/dmg/zbroj, predmety. Pole `reakce` **NENI** zobrazeno.\n\n### Migrace\n\nPole `reakce` je **volitelne** (existujici NPC ho nemaji a to je OK \u2014 `n.reakce` bude `undefined`). Protoze SvetTab pouziva pattern `n.reakce || defaultValue` a pole se uklada pres genericky `updateNpc(idx, { reakce: ... })`, **migrace NENI nutna** \u2014 staci zobrazit `reakce` s fallbackem na prazdny stav. Toto je konzistentni s tim jak jsou ostatni volitelna pole (popis, lokace, zbran atd.) implementovana bez migrace.\n\n## Phase 3: Verdikt\n\n**SEDI** (s drobnou poznamkou)\n\nPole `reakce` je plne definovano v datovem modelu i diagramu. Implementace muze pokracovat.\n\n### Kontrolni seznam pro implementaci:\n\n1. **Typ pole**: `{hod: number, stav: string}` \u2014 NE jen string!\n2. **Mechanika**: 2d6, mapovani na stav podle tabulky\n3. **UI**: Pridat do NPC wiki karty v SvetTab \u2014 tlacitko \"Hodit reakci\" (2d6) + zobrazeni vysledku (hod + stav)\n4. **Tabulka stavu**:\n   - 2 = Agresivni\n   - 3-5 = Nepratelsky\n   - 6-8 = Nejista/Opatrny (rozhodnout)\n   - 9-11 = Povidavy\n   - 12 = Napomocny\n5. **Migrace**: Neni nutna (volitelne pole s fallbackem)\n6. **Barvy stavu**: Zvazit barevne kodovani (cervena pro agresivni, zelena pro napomocny atd.)\n\n### Nesrovnalost k reseni:\n\nNazev stavu pro hod 6-8 se lisi mezi datovym modelem (\"Opatrny\") a diagramem (\"Nejista\"). Pred implementaci se zeptat uzivatele, nebo sjednotit docs.\n"}], "grading": {"eval_id": 1, "run_type": "with_skill", "expectations": [{"text": "Klasifikoval zm\u011bnu jako DATA", "passed": true, "evidence": "Explicitn\u011b: 'Kategorie: DATA'"}, {"text": "P\u0159e\u010detl datovy-model.jsx NPC sekci (\u0159. 200-233)", "passed": true, "evidence": "Explicitn\u011b cituje r. 200-233, uv\u00e1d\u00ed p\u0159esn\u00e9 pole"}, {"text": "Na\u0161el existuj\u00edc\u00ed pole reakce: {hod, stav} s pozn\u00e1mkou o 2d6", "passed": true, "evidence": "Cituje p\u0159esnou definici z modelu v\u010detn\u011b tabulky stav\u016f"}, {"text": "Vydal verdikt SEDI", "passed": true, "evidence": "Explicitn\u011b: 'SEDI (s drobnou poznamkou)'"}, {"text": "Upozornil na pot\u0159ebu migrace", "passed": true, "evidence": "Adresoval migraci \u2014 od\u016fvodn\u011bn\u011b vysv\u011btlil pro\u010d NEN\u00cd nutn\u00e1 (NPC pole jsou voliteln\u00e1 s fallbackem, konzistentn\u00ed s popis/lokace/zbran). Spr\u00e1vn\u00e1 anal\u00fdza."}], "bonus_findings": ["Na\u0161el nesrovnalost mezi docs: model \u0159\u00edk\u00e1 'Opatrn\u00fd', diagram \u0159\u00edk\u00e1 'Nejist\u00e1' pro hod 6-8. Toto baseline nezachytil."]}}, {"id": "eval-npc-reakce-without_skill", "prompt": "P\u0159idej pole `reakce` k NPC v SvetTab \u2014 chci ukl\u00e1dat v\u00fdsledek 2d6 hodu na reakci", "eval_id": 1, "outputs": [{"name": "output.md", "type": "text", "content": "# Kroky pred implementaci: pole `reakce` u NPC v SvetTab\n\n## 1. Kontrola checklistu z CLAUDE.md\n\nZadani meni data (NPC entita) => POVINNE precist datovy model a diagram.\n\n## 2. Cteni referencnich dokumentu\n\n### a) Datovy model (`src/docs/datovy-model.jsx`, r. 200-233 \u2014 entita NPC)\n\n**Zjisteni:** Pole `reakce` uz v datovem modelu EXISTUJE.\n\n```\n{ name: \"reakce\", type: \"{hod, stav}\", note: \"2d6 \u2192 stav: 2=Agresivni, 3-5=Nepratelsky, 6-8=Opatrny, 9-11=Povidavy, 12=Napomocny\" }\n```\n\nModel presne definuje:\n- Typ: objekt `{hod, stav}`\n- `hod` \u2014 vysledek 2d6\n- `stav` \u2014 textovy stav odvozeny z hodu podle tabulky: 2=Agresivni, 3-5=Nepratelsky, 6-8=Opatrny, 9-11=Povidavy, 12=Napomocny\n\n### b) Diagram (`src/docs/solo-rpg-diagram.jsx`, r. 253-274 \u2014 NPC wiki zaznam)\n\n**Zjisteni:** Diagram potvrzuje totez:\n\n```\n\u2022 Reakce (z 2d6 tabulky): agresivni \u2192 napomocna\n```\n\n### c) Diagram \u2014 Reakce NPC (`src/docs/solo-rpg-diagram.jsx`, r. 1216-1270)\n\nSekce \"Reakce NPC\" v diagramu (r. 871-886 dle mapy) by mela obsahovat podrobnosti o NPC Behavior Table. Tato sekce zatim neni implementovana (je v TODO).\n\n## 3. Kontrola soucasneho stavu kodu\n\n### a) `gameStore.js` \u2014 datova vrstva\n\nNPC se ukladaji jako polozky pole `game.npcs`. Aktualni tvar NPC v kodu:\n```js\n{ name, weight, flag, popis?, lokace?, vztah?, poznamky?, str?, dex?, wil?, bo?, zbran?, dmg?, zbroj?, predmetyUSebe? }\n```\n\n**Zjisteni:** Pole `reakce` v datech CHYBI. Je definovane v referencnim modelu, ale nebylo dosud implementovano.\n\n### b) `SvetTab.jsx` \u2014 UI vrstva\n\nNPC wiki karta (expandovany detail) obsahuje: popis, lokace, vztah (select), poznamky, bojove staty, zbran/dmg/zbroj, predmety u sebe. Pole `reakce` v UI CHYBI.\n\n## 4. Plan implementace (kroky, ktere bych provedl)\n\n### Krok 1 \u2014 Migrace dat (gameStore.js)\n- Pridat MIGRACI `6` (CURRENT_VERSION zvysit na 7)\n- Migrace projde `data.npcs` a kazdemu NPC prida `reakce: null` (nebo ponecha undefined)\n- Tvar pole: `{ hod: number|null, stav: string }` podle datoveho modelu\n\n### Krok 2 \u2014 Reakcni tabulka (utils nebo constants)\n- Pridat helper funkci `getReakce(hod)` ktera z vysledku 2d6 vrati textovy stav:\n  - 2 => \"Agresivni\"\n  - 3-5 => \"Nepratelsky\"\n  - 6-8 => \"Opatrny\"\n  - 9-11 => \"Povidavy\"\n  - 12 => \"Napomocny\"\n- Umisteni: `src/utils/dice.js` (tam uz jsou roll funkce) nebo `src/constants/tables.js`\n\n### Krok 3 \u2014 UI v SvetTab.jsx\n- Do NPC wiki karty (expandovany detail) pridat sekci \"Reakce\" s:\n  - Tlacitkem \"Hodit 2d6\" ktere vygeneruje hod a automaticky nastavi stav\n  - Zobrazenym vysledkem: \"hod X => Stav\"\n  - Moznosti rucne prepsat stav (select s 5 hodnotami)\n- Barva podle stavu (Agresivni=cervena, Nepratelsky=cervena slabsi, Opatrny=zluta, Povidavy=zelena slabsi, Napomocny=zelena)\n- Pouzit inline CSS, barvy z objektu C\n\n### Krok 4 \u2014 Propojeni\n- `updateNpc(idx, { reakce: { hod, stav } })` \u2014 pouzit existujici `updateNpc` helper\n- Data se automaticky ulozi pres localStorage (uz funguje)\n\n## 5. Kriticke kontroly pred kodovanim\n\n| Kontrola | Vysledek |\n|---|---|\n| Pole existuje v datovem modelu? | ANO \u2014 `{hod, stav}` na r. 214 |\n| Pole existuje v diagramu? | ANO \u2014 r. 263 |\n| Sedi typ s modelem? | Implementovat jako `{hod: number, stav: string}` |\n| Je potreba migrace? | ANO \u2014 stare NPC zaznamy pole nemaji |\n| Nesedi neco s modelem/diagramem? | NE \u2014 implementace muze pokracovat |\n| Koliduje s existujicim polem `vztah`? | NE \u2014 `vztah` je subjektivni hodnoceni hrace, `reakce` je vysledek mechanickeho hodu 2d6 |\n\n## 6. Soubory ktere by se menily\n\n1. `/home/brux/projekty/solo-rpg-toolkit/src/store/gameStore.js` \u2014 migrace 6->7, CURRENT_VERSION=7\n2. `/home/brux/projekty/solo-rpg-toolkit/src/components/tabs/SvetTab.jsx` \u2014 UI pro reakci v NPC karte\n3. `/home/brux/projekty/solo-rpg-toolkit/src/utils/dice.js` (nebo `constants/tables.js`) \u2014 helper pro prevod 2d6 na stav\n"}], "grading": {"eval_id": 1, "run_type": "without_skill", "expectations": [{"text": "Klasifikoval zm\u011bnu jako DATA", "passed": true, "evidence": "Implicitn\u011b: 'm\u011bn\u00ed data (NPC entita)'"}, {"text": "P\u0159e\u010detl datovy-model.jsx NPC sekci (\u0159. 200-233)", "passed": true, "evidence": "P\u0159e\u010detl, cituje r. 214 a r. 263"}, {"text": "Na\u0161el existuj\u00edc\u00ed pole reakce: {hod, stav} s pozn\u00e1mkou o 2d6", "passed": true, "evidence": "Cituje p\u0159esnou definici v\u010detn\u011b tabulky"}, {"text": "Vydal verdikt SEDI", "passed": false, "evidence": "Nepou\u017e\u00edv\u00e1 strukturovan\u00fd verdikt. \u0158\u00edk\u00e1 'Nesedi nic s modelem \u2014 implementace by mohla pokracovat' ale chyb\u00ed jasn\u00fd form\u00e1t."}, {"text": "Upozornil na pot\u0159ebu migrace", "passed": true, "evidence": "\u0158\u00edk\u00e1 migraci 6->7 je pot\u0159eba. (Debatabiln\u00ed \u2014 with_skill verze od\u016fvodn\u011bn\u011b argumentuje \u017ee nen\u00ed nutn\u00e1.)"}], "bonus_findings": []}}, {"id": "eval-discovery-check-with_skill", "prompt": "Implementuj Discovery Check mechaniku pro thready", "eval_id": 2, "outputs": [{"name": "output.md", "type": "text", "content": "# Verifikacni report: Discovery Check mechanika pro thready\n\n## Phase 1: Klasifikace zmeny\n\n**Kategorie: MIX (DATA + MECHANIC)**\n\n- DATA: Thready potrebuji nova/zmenena pole (progressTrack, delka tracku, flashpointy, plot armor)\n- MECHANIC: Discovery Check je nova herni mechanika (Fate Q + tabulka + progress body)\n\n## Phase 2: Cteni dokumentace\n\n### Prectene sekce\n\n**Datovy model (`src/docs/datovy-model.jsx`):**\n- r. 234-265: Mythic GME entita \u2014 threadSeznam, progressTrack, keyedScenes, perilPoints\n- r. 284-291: Scena (bookkeeping)\n\n**Diagram (`src/docs/solo-rpg-diagram.jsx`):**\n- r. 284-314: Thread wiki zaznam (pole, progress track, propojeni)\n- r. 344-362: Thread Seznam (mechanicky)\n- r. 614-645: Thread Progress Track (kompletni sekce)\n- r. 795-805: Bookkeeping \u2014 integrace progress tracku\n- r. 1020-1039: Poznatky ze sucheho pruchodu \u2014 Discovery Check detail\n\n### Co dokumentace definuje\n\n**Thread Progress Track (diagram r. 614-645):**\n- Track delky: 10 (kratky), 15 (standardni), 20 (komplexni)\n- Progress Points: standardni pokrok = +2, flashpoint = +2, Discovery Check = +1/+2/+3\n- Faze po 5 bodech, flashpointy (prirozene/vynucene)\n- Plot Armor: thread nemuze byt nahodne uzavren dokud nedosahne konce\n- Conclusion: na konci tracku Plot Armor zmizi\n\n**Discovery Check (diagram r. 636-640 + r. 1026):**\n- Trigger: zaseknuty thread, postava vyvine usili\n- Postup: Fate Q \"Je neco objeveno?\" (min 50/50)\n- Uspech: d10 + progress na Thread Discovery Table -> Meaning Tables\n- ExcNo: blokuje dalsi pokusy ve scene!\n- Vysledek: +1 az +3 progress body\n\n**Datovy model (r. 245):**\n- `progressTrack`: type `number (0-10)`, poznamka: \"2e! Linearni pokrok.\"\n\n### Co implementace v kodu aktualne ma\n\n**gameStore.js (r. 46):**\n- Thread objekt: `{ name, weight, progress, total }`\n- `progress` default 0, `total` default 10\n- Migrace v2->v3 prida tyto pole\n\n**SvetTab.jsx + EndSceneSheet.jsx:**\n- Zobrazuji progress bar u threadu\n- Tlacitko pro +2 progress (standardni pokrok)\n- Zadny Discovery Check UI\n\n## Phase 3: Verdikt\n\n### NESROVNALOST #1 \u2014 Struktura thread objektu\n\n**Docs rikaji:**\n- Datovy model (r. 245): `progressTrack: number (0-10)` \u2014 jednoduche cislo\n- Diagram (r. 297-302): Thread wiki ma pole: delka (10/15/20), aktualni body, faze, flashpointy, Plot Armor status\n\n**Kod ma:**\n- `progress: number` a `total: number` (default 10) \u2014 castecne sedi\n\n**Konflikt:** Datovy model definuje `progressTrack` jako `number (0-10)`, ale diagram jasne popisuje tracky delky 10, 15 i 20. Datovy model je v tomto neuplny/zastaraly \u2014 rika jen 0-10, ale diagram podporuje 15 a 20.\n\nNavic chybi pole pro:\n- `flashpointy` (zaznamenane/vynucene)\n- `plotArmor` (aktivni/zruseny)\n- `stav` (aktivni/vyreseny/opusteny)\n- `typ` (hlavni/vedlejsi/osobni)\n\n### NESROVNALOST #2 \u2014 Nazvy poli\n\n**Docs rikaji:** `progressTrack`, `vaha`\n**Kod ma:** `progress`, `total`, `weight`\n\nToto je presne ten typ chyby zminenej v CLAUDE.md (Common Pitfalls): \"Invented field: Added weight/progress to a thread without checking the model first. The model uses vaha and progressTrack.\"\n\n### CHYBI V DOCS #1 \u2014 Thread Discovery Check Table\n\nDiagram (r. 640) a datovy model (r. 245) oba odkazuji na \"Thread Discovery Table\" / \"Thread Discovery Check Table\", ale **samotna tabulka neni nikde definovana**. Neni jasne:\n- Jake jsou radky tabulky?\n- Jak presne se pouziva d10+progress?\n- Jake typy objevu existuji?\n- Kolik bodu (+1, +2, +3) za jaky vysledek?\n\n### CHYBI V DOCS #2 \u2014 ExcNo blokace\n\nDiagram (r. 1026) zminuje \"ExcNo=blokuje dalsi pokusy ve scene!\" \u2014 ale neni specifikovano jak to implementovat (per-scene flag? per-thread?).\n\n## Shrnuti pro implementaci\n\nPred implementaci Discovery Check je nutne vyresit:\n\n1. **Aktualizovat datovy model** \u2014 `progressTrack: number (0-10)` je prilis jednoduchy. Potrebuje reflektovat:\n   - Ruzne delky (10/15/20)\n   - Flashpointy\n   - Plot Armor\n   - Stav a typ threadu\n\n2. **Opravit nazvy poli v kodu** \u2014 `weight` -> `vaha`, `progress` -> aktualni hodnota progressTracku. Toto vyzaduje MIGRACI (bump CURRENT_VERSION na 7).\n\n3. **Doplnit Thread Discovery Check Table do dokumentace** \u2014 bez ni nelze implementovat. Nutny dotaz na zdroj (Mythic GME 2e rulebook).\n\n4. **Ujasnit ExcNo blokaci** \u2014 per-scene nebo per-thread?\n\n## NOTEBOOKLM DOTAZ\n\n```\nNOTEBOOKLM DOTAZ:\nKontext: Implementace Discovery Check mechaniky pro Thread Progress Track\nOtazka: Jak presne vypada Thread Discovery Check Table? Jake jsou radky, jake vysledky d10+progress, kolik progress bodu za jaky vysledek? A jak presne funguje ExcNo blokace \u2014 blokuje vsechny Discovery Checks ve scene, nebo jen pro konkretni thread?\nZdroj: Mythic GME 2e rulebook\n```\n\n---\n\n**Celkovy verdikt: NESROVNALOST + CHYBI V DOCS**\n\nNelze implementovat bez:\n1. Opravy nesrovnalosti v datovem modelu (delka tracku, nazvy poli)\n2. Doplneni Thread Discovery Check Table ze zdrojove knihy\n3. Migrace existujicich dat (prejmenovani poli, pridani novych)\n"}], "grading": {"eval_id": 2, "run_type": "with_skill", "expectations": [{"text": "Klasifikoval zm\u011bnu jako MECHANIC (nebo MIX)", "passed": true, "evidence": "Explicitn\u011b: 'MIX (DATA + MECHANIC)'"}, {"text": "P\u0159e\u010detl diagram sekci Thread Progress Track", "passed": true, "evidence": "P\u0159e\u010detl r. 614-645, r. 284-314, r. 344-362, r. 795-805, r. 1020-1039 \u2014 velmi d\u016fkladn\u011b"}, {"text": "Popsal mechaniku Discovery Check (Fate Q min 50/50, d10+progress, Thread Discovery Table, Meaning Tables)", "passed": true, "evidence": "Kompletn\u00ed popis v\u010detn\u011b ExcNo blokace a plot armor"}, {"text": "P\u0159e\u010detl i datovy-model.jsx Mythic sekci (progressTrack pole)", "passed": true, "evidence": "Cituje r. 234-265, identifikuje progressTrack: number (0-10)"}, {"text": "Vydal strukturovan\u00fd verdikt (SEDI/NESROVNALOST/CHYBI)", "passed": true, "evidence": "Vydal 'NESROVNALOST + CHYBI V DOCS' s 2 nesrovnalostmi a 2 chyb\u011bj\u00edc\u00edmi polo\u017ekami, plus NOTEBOOKLM DOTAZ"}], "bonus_findings": ["Identifikoval nesrovnalost n\u00e1zv\u016f pol\u00ed (weight/progress vs vaha/progressTrack) \u2014 p\u0159esn\u011b tu historickou chybu z Common Pitfalls", "Identifikoval \u017ee datov\u00fd model \u0159\u00edk\u00e1 0-10 ale diagram podporuje 10/15/20", "Formuloval konkr\u00e9tn\u00ed NOTEBOOKLM DOTAZ pro chyb\u011bj\u00edc\u00ed Thread Discovery Table"]}}, {"id": "eval-discovery-check-without_skill", "prompt": "Implementuj Discovery Check mechaniku pro thready", "eval_id": 2, "outputs": [{"name": "output.md", "type": "text", "content": "# Kroky pred implementaci Discovery Check mechaniky\n\n## 1. Cteni referencnich dokumentu (POVINNY CHECKLIST)\n\n### 1a. Datovy model (`src/docs/datovy-model.jsx`)\n- **Precist radky 203-260** \u2014 sekce Mythic GME, kde je definovan `threadSeznam` a pole `progressTrack` (radek 245).\n- Klicovy poznatek z modelu: `progressTrack` je `number (0-10)`, Discovery Check popis: \"akce -> Fate Q 'Je neco objeveno?'(min 50/50) -> Yes = d10+progress na Thread Discovery Table -> Meaning Tables.\"\n- Thread entry ma jiz pole `progress` a `total` v INITIAL_GAME (viz gameStore.js radek 46).\n\n### 1b. Diagram (`src/docs/solo-rpg-diagram.jsx`)\n- **Precist radky 614-645** \u2014 sekce \"Thread Progress Track\", kde je popsana cela mechanika.\n- Klicove poznatky:\n  - Track ma 3 varianty delky: 10, 15, 20 bodu.\n  - Progress Points: standardni +2, Flashpoint +2, Discovery Check +1/+2/+3 (variabilni).\n  - Flashpoints: dramticke momenty vynucene na konci faze (po 5 bodech).\n  - Discovery Check flow: hrac vyvine usili -> Fate Question \"Je neco objeveno?\" (min 50/50) -> uspech -> Thread Discovery Check Table -> typ objevu + bonusove body.\n  - Plot Armor: thread nemuze byt nahodne uzavren dokud nedosahne konce tracku.\n\n## 2. Analyza stavajiciho stavu\n\n### 2a. Data (gameStore.js)\n- Threads uz maji pole `progress` (number) a `total` (number, default 10) \u2014 zavedeno v migraci 2.\n- **Kontrola**: Datovy model rika `progressTrack: number (0-10)`, ale implementace uz ma `total` s moznosti nastavit delku. To je rozsireni oproti modelu (10/15/20), coz je v souladu s diagramem.\n- **Neni potreba nova migrace** pro zakladni strukturu threadu \u2014 pole `progress` a `total` uz existuji.\n\n### 2b. UI (SvetTab.jsx)\n- Thready sub-tab uz zobrazuje progress bar a tlacitko \"+2\" pro standardni pokrok.\n- Mythic sub-tab tez zobrazuje progress/total u kazdeho threadu.\n- **Chybi**: Discovery Check tlacitko/flow, nastaveni delky tracku (10/15/20), flashpoint mechanika, plot armor indikator.\n\n### 2c. Sheety a bloky\n- FateSheet.jsx uz existuje \u2014 Discovery Check ho bude pouzivat internally (Fate Question \"Je neco objeveno?\").\n- Meaning tables (rollMeaning) uz existuji v utils/dice.js.\n- **Bude potreba**: novy sheet nebo rozsireni existujiciho pro Discovery Check flow.\n\n## 3. Plan implementace\n\n### Krok 1: Rozhodnout o architekture\n- **Varianta A**: Novy `DiscoveryCheckSheet.jsx` \u2014 samostatny bottom sheet pro Discovery Check.\n- **Varianta B**: Integrace do existujiciho Thready sub-tabu jako inline akce.\n- Doporuceni: Varianta A (novy sheet), protoze flow je vicekrokovy (vyber thread -> Fate Q -> tabulka -> vysledek).\n\n### Krok 2: Thread Discovery Check Table\n- Diagram zminuje \"Thread Discovery Check Table\" ale nespecifikuje presne hodnoty.\n- **ZASTAV SE a zeptej se uzivatele**: Kde je definovana Thread Discovery Check Table? Je to z Mythic GME 2e knihy? Potrebuji presne hodnoty pro tabulku (d10 + progress -> typ objevu + body).\n\n### Krok 3: Datove zmeny\n- Overit zda staci stavajici `progress` a `total` pole, nebo je potreba pridat dalsi pole (napr. `flashpoints`, `fazeDosazena`, `plotArmor`).\n- Pokud pridavam pole -> MIGRACE (zvysit CURRENT_VERSION na 7, pridat MIGRATIONS[6]).\n\n### Krok 4: UI komponenty\n- Pridat Discovery Check tlacitko do Thready sub-tabu (vedle stavajiciho \"+2\").\n- Vytvorit novy sheet nebo block pro zobrazeni vysledku.\n- Pridat moznost menit `total` (10/15/20) pri vytvareni/editaci threadu.\n\n### Krok 5: Denikovy blok\n- Zvazit novy typ bloku (napr. `DiscoveryBlock`) pro zaznam vysledku do deniku.\n- Alternativa: pouzit existujici FateBlock + MeaningBlock sekvencne.\n\n## 4. Kontroly pred kodovanim\n\n- [ ] Overit ze Thread Discovery Check Table ma jasne definovane hodnoty (zeptat se uzivatele).\n- [ ] Overit ze neni konflikt s existujicimi poli `progress`/`total` v gameStore.js.\n- [ ] Overit ze FateSheet.jsx API umoznuje volani s preddefinovanou otazkou a odds.\n- [ ] Rozhodnout zda flashpoint mechanika je soucast tohoto tasku nebo samostatny task.\n- [ ] Overit ze ActionToolbar.jsx ma prostor pro dalsi ikonu (nebo Discovery Check bude pristupny jen z Thready tabu).\n\n## 5. Potencialni problemy\n\n1. **Chybejici tabulka**: Diagram zminuje \"Thread Discovery Check Table\" ale neni v `constants/tables.js`. Bude treba pridat.\n2. **Vicekrokovy flow**: Discovery Check je sekvence (vyber thread -> Fate Q -> pokud Yes -> tabulka -> Meaning -> zapis do deniku). Musim navrhnout UX ktery to zvladne v ramci jednoho sheetu.\n3. **Plot Armor logika**: Pri \"Close A Thread\" eventu musim zkontrolovat zda thread ma aktivni plot armor (progress < total). To vyzaduje upravu FateSheet.jsx nebo event processing.\n4. **Flashpoint vynuceni**: Na konci faze (kazdy 5. bod) kontrola zda flashpoint probehl. Toto je komplexnejsi mechanika \u2014 mozna odlozit do separatniho tasku.\n"}], "grading": {"eval_id": 2, "run_type": "without_skill", "expectations": [{"text": "Klasifikoval zm\u011bnu jako MECHANIC (nebo MIX)", "passed": false, "evidence": "Nepou\u017e\u00edv\u00e1 klasifikaci. Sko\u010dil rovnou do \u010dten\u00ed docs."}, {"text": "P\u0159e\u010detl diagram sekci Thread Progress Track", "passed": true, "evidence": "P\u0159e\u010detl r. 614-645, identifikoval kl\u00ed\u010dov\u00e9 body"}, {"text": "Popsal mechaniku Discovery Check", "passed": true, "evidence": "Popsal flow: Fate Q \u2192 tabulka \u2192 Meaning \u2192 progress body"}, {"text": "P\u0159e\u010detl i datovy-model.jsx Mythic sekci", "passed": true, "evidence": "P\u0159e\u010detl r. 203-260, identifikoval progressTrack"}, {"text": "Vydal strukturovan\u00fd verdikt", "passed": false, "evidence": "\u017d\u00e1dn\u00fd explicitn\u00ed verdikt. Zm\u00ednil 'ZASTAV SE a zeptej se uzivatele' ohledn\u011b chyb\u011bj\u00edc\u00ed tabulky, ale bez jasn\u00e9 struktury SEDI/NESROVNALOST/CHYBI."}], "bonus_findings": ["Identifikoval chyb\u011bj\u00edc\u00ed Thread Discovery Table a navrhl se zeptat", "Nezachytil nesrovnalost n\u00e1zv\u016f pol\u00ed (weight vs vaha) \u2014 kl\u00ed\u010dov\u00fd rozd\u00edl oproti with_skill"]}}, {"id": "eval-npc-povolani-with_skill", "prompt": "P\u0159idej ke ka\u017ed\u00e9mu NPC pole `povolani` kde si hr\u00e1\u010d zap\u00ed\u0161e \u010d\u00edm se NPC \u017eiv\u00ed", "eval_id": 3, "outputs": [{"name": "output.md", "type": "text", "content": "# Check-docs verifikace: NPC pole `povolani`\n\n## Zadani\n\n\"Pridej ke kazdemu NPC pole `povolani` kde si hrac zapise cim se NPC zivi\"\n\n---\n\n## Phase 1: Klasifikace zmeny\n\n**Kategorie: DATA**\n\nPridava se nove pole (`povolani`) k existujici entite (NPC). Zadna zmena mechaniky, zadna zmena UI-only \u2014 je to rozsireni datoveho modelu.\n\n---\n\n## Phase 2: Cteni relevantnich docs\n\n### 2.1 Datovy model \u2014 `src/docs/datovy-model.jsx`, radky 200\u2013233\n\nNPC entita definuje tato pole:\n\n- `id` (string)\n- `jmeno, prijmeni` (string)\n- `druh` (enum: Mys | Hlodavec | Savec | Ostatni)\n- `spolecenskePostaveni` (string)\n- `vzhled` (string)\n- `zvlastnost` (string)\n- `znameni` (string)\n- `motivace` (string)\n- `vztah` (string)\n- `reakce` ({hod, stav})\n- `osadaId` (string?)\n- `frakceId` (string?)\n- `str, dex, wil` ({akt, max}?)\n- `bo` ({akt, max}?)\n- `zbran` (string?)\n- `zbroj` (number?)\n- `predmetyUSebe` (string[]?)\n- `poznamky` (string)\n\n**Pole `povolani` v datovem modelu NEEXISTUJE.**\n\n### 2.2 Diagram \u2014 `src/docs/solo-rpg-diagram.jsx`, radky 253\u2013269\n\nNPC wiki zaznam definuje:\n\n- Jmeno\n- Popis\n- Lokace\n- Frakce\n- Vztah k hraci\n- Reakce (2d6)\n- Poznamky\n- Bojove statistiky (volitelne)\n\n**Pole `povolani` ani zadny ekvivalent (zamestnani, remeslo, profese) neni v diagramu zminen.**\n\n### 2.3 Mausritter pravidla (z diagramu)\n\nV tvorbe NPC (d6 spolecenskePostaveni) existuje socialni vrstva (Chudas, Prosta, Mestan, Cech, Slechtic), ale NE konkretni povolani/remeslo.\n\n### 2.4 Soucasna implementace\n\nV `SvetTab.jsx` existuji pole: `popis`, `lokace`, `vztah`, `poznamky`, `zbran`, `dmg`, `zbroj`, `predmetyUSebe` + bojove staty. Pole `povolani` neni implementovano.\n\n---\n\n## Phase 3: Verdikt\n\n### CHYBI V DOCS\n\nPole `povolani` neni definovano ani v datovem modelu (`datovy-model.jsx`), ani v diagramu (`solo-rpg-diagram.jsx`). Pred implementaci je treba rozhodnout:\n\n1. **Pridat `povolani` do datoveho modelu?** \u2014 Pokud ano, je treba nejdriv aktualizovat `src/docs/datovy-model.jsx` (NPC entitu, radek ~222, pred `poznamky`) a pridat pole `{ name: \"povolani\", type: \"string?\", note: \"Cim se NPC zivi (kupec, kovar, straze...)\" }`.\n\n2. **Migrace je NUTNA** \u2014 Pole se pridava k existujici entite. Je treba:\n   - Zvysit `CURRENT_VERSION` v `src/store/gameStore.js`\n   - Pridat migraci ktera projde `game.npcs` (pokud NPC data zustavaji na urovni Mythic seznamu) nebo NPC wiki objekty a prida `povolani: \"\"` kde chybi\n\n3. **Neni uz `popis` dostatecne?** \u2014 Pole `popis` (\"kdo to je, jak vypada, cim je zajimavy\") by mohlo slouzit ke stejnemu ucelu. Otazka pro uzivatele: je `povolani` skutecne potreba jako samostatne pole, nebo staci zapsat povolani do `popis`?\n\n---\n\n## Phase 4: Doporuceni (bez implementace)\n\nPokud uzivatel potvrdi, ze `povolani` chce jako samostatne pole:\n\n1. Aktualizovat `src/docs/datovy-model.jsx` \u2014 pridat `povolani` do NPC entity\n2. Aktualizovat `src/docs/solo-rpg-diagram.jsx` \u2014 pridat \"Povolani\" do NPC wiki zaznamu (radek ~260)\n3. Pridat migraci v `src/store/gameStore.js` (CURRENT_VERSION++)\n4. Pridat UI pole v `src/components/tabs/SvetTab.jsx`\n5. Neexistuje NOTEBOOKLM dotaz \u2014 Mausritter pravidla NPC povolani nedefinuji, je to ciste uzivatelsky pozadavek (volny text)\n\n---\n\n## Soubory kontrolovane behem verifikace\n\n- `/home/brux/projekty/solo-rpg-toolkit/src/docs/datovy-model.jsx` (radky 200\u2013233)\n- `/home/brux/projekty/solo-rpg-toolkit/src/docs/solo-rpg-diagram.jsx` (radky 253\u2013269)\n- `/home/brux/projekty/solo-rpg-toolkit/src/store/gameStore.js` (radky 10, 45)\n- `/home/brux/projekty/solo-rpg-toolkit/src/components/tabs/SvetTab.jsx` (radky s NPC poli)\n"}], "grading": {"eval_id": 3, "run_type": "with_skill", "expectations": [{"text": "Klasifikoval zm\u011bnu jako DATA", "passed": true, "evidence": "Explicitn\u011b: 'Kategorie: DATA'"}, {"text": "P\u0159e\u010detl datovy-model.jsx NPC sekci (\u0159. 200-233)", "passed": true, "evidence": "P\u0159e\u010detl r. 200-233, vylistoval v\u0161echna pole NPC entity"}, {"text": "Zjistil \u017ee pole povolani v modelu NEEXISTUJE", "passed": true, "evidence": "Explicitn\u011b: 'Pole povolani v datovem modelu NEEXISTUJE'"}, {"text": "Vydal verdikt CHYBI V DOCS (ne SEDI)", "passed": true, "evidence": "Explicitn\u011b: 'CHYBI V DOCS'"}, {"text": "Formuloval NOTEBOOKLM DOTAZ s kontextem, ot\u00e1zkou a zdrojem", "passed": false, "evidence": "\u0158ekl 'Neexistuje NOTEBOOKLM dotaz \u2014 Mausritter pravidla NPC povolani nedefinuji, je to ciste uzivatelsky pozadavek'. Rozumn\u00e9 zd\u016fvodn\u011bn\u00ed, ale skill \u0159\u00edk\u00e1 formulovat dotaz p\u0159i CHYBI V DOCS."}, {"text": "NEZACAL implementovat bez vy\u0159e\u0161en\u00ed chyb\u011bj\u00edc\u00edho pole", "passed": true, "evidence": "Cel\u00fd report je verifikace, \u017e\u00e1dn\u00fd k\u00f3d. Explicitn\u011b \u0159\u00edk\u00e1 'Pred implementaci je nutne nejdriv aktualizovat oba referencni dokumenty.'"}], "bonus_findings": ["Polo\u017eil cennou ot\u00e1zku: nen\u00ed povolani redundantn\u00ed s existuj\u00edc\u00edm polem popis?", "Navrhl konkr\u00e9tn\u00ed kroky pro aktualizaci docs pokud u\u017eivatel potvrd\u00ed"]}}, {"id": "eval-npc-povolani-without_skill", "prompt": "P\u0159idej ke ka\u017ed\u00e9mu NPC pole `povolani` kde si hr\u00e1\u010d zap\u00ed\u0161e \u010d\u00edm se NPC \u017eiv\u00ed", "eval_id": 3, "outputs": [{"name": "output.md", "type": "text", "content": "# Kroky pred implementaci: pridani pole `povolani` k NPC\n\n## 1. Kontrola checklistu z CLAUDE.md\n\nZadani meni data (NPC entitu) \u2014 je povinne:\n- Precist `src/docs/datovy-model.jsx` (sekce NPC, r. 200\u2013233)\n- Precist `src/docs/solo-rpg-diagram.jsx` (sekce NPC, r. 177\u2013207)\n- Overit, ze pole `povolani` neni v rozporu s existujicim modelem\n- Pridat MIGRACI v `src/store/gameStore.js` + zvysit `CURRENT_VERSION`\n\n## 2. Co jsem zjistil z dokumentace\n\n### Datovy model (`src/docs/datovy-model.jsx`, r. 200\u2013233)\nNPC ma tyto pole: id, jmeno, prijmeni, druh, spolecenskePostaveni, vzhled, zvlastnost, znameni, motivace, vztah, reakce, osadaId, frakceId, bojove staty (str/dex/wil, bo, zbran, zbroj), predmetyUSebe, poznamky.\n\n**Pole `povolani` v datovem modelu NENI.** Je tam `spolecenskePostaveni` (Chudas, Prosta, Mestan, Cech, Slechtic), ale to je neco jineho nez povolani/zivnost.\n\n### Diagram (`src/docs/solo-rpg-diagram.jsx`, r. 177\u2013207)\nDiagram popisuje tvorbu postavy (jmena, prijmeni), ale NPC wiki zaznam nema explicitni pole pro povolani.\n\n### Aktualni implementace\n- `src/store/gameStore.js`: NPC v `game.npcs` \u2014 pole objektu s name, weight, flag (mechanicky seznam)\n- `src/components/tabs/SvetTab.jsx`: NPC wiki karta ma pole popis, lokace, vztah, poznamky + bojove staty\n\n## 3. Rozhodnuti: je zmena v souladu s modelem?\n\nPole `povolani` v referencnim datovem modelu neni. To znamena:\n\n**Varianta A \u2014 Upozornit uzivatele:**\nDatovy model toto pole nedefinuje. Mel bych se zastavit a zeptat: \"Pole `povolani` neni v datovem modelu (`src/docs/datovy-model.jsx`). Mam ho tam nejdriv pridat, nebo implementovat primo?\"\n\n**Varianta B \u2014 Pole je logicke rozsireni:**\nModel ma `spolecenskePostaveni` (socialni trida) a `poznamky` (volny text). Povolani je samostatna informace, ktera tam logicky patri. Uzivatel ji explicitne chce.\n\nSpravny postup dle checklistu: **zastavit se a upozornit uzivatele**, ze pole v modelu chybi.\n\n## 4. Kroky implementace (po schvaleni)\n\n1. **Aktualizovat datovy model** (`src/docs/datovy-model.jsx`, r. 200\u2013233):\n   - Pridat `{ name: \"povolani\", type: \"string?\", note: \"Cim se NPC zivi\" }` do pole `fields` entity NPC\n\n2. **Pridat migraci** (`src/store/gameStore.js`):\n   - Zvysit `CURRENT_VERSION` z 6 na 7\n   - Pridat `MIGRATIONS[6]` \u2014 projit `data.npcs` a kazdemu NPC pridat `povolani: n.povolani || \"\"`\n   - Pozor: NPC v `game.npcs` jsou mechanicky seznam (name/weight/flag), wiki data jsou ulozena primo na objektu (popis, lokace, vztah, poznamky). Migraci udelat na stejnem miste.\n\n3. **Upravit UI** (`src/components/tabs/SvetTab.jsx`):\n   - Pridat input pole pro `povolani` do NPC wiki karty (expandovana sekce)\n   - Umistit ho logicky \u2014 napr. za popis, pred lokaci\n   - Inline CSS, barvy z `C`, font z `FONT`\n\n4. **Overit funkcnost**:\n   - Existujici NPC bez `povolani` se zobrazi spravne (prazdne pole)\n   - Nove NPC maji `povolani` k dispozici\n   - localStorage migrace funguje (stara data se korektne aktualizuji)\n   - Export/import zachovava pole `povolani`\n\n## 5. Soubory k uprave\n\n- `/home/brux/projekty/solo-rpg-toolkit/src/docs/datovy-model.jsx` (pridat pole do NPC definice)\n- `/home/brux/projekty/solo-rpg-toolkit/src/store/gameStore.js` (migrace 6\u21927, CURRENT_VERSION=7)\n- `/home/brux/projekty/solo-rpg-toolkit/src/components/tabs/SvetTab.jsx` (UI input pro povolani)\n\n## 6. Co NEDELAT\n\n- Nepridavat pole bez migrace (stara data by se rozbila)\n- Neimplementovat bez aktualizace datoveho modelu (budouci instance by nevedly o poli)\n- Nepridavat validaci ani omezeni \u2014 je to volny textovy vstup dle zadani\n"}], "grading": {"eval_id": 3, "run_type": "without_skill", "expectations": [{"text": "Klasifikoval zm\u011bnu jako DATA", "passed": true, "evidence": "Implicitn\u011b: 'meni data (NPC entitu)'"}, {"text": "P\u0159e\u010detl datovy-model.jsx NPC sekci (\u0159. 200-233)", "passed": true, "evidence": "P\u0159e\u010detl r. 200-233"}, {"text": "Zjistil \u017ee pole povolani v modelu NEEXISTUJE", "passed": true, "evidence": "Explicitn\u011b: 'Pole povolani v datovem modelu NENI'"}, {"text": "Vydal verdikt CHYBI V DOCS (ne SEDI)", "passed": false, "evidence": "Nepou\u017e\u00edv\u00e1 strukturovan\u00fd verdikt. \u0158\u00edk\u00e1 'zastavit se a upozornit uzivatele' ale bez jasn\u00e9ho form\u00e1tu."}, {"text": "Formuloval NOTEBOOKLM DOTAZ", "passed": false, "evidence": "\u017d\u00e1dn\u00fd NotebookLM dotaz nebyl formulov\u00e1n."}, {"text": "NEZACAL implementovat", "passed": true, "evidence": "Zastavil se, popsal kroky ale neimplementoval"}], "bonus_findings": []}}], "previous_feedback": {}, "previous_outputs": {}, "benchmark": {"skill_name": "check-docs", "iteration": 1, "configurations": [{"name": "with_skill", "label": "Se skillem check-docs", "evals": [{"eval_name": "npc-reakce", "pass_rate": 1.0, "passed": 5, "total": 5, "tokens": 29951, "duration_seconds": 88.9}, {"eval_name": "discovery-check", "pass_rate": 1.0, "passed": 5, "total": 5, "tokens": 38729, "duration_seconds": 142.2}, {"eval_name": "npc-povolani", "pass_rate": 0.83, "passed": 5, "total": 6, "tokens": 23534, "duration_seconds": 100.4}], "aggregate": {"mean_pass_rate": 0.94, "mean_tokens": 30738, "mean_duration_seconds": 110.5}}, {"name": "without_skill", "label": "Bez skillu (jen CLAUDE.md)", "evals": [{"eval_name": "npc-reakce", "pass_rate": 0.8, "passed": 4, "total": 5, "tokens": 34052, "duration_seconds": 82.2}, {"eval_name": "discovery-check", "pass_rate": 0.6, "passed": 3, "total": 5, "tokens": 31660, "duration_seconds": 85.5}, {"eval_name": "npc-povolani", "pass_rate": 0.5, "passed": 3, "total": 6, "tokens": 20307, "duration_seconds": 65.7}], "aggregate": {"mean_pass_rate": 0.63, "mean_tokens": 28673, "mean_duration_seconds": 77.8}}], "delta": {"pass_rate": "+0.31 (0.63 \u2192 0.94)", "tokens": "+2065 (+7.2%)", "duration": "+32.7s (+42%)"}, "analysis": {"key_findings": ["Skill zv\u00fd\u0161il pass rate o 31 procentn\u00edch bod\u016f (0.63 \u2192 0.94)", "Nejv\u011bt\u0161\u00ed rozd\u00edl u Discovery Check: skill identifikoval nesrovnalost n\u00e1zv\u016f pol\u00ed (weight vs vaha) kterou baseline \u00fapln\u011b p\u0159ehl\u00e9dl", "Skill konzistentn\u011b pou\u017e\u00edv\u00e1 strukturovan\u00e9 verdikty (SEDI/NESROVNALOST/CHYBI) \u2014 baseline ne", "Jedin\u00fd fail with_skill: neformuloval NotebookLM dotaz u povolani (spr\u00e1vn\u011b zd\u016fvodnil \u017ee to nen\u00ed ot\u00e1zka na pravidla)", "Skill je pomalej\u0161\u00ed (+42%) a \u017eere v\u00edc token\u016f (+7%) \u2014 p\u0159ijateln\u00e1 cena za kvalitu"], "non_discriminating": ["\u010cten\u00ed docs \u2014 ob\u011b verze \u010dtou spr\u00e1vn\u00e9 sekce, CLAUDE.md checklist funguje pro z\u00e1kladn\u00ed navigaci"], "skill_unique_catches": ["Nesrovnalost Opatrn\u00fd vs Nejist\u00e1 v NPC reakci (Test 1)", "Nesrovnalost weight/progress vs vaha/progressTrack (Test 2)", "Chyb\u011bj\u00edc\u00ed ExcNo blokace specifikace (Test 2)", "Ot\u00e1zka o redundanci povolani vs popis (Test 3)"]}}};
+
+    // ---- State ----
+    let feedbackMap = {};  // run_id -> feedback text
+    let currentIndex = 0;
+    let visitedRuns = new Set();
+
+    // ---- Init ----
+    async function init() {
+      // Load saved feedback from server — but only if this isn't a fresh
+      // iteration (indicated by previous_feedback being present). When
+      // previous feedback exists, the feedback.json on disk is stale from
+      // the prior iteration and should not pre-fill the textareas.
+      const hasPrevious = Object.keys(EMBEDDED_DATA.previous_feedback || {}).length > 0
+        || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
+      if (!hasPrevious) {
+        try {
+          const resp = await fetch("/api/feedback");
+          const data = await resp.json();
+          if (data.reviews) {
+            for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
+          }
+        } catch { /* first run, no feedback yet */ }
+      }
+
+      document.getElementById("skill-name").textContent = EMBEDDED_DATA.skill_name;
+      showRun(0);
+
+      // Wire up feedback auto-save
+      const textarea = document.getElementById("feedback");
+      let saveTimeout = null;
+      textarea.addEventListener("input", () => {
+        clearTimeout(saveTimeout);
+        document.getElementById("feedback-status").textContent = "";
+        saveTimeout = setTimeout(() => saveCurrentFeedback(), 800);
+      });
+    }
+
+    // ---- Navigation ----
+    function navigate(delta) {
+      const newIndex = currentIndex + delta;
+      if (newIndex >= 0 && newIndex < EMBEDDED_DATA.runs.length) {
+        saveCurrentFeedback();
+        showRun(newIndex);
+      }
+    }
+
+    function updateNavButtons() {
+      document.getElementById("prev-btn").disabled = currentIndex === 0;
+      document.getElementById("next-btn").disabled =
+        currentIndex === EMBEDDED_DATA.runs.length - 1;
+    }
+
+    // ---- Show a run ----
+    function showRun(index) {
+      currentIndex = index;
+      const run = EMBEDDED_DATA.runs[index];
+
+      // Progress
+      document.getElementById("progress").textContent =
+        `${index + 1} of ${EMBEDDED_DATA.runs.length}`;
+
+      // Prompt
+      document.getElementById("prompt-text").textContent = run.prompt;
+
+      // Config badge
+      const badge = document.getElementById("config-badge");
+      const configMatch = run.id.match(/(with_skill|without_skill|new_skill|old_skill)/);
+      if (configMatch) {
+        const config = configMatch[1];
+        const isBaseline = config === "without_skill" || config === "old_skill";
+        badge.textContent = config.replace(/_/g, " ");
+        badge.className = "config-badge " + (isBaseline ? "config-baseline" : "config-primary");
+        badge.style.display = "inline-block";
+      } else {
+        badge.style.display = "none";
+      }
+
+      // Outputs
+      renderOutputs(run);
+
+      // Previous outputs
+      renderPrevOutputs(run);
+
+      // Grades
+      renderGrades(run);
+
+      // Previous feedback
+      const prevFb = (EMBEDDED_DATA.previous_feedback || {})[run.id];
+      const prevEl = document.getElementById("prev-feedback");
+      if (prevFb) {
+        document.getElementById("prev-feedback-text").textContent = prevFb;
+        prevEl.style.display = "block";
+      } else {
+        prevEl.style.display = "none";
+      }
+
+      // Feedback
+      document.getElementById("feedback").value = feedbackMap[run.id] || "";
+      document.getElementById("feedback-status").textContent = "";
+
+      updateNavButtons();
+
+      // Track visited runs and promote done button when all visited
+      visitedRuns.add(index);
+      const doneBtn = document.getElementById("done-btn");
+      if (visitedRuns.size >= EMBEDDED_DATA.runs.length) {
+        doneBtn.classList.add("ready");
+      }
+
+      // Scroll main content to top
+      document.querySelector(".main").scrollTop = 0;
+    }
+
+    // ---- Render outputs ----
+    function renderOutputs(run) {
+      const container = document.getElementById("outputs-body");
+      container.innerHTML = "";
+
+      const outputs = run.outputs || [];
+      if (outputs.length === 0) {
+        container.innerHTML = '<div class="empty-state">No output files</div>';
+        return;
+      }
+
+      for (const file of outputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        // Always show file header with download link
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const content = document.createElement("div");
+        content.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          content.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          content.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          content.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(content, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          content.appendChild(a);
+        } else if (file.type === "error") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          pre.style.color = "var(--red)";
+          content.appendChild(pre);
+        }
+
+        fileDiv.appendChild(content);
+        container.appendChild(fileDiv);
+      }
+    }
+
+    // ---- XLSX rendering via SheetJS ----
+    function renderXlsx(container, b64Data) {
+      try {
+        const raw = Uint8Array.from(atob(b64Data), c => c.charCodeAt(0));
+        const wb = XLSX.read(raw, { type: "array" });
+
+        for (let i = 0; i < wb.SheetNames.length; i++) {
+          const sheetName = wb.SheetNames[i];
+          const ws = wb.Sheets[sheetName];
+
+          if (wb.SheetNames.length > 1) {
+            const sheetLabel = document.createElement("div");
+            sheetLabel.style.cssText =
+              "font-weight:600; font-size:0.8rem; color:#b0aea5; margin-top:0.5rem; margin-bottom:0.25rem;";
+            sheetLabel.textContent = "Sheet: " + sheetName;
+            container.appendChild(sheetLabel);
+          }
+
+          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
+          const wrapper = document.createElement("div");
+          wrapper.innerHTML = htmlStr;
+          container.appendChild(wrapper);
+        }
+      } catch (err) {
+        container.textContent = "Error rendering spreadsheet: " + err.message;
+      }
+    }
+
+    // ---- Grades ----
+    function renderGrades(run) {
+      const section = document.getElementById("grades-section");
+      const content = document.getElementById("grades-content");
+
+      if (!run.grading) {
+        section.style.display = "none";
+        return;
+      }
+
+      const grading = run.grading;
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("grades-arrow").classList.remove("open");
+
+      const summary = grading.summary || {};
+      const expectations = grading.expectations || [];
+
+      let html = '<div style="padding: 1rem;">';
+
+      // Summary line
+      const passRate = summary.pass_rate != null
+        ? Math.round(summary.pass_rate * 100) + "%"
+        : "?";
+      const badgeClass = summary.pass_rate >= 0.8 ? "grade-pass" : summary.pass_rate >= 0.5 ? "" : "grade-fail";
+      html += '<div class="grades-summary">';
+      html += '<span class="grade-badge ' + badgeClass + '">' + passRate + '</span>';
+      html += '<span>' + (summary.passed || 0) + ' passed, ' + (summary.failed || 0) + ' failed of ' + (summary.total || 0) + '</span>';
+      html += '</div>';
+
+      // Assertions list
+      html += '<ul class="assertion-list">';
+      for (const exp of expectations) {
+        const statusClass = exp.passed ? "pass" : "fail";
+        const statusIcon = exp.passed ? "\u2713" : "\u2717";
+        html += '<li class="assertion-item">';
+        html += '<span class="assertion-status ' + statusClass + '">' + statusIcon + '</span>';
+        html += '<span>' + escapeHtml(exp.text) + '</span>';
+        if (exp.evidence) {
+          html += '<div class="assertion-evidence">' + escapeHtml(exp.evidence) + '</div>';
+        }
+        html += '</li>';
+      }
+      html += '</ul>';
+
+      html += '</div>';
+      content.innerHTML = html;
+    }
+
+    function toggleGrades() {
+      const content = document.getElementById("grades-content");
+      const arrow = document.getElementById("grades-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Previous outputs (collapsible) ----
+    function renderPrevOutputs(run) {
+      const section = document.getElementById("prev-outputs-section");
+      const content = document.getElementById("prev-outputs-content");
+      const prevOutputs = (EMBEDDED_DATA.previous_outputs || {})[run.id];
+
+      if (!prevOutputs || prevOutputs.length === 0) {
+        section.style.display = "none";
+        return;
+      }
+
+      section.style.display = "block";
+      // Reset to collapsed
+      content.classList.remove("open");
+      document.getElementById("prev-outputs-arrow").classList.remove("open");
+
+      // Render the files into the content area
+      content.innerHTML = "";
+      const wrapper = document.createElement("div");
+      wrapper.style.padding = "1rem";
+
+      for (const file of prevOutputs) {
+        const fileDiv = document.createElement("div");
+        fileDiv.className = "output-file";
+
+        const header = document.createElement("div");
+        header.className = "output-file-header";
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = file.name;
+        header.appendChild(nameSpan);
+        const dlBtn = document.createElement("a");
+        dlBtn.className = "dl-btn";
+        dlBtn.textContent = "Download";
+        dlBtn.download = file.name;
+        dlBtn.href = getDownloadUri(file);
+        header.appendChild(dlBtn);
+        fileDiv.appendChild(header);
+
+        const fc = document.createElement("div");
+        fc.className = "output-file-content";
+
+        if (file.type === "text") {
+          const pre = document.createElement("pre");
+          pre.textContent = file.content;
+          fc.appendChild(pre);
+        } else if (file.type === "image") {
+          const img = document.createElement("img");
+          img.src = file.data_uri;
+          img.alt = file.name;
+          fc.appendChild(img);
+        } else if (file.type === "pdf") {
+          const iframe = document.createElement("iframe");
+          iframe.src = file.data_uri;
+          fc.appendChild(iframe);
+        } else if (file.type === "xlsx") {
+          renderXlsx(fc, file.data_b64);
+        } else if (file.type === "binary") {
+          const a = document.createElement("a");
+          a.className = "download-link";
+          a.href = file.data_uri;
+          a.download = file.name;
+          a.textContent = "Download " + file.name;
+          fc.appendChild(a);
+        }
+
+        fileDiv.appendChild(fc);
+        wrapper.appendChild(fileDiv);
+      }
+
+      content.appendChild(wrapper);
+    }
+
+    function togglePrevOutputs() {
+      const content = document.getElementById("prev-outputs-content");
+      const arrow = document.getElementById("prev-outputs-arrow");
+      content.classList.toggle("open");
+      arrow.classList.toggle("open");
+    }
+
+    // ---- Feedback (saved to server -> feedback.json) ----
+    function saveCurrentFeedback() {
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // Build reviews array from map
+      const reviews = [];
+      for (const [run_id, feedback] of Object.entries(feedbackMap)) {
+        if (feedback.trim()) {
+          reviews.push({ run_id, feedback, timestamp: new Date().toISOString() });
+        }
+      }
+
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reviews, status: "in_progress" }),
+      }).then(() => {
+        document.getElementById("feedback-status").textContent = "Saved";
+      }).catch(() => {
+        // Static mode or server unavailable — no-op on auto-save,
+        // feedback will be downloaded on final submit
+        document.getElementById("feedback-status").textContent = "Will download on submit";
+      });
+    }
+
+    // ---- Done ----
+    function showDoneDialog() {
+      // Save current textarea to feedbackMap (but don't POST yet)
+      const run = EMBEDDED_DATA.runs[currentIndex];
+      const text = document.getElementById("feedback").value;
+      if (text.trim() === "") {
+        delete feedbackMap[run.id];
+      } else {
+        feedbackMap[run.id] = text;
+      }
+
+      // POST once with status: complete — include ALL runs so the model
+      // can distinguish "no feedback" (looks good) from "not reviewed"
+      const reviews = [];
+      const ts = new Date().toISOString();
+      for (const r of EMBEDDED_DATA.runs) {
+        reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
+      }
+      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: payload,
+      }).then(() => {
+        document.getElementById("done-overlay").classList.add("visible");
+      }).catch(() => {
+        // Server not available (static mode) — download as file
+        const blob = new Blob([payload], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "feedback.json";
+        a.click();
+        URL.revokeObjectURL(url);
+        document.getElementById("done-overlay").classList.add("visible");
+      });
+    }
+
+    function closeDoneDialog() {
+      // Reset status back to in_progress
+      saveCurrentFeedback();
+      document.getElementById("done-overlay").classList.remove("visible");
+    }
+
+    // ---- Toast ----
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 2000);
+    }
+
+    // ---- Keyboard nav ----
+    document.addEventListener("keydown", (e) => {
+      // Don't capture when typing in textarea
+      if (e.target.tagName === "TEXTAREA") return;
+
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+        e.preventDefault();
+        navigate(-1);
+      } else if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+        e.preventDefault();
+        navigate(1);
+      }
+    });
+
+    // ---- Util ----
+    function getDownloadUri(file) {
+      if (file.data_uri) return file.data_uri;
+      if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
+      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      return "#";
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // ---- View switching ----
+    function switchView(view) {
+      document.querySelectorAll(".view-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      document.querySelector(`[onclick="switchView('${view}')"]`).classList.add("active");
+      document.getElementById("panel-" + view).classList.add("active");
+    }
+
+    // ---- Benchmark rendering ----
+    function renderBenchmark() {
+      const data = EMBEDDED_DATA.benchmark;
+      if (!data) return;
+
+      // Show the tabs
+      document.getElementById("view-tabs").style.display = "flex";
+
+      const container = document.getElementById("benchmark-content");
+      const summary = data.run_summary || {};
+      const metadata = data.metadata || {};
+      const notes = data.notes || [];
+
+      let html = "";
+
+      // Header
+      html += "<h2 style='font-family: Poppins, sans-serif; margin-bottom: 0.5rem;'>Benchmark Results</h2>";
+      html += "<p style='color: var(--text-muted); font-size: 0.875rem; margin-bottom: 1.25rem;'>";
+      if (metadata.skill_name) html += "<strong>" + escapeHtml(metadata.skill_name) + "</strong> &mdash; ";
+      if (metadata.timestamp) html += metadata.timestamp + " &mdash; ";
+      if (metadata.evals_run) html += "Evals: " + metadata.evals_run.join(", ") + " &mdash; ";
+      html += (metadata.runs_per_configuration || "?") + " runs per configuration";
+      html += "</p>";
+
+      // Summary table
+      html += '<table class="benchmark-table">';
+
+      function fmtStat(stat, pct) {
+        if (!stat) return "—";
+        const suffix = pct ? "%" : "";
+        const m = pct ? (stat.mean * 100).toFixed(0) : stat.mean.toFixed(1);
+        const s = pct ? (stat.stddev * 100).toFixed(0) : stat.stddev.toFixed(1);
+        return m + suffix + " ± " + s + suffix;
+      }
+
+      function deltaClass(val) {
+        if (!val) return "";
+        const n = parseFloat(val);
+        if (n > 0) return "benchmark-delta-positive";
+        if (n < 0) return "benchmark-delta-negative";
+        return "";
+      }
+
+      // Discover config names dynamically (everything except "delta")
+      const configs = Object.keys(summary).filter(k => k !== "delta");
+      const configA = configs[0] || "config_a";
+      const configB = configs[1] || "config_b";
+      const labelA = configA.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const labelB = configB.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+      const a = summary[configA] || {};
+      const b = summary[configB] || {};
+      const delta = summary.delta || {};
+
+      html += "<thead><tr><th>Metric</th><th>" + escapeHtml(labelA) + "</th><th>" + escapeHtml(labelB) + "</th><th>Delta</th></tr></thead>";
+      html += "<tbody>";
+
+      html += "<tr><td><strong>Pass Rate</strong></td>";
+      html += "<td>" + fmtStat(a.pass_rate, true) + "</td>";
+      html += "<td>" + fmtStat(b.pass_rate, true) + "</td>";
+      html += '<td class="' + deltaClass(delta.pass_rate) + '">' + (delta.pass_rate || "—") + "</td></tr>";
+
+      // Time (only show row if data exists)
+      if (a.time_seconds || b.time_seconds) {
+        html += "<tr><td><strong>Time (s)</strong></td>";
+        html += "<td>" + fmtStat(a.time_seconds, false) + "</td>";
+        html += "<td>" + fmtStat(b.time_seconds, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.time_seconds) + '">' + (delta.time_seconds ? delta.time_seconds + "s" : "—") + "</td></tr>";
+      }
+
+      // Tokens (only show row if data exists)
+      if (a.tokens || b.tokens) {
+        html += "<tr><td><strong>Tokens</strong></td>";
+        html += "<td>" + fmtStat(a.tokens, false) + "</td>";
+        html += "<td>" + fmtStat(b.tokens, false) + "</td>";
+        html += '<td class="' + deltaClass(delta.tokens) + '">' + (delta.tokens || "—") + "</td></tr>";
+      }
+
+      html += "</tbody></table>";
+
+      // Per-eval breakdown (if runs data available)
+      const runs = data.runs || [];
+      if (runs.length > 0) {
+        const evalIds = [...new Set(runs.map(r => r.eval_id))].sort((a, b) => a - b);
+
+        html += "<h3 style='font-family: Poppins, sans-serif; margin-bottom: 0.75rem;'>Per-Eval Breakdown</h3>";
+
+        const hasTime = runs.some(r => r.result && r.result.time_seconds != null);
+        const hasErrors = runs.some(r => r.result && r.result.errors > 0);
+
+        for (const evalId of evalIds) {
+          const evalRuns = runs.filter(r => r.eval_id === evalId);
+          const evalName = evalRuns[0] && evalRuns[0].eval_name ? evalRuns[0].eval_name : "Eval " + evalId;
+
+          html += "<h4 style='font-family: Poppins, sans-serif; margin: 1rem 0 0.5rem; color: var(--text);'>" + escapeHtml(evalName) + "</h4>";
+          html += '<table class="benchmark-table">';
+          html += "<thead><tr><th>Config</th><th>Run</th><th>Pass Rate</th>";
+          if (hasTime) html += "<th>Time (s)</th>";
+          if (hasErrors) html += "<th>Crashes During Execution</th>";
+          html += "</tr></thead>";
+          html += "<tbody>";
+
+          // Group by config and render with average rows
+          const configGroups = [...new Set(evalRuns.map(r => r.configuration))];
+          for (let ci = 0; ci < configGroups.length; ci++) {
+            const config = configGroups[ci];
+            const configRuns = evalRuns.filter(r => r.configuration === config);
+            if (configRuns.length === 0) continue;
+
+            const rowClass = ci === 0 ? "benchmark-row-with" : "benchmark-row-without";
+            const configLabel = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+
+            for (const run of configRuns) {
+              const r = run.result || {};
+              const prClass = r.pass_rate >= 0.8 ? "benchmark-delta-positive" : r.pass_rate < 0.5 ? "benchmark-delta-negative" : "";
+              html += '<tr class="' + rowClass + '">';
+              html += "<td>" + configLabel + "</td>";
+              html += "<td>" + run.run_number + "</td>";
+              html += '<td class="' + prClass + '">' + ((r.pass_rate || 0) * 100).toFixed(0) + "% (" + (r.passed || 0) + "/" + (r.total || 0) + ")</td>";
+              if (hasTime) html += "<td>" + (r.time_seconds != null ? r.time_seconds.toFixed(1) : "—") + "</td>";
+              if (hasErrors) html += "<td>" + (r.errors || 0) + "</td>";
+              html += "</tr>";
+            }
+
+            // Average row
+            const rates = configRuns.map(r => (r.result || {}).pass_rate || 0);
+            const avgRate = rates.reduce((a, b) => a + b, 0) / rates.length;
+            const avgPrClass = avgRate >= 0.8 ? "benchmark-delta-positive" : avgRate < 0.5 ? "benchmark-delta-negative" : "";
+            html += '<tr class="benchmark-row-avg ' + rowClass + '">';
+            html += "<td>" + configLabel + "</td>";
+            html += "<td>Avg</td>";
+            html += '<td class="' + avgPrClass + '">' + (avgRate * 100).toFixed(0) + "%</td>";
+            if (hasTime) {
+              const times = configRuns.map(r => (r.result || {}).time_seconds).filter(t => t != null);
+              html += "<td>" + (times.length ? (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1) : "—") + "</td>";
+            }
+            if (hasErrors) html += "<td></td>";
+            html += "</tr>";
+          }
+          html += "</tbody></table>";
+
+          // Per-assertion detail for this eval
+          const runsWithExpectations = {};
+          for (const config of configGroups) {
+            runsWithExpectations[config] = evalRuns.filter(r => r.configuration === config && r.expectations && r.expectations.length > 0);
+          }
+          const hasAnyExpectations = Object.values(runsWithExpectations).some(runs => runs.length > 0);
+          if (hasAnyExpectations) {
+            // Collect all unique assertion texts across all configs
+            const allAssertions = [];
+            const seen = new Set();
+            for (const config of configGroups) {
+              for (const run of runsWithExpectations[config]) {
+                for (const exp of (run.expectations || [])) {
+                  if (!seen.has(exp.text)) {
+                    seen.add(exp.text);
+                    allAssertions.push(exp.text);
+                  }
+                }
+              }
+            }
+
+            html += '<table class="benchmark-table" style="margin-top: 0.5rem;">';
+            html += "<thead><tr><th>Assertion</th>";
+            for (const config of configGroups) {
+              const label = config.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+              html += "<th>" + escapeHtml(label) + "</th>";
+            }
+            html += "</tr></thead><tbody>";
+
+            for (const assertionText of allAssertions) {
+              html += "<tr><td>" + escapeHtml(assertionText) + "</td>";
+
+              for (const config of configGroups) {
+                html += "<td>";
+                for (const run of runsWithExpectations[config]) {
+                  const exp = (run.expectations || []).find(e => e.text === assertionText);
+                  if (exp) {
+                    const cls = exp.passed ? "benchmark-delta-positive" : "benchmark-delta-negative";
+                    const icon = exp.passed ? "\u2713" : "\u2717";
+                    html += '<span class="' + cls + '" title="Run ' + run.run_number + ': ' + escapeHtml(exp.evidence || "") + '">' + icon + "</span> ";
+                  } else {
+                    html += "— ";
+                  }
+                }
+                html += "</td>";
+              }
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+        }
+      }
+
+      // Notes
+      if (notes.length > 0) {
+        html += '<div class="benchmark-notes">';
+        html += "<h3>Analysis Notes</h3>";
+        html += "<ul>";
+        for (const note of notes) {
+          html += "<li>" + escapeHtml(note) + "</li>";
+        }
+        html += "</ul></div>";
+      }
+
+      container.innerHTML = html;
+    }
+
+    // ---- Start ----
+    init();
+    renderBenchmark();
+  </script>
+</body>
+</html>

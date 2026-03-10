@@ -1,0 +1,37 @@
+{
+  "eval_id": 3,
+  "run_type": "without_skill",
+  "expectations": [
+    {
+      "text": "Klasifikoval změnu jako DATA",
+      "passed": true,
+      "evidence": "Implicitně: 'meni data (NPC entitu)'"
+    },
+    {
+      "text": "Přečetl datovy-model.jsx NPC sekci (ř. 200-233)",
+      "passed": true,
+      "evidence": "Přečetl r. 200-233"
+    },
+    {
+      "text": "Zjistil že pole povolani v modelu NEEXISTUJE",
+      "passed": true,
+      "evidence": "Explicitně: 'Pole povolani v datovem modelu NENI'"
+    },
+    {
+      "text": "Vydal verdikt CHYBI V DOCS (ne SEDI)",
+      "passed": false,
+      "evidence": "Nepoužívá strukturovaný verdikt. Říká 'zastavit se a upozornit uzivatele' ale bez jasného formátu."
+    },
+    {
+      "text": "Formuloval NOTEBOOKLM DOTAZ",
+      "passed": false,
+      "evidence": "Žádný NotebookLM dotaz nebyl formulován."
+    },
+    {
+      "text": "NEZACAL implementovat",
+      "passed": true,
+      "evidence": "Zastavil se, popsal kroky ale neimplementoval"
+    }
+  ],
+  "bonus_findings": []
+}

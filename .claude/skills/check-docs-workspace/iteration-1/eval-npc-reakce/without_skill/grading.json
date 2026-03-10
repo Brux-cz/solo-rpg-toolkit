@@ -1,0 +1,32 @@
+{
+  "eval_id": 1,
+  "run_type": "without_skill",
+  "expectations": [
+    {
+      "text": "Klasifikoval změnu jako DATA",
+      "passed": true,
+      "evidence": "Implicitně: 'mění data (NPC entita)'"
+    },
+    {
+      "text": "Přečetl datovy-model.jsx NPC sekci (ř. 200-233)",
+      "passed": true,
+      "evidence": "Přečetl, cituje r. 214 a r. 263"
+    },
+    {
+      "text": "Našel existující pole reakce: {hod, stav} s poznámkou o 2d6",
+      "passed": true,
+      "evidence": "Cituje přesnou definici včetně tabulky"
+    },
+    {
+      "text": "Vydal verdikt SEDI",
+      "passed": false,
+      "evidence": "Nepoužívá strukturovaný verdikt. Říká 'Nesedi nic s modelem — implementace by mohla pokracovat' ale chybí jasný formát."
+    },
+    {
+      "text": "Upozornil na potřebu migrace",
+      "passed": true,
+      "evidence": "Říká migraci 6->7 je potřeba. (Debatabilní — with_skill verze odůvodněně argumentuje že není nutná.)"
+    }
+  ],
+  "bonus_findings": []
+}

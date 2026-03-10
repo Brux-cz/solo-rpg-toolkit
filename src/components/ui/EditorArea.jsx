@@ -13,8 +13,8 @@ import BehaviorBlock from "../blocks/BehaviorBlock.jsx";
 import SwipeableBlock from "./SwipeableBlock.jsx";
 import { canReroll } from "../../utils/reroll.js";
 
-function renderBlock(entry, i) {
-  if (entry.type === "text") return <TextBlock key={i} entry={entry} />;
+function renderBlock(entry, i, onUpdateEntry) {
+  if (entry.type === "text") return <TextBlock key={i} entry={entry} onUpdate={(updated) => onUpdateEntry?.(i, updated)} />;
   if (entry.type === "fate") return <FateBlock key={i} entry={entry} />;
   if (entry.type === "meaning") return <MeaningBlock key={i} entry={entry} />;
   if (entry.type === "scene") return <SceneBlock key={i} entry={entry} />;
@@ -27,9 +27,10 @@ function renderBlock(entry, i) {
   return null;
 }
 
-export default function EditorArea({ entries, onDeleteEntry, onRerollEntry }) {
+export default function EditorArea({ entries, onDeleteEntry, onRerollEntry, onUpdateEntry, swipeSeen, onSwipeSeen }) {
   const isEmpty = entries.length === 0;
   const [openSwipeIdx, setOpenSwipeIdx] = useState(null);
+  const showSwipeHint = !swipeSeen && entries.length > 0 && entries.length <= 3;
 
   return (
     <div style={{ padding: "14px 16px", fontFamily: FONT, fontSize: 13, lineHeight: 1.7, color: C.text, overflowY: "auto", height: "100%" }}>
@@ -55,17 +56,23 @@ export default function EditorArea({ entries, onDeleteEntry, onRerollEntry }) {
         </div>
       )}
       {entries.map((e, i) => (
-        <SwipeableBlock
-          key={i}
-          isOpen={openSwipeIdx === i}
-          onOpen={() => setOpenSwipeIdx(i)}
-          onClose={() => setOpenSwipeIdx(null)}
-          canReroll={canReroll(e)}
-          onDelete={() => { setOpenSwipeIdx(null); onDeleteEntry(i); }}
-          onReroll={() => { setOpenSwipeIdx(null); onRerollEntry(i); }}
-        >
-          {renderBlock(e, i)}
-        </SwipeableBlock>
+        <div key={i}>
+          <SwipeableBlock
+            isOpen={openSwipeIdx === i}
+            onOpen={() => { setOpenSwipeIdx(i); onSwipeSeen?.(); }}
+            onClose={() => setOpenSwipeIdx(null)}
+            canReroll={canReroll(e)}
+            onDelete={() => { setOpenSwipeIdx(null); onDeleteEntry(i); }}
+            onReroll={() => { setOpenSwipeIdx(null); onRerollEntry(i); }}
+          >
+            {renderBlock(e, i, onUpdateEntry)}
+          </SwipeableBlock>
+          {showSwipeHint && i === 0 && (
+            <div style={{ fontSize: 10, color: C.muted, textAlign: "center", padding: "2px 0 6px", fontFamily: FONT }}>
+              ← Přejeď blok doleva pro smazání nebo přehození
+            </div>
+          )}
+        </div>
       ))}
       <span style={{ display: "inline-block", width: 2, height: 14, background: C.green, verticalAlign: "text-bottom", animation: "blink 1s step-end infinite" }} />
     </div>

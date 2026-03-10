@@ -1,0 +1,27 @@
+{
+  "eval_id": 1,
+  "eval_name": "npc-reakce",
+  "prompt": "Přidej pole `reakce` k NPC v SvetTab — chci ukládat výsledek 2d6 hodu na reakci",
+  "assertions": [
+    {
+      "text": "Klasifikoval změnu jako DATA",
+      "type": "qualitative"
+    },
+    {
+      "text": "Přečetl datovy-model.jsx NPC sekci (ř. 200-233)",
+      "type": "qualitative"
+    },
+    {
+      "text": "Našel existující pole reakce: {hod, stav} s poznámkou o 2d6",
+      "type": "qualitative"
+    },
+    {
+      "text": "Vydal verdikt SEDI",
+      "type": "qualitative"
+    },
+    {
+      "text": "Upozornil na potřebu migrace (nové pole v uloženém game stavu)",
+      "type": "qualitative"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "eval_id": 3,
+  "run_type": "with_skill",
+  "expectations": [
+    { "text": "Klasifikoval změnu jako DATA", "passed": true, "evidence": "Explicitně: 'DATA'" },
+    { "text": "Přečetl datovy-model.jsx NPC sekci (ř. 200-233)", "passed": true, "evidence": "Vylistoval všechna pole" },
+    { "text": "Zjistil že pole povolani v modelu NEEXISTUJE", "passed": true, "evidence": "Explicitně konstatuje" },
+    { "text": "Vydal verdikt CHYBI V DOCS", "passed": true, "evidence": "Explicitně" },
+    { "text": "Formuloval NOTEBOOKLM DOTAZ", "passed": true, "evidence": "Konkrétní dotaz: 'Definuje Mausritter nějaký koncept povolání, řemesla či zaměstnání pro NPC?'" },
+    { "text": "NEZACAL implementovat", "passed": true, "evidence": "CEKAM NA ODPOVED UZIVATELE" },
+    { "text": "Cross-check mezi docs", "passed": true, "evidence": "Explicitní Phase 2b: 'Oba dokumenty jsou konzistentni — ani jeden nedefinuje pole povolani'" }
+  ]
+}

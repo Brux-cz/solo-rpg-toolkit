@@ -5,17 +5,22 @@ import { rollWeapon, roll } from "../../utils/dice.js";
 import { resolveDamage, rollInitiative, rollMorale, rollMoraleAdvantage, assessDanger } from "../../utils/combat.js";
 import Sheet from "../ui/Sheet.jsx";
 
+function isUsable(s) {
+  // Item with tecky.max > 0 but tecky.akt === 0 is destroyed/spent
+  return !(s.tecky?.max > 0 && s.tecky.akt === 0);
+}
+
 function getWeaponsFromInventory(inv) {
   if (!inv) return [];
   return inv
     .map((s, i) => ({ ...s, _idx: i }))
-    .filter(s => s.typ === "zbraň" && s.nazev && !s._occupied);
+    .filter(s => s.typ === "zbraň" && s.nazev && !s._occupied && isUsable(s));
 }
 
 function getArmorFromInventory(inv) {
   if (!inv) return 0;
   return inv
-    .filter(s => s.typ === "zbroj" && s.nazev && !s._occupied)
+    .filter(s => s.typ === "zbroj" && s.nazev && !s._occupied && isUsable(s))
     .reduce((sum, s) => sum + (s.obrana || 0), 0);
 }
 

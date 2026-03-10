@@ -23,6 +23,7 @@ function reakceColor(text) {
 
 const DatovyModel = lazy(() => import("../../docs/datovy-model.jsx"));
 const SoloRpgDiagram = lazy(() => import("../../docs/solo-rpg-diagram.jsx"));
+const AINaseptavac = lazy(() => import("../../docs/ai-naseptavac-diagram.jsx"));
 
 export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, onGoToLobby, onNpcsChange, onThreadsChange, onKeyedScenesChange, onPerilPointsChange }) {
   const [sub, setSub] = useState("mythic");
@@ -34,6 +35,8 @@ export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, o
   const [newKsTrigger, setNewKsTrigger] = useState("");
   const [newKsUdalost, setNewKsUdalost] = useState("");
   const [expandedKs, setExpandedKs] = useState(null);
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem("solorpg_api_key") || "");
+  const [apiKeySaved, setApiKeySaved] = useState(false);
   const subs = [["mythic","Mythic"],["npc","NPC"],["thready","Thready"],["klicove","Klíčové"],["mapa","Mapa"],["docs","Docs"]];
 
   const addNpc = () => {
@@ -520,15 +523,51 @@ export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, o
         {sub === "docs" && (
           <>
             <div style={{ display: "flex", gap: 4, marginBottom: 12 }}>
-              {[["model", "Datový model"], ["diagram", "Diagram"]].map(([id, label]) => (
+              {[["model", "Datový model"], ["diagram", "Diagram"], ["ai", "AI Našeptávač"]].map(([id, label]) => (
                 <button key={id} onClick={() => setDocView(id)}
                   style={{ flex: 1, padding: "6px 0", border: `1px solid ${docView === id ? C.green : C.border}`, background: docView === id ? C.green + "15" : "transparent", borderRadius: 6, fontSize: 10, fontFamily: FONT, color: docView === id ? C.green : C.muted, fontWeight: docView === id ? 700 : 400, cursor: "pointer" }}>
                   {label}
                 </button>
               ))}
             </div>
+            {/* API klíč nastavení */}
+            <div style={{ marginBottom: 14, padding: "10px 12px", border: `1px solid ${C.purple}30`, borderRadius: 8, background: C.purple + "08" }}>
+              <div style={{ fontSize: 9, color: C.purple, marginBottom: 6, fontWeight: 700 }}>AI NAŠEPTÁVAČ</div>
+              <label style={{ display: "block", marginBottom: 4 }}>
+                <span style={{ color: C.muted, fontSize: 9 }}>Anthropic API klíč (volitelné)</span>
+                <div style={{ display: "flex", gap: 4, marginTop: 2 }}>
+                  <input
+                    type="password"
+                    value={apiKey}
+                    onChange={e => { setApiKey(e.target.value); setApiKeySaved(false); }}
+                    placeholder="sk-ant-..."
+                    style={{ flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "5px 8px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none" }}
+                  />
+                  <button
+                    onClick={() => {
+                      const trimmed = apiKey.trim();
+                      if (trimmed) {
+                        localStorage.setItem("solorpg_api_key", trimmed);
+                      } else {
+                        localStorage.removeItem("solorpg_api_key");
+                      }
+                      setApiKey(trimmed);
+                      setApiKeySaved(true);
+                      setTimeout(() => setApiKeySaved(false), 2000);
+                    }}
+                    style={{ padding: "5px 10px", border: `1px solid ${apiKeySaved ? C.green : C.purple}`, background: apiKeySaved ? C.green : C.purple, color: "white", borderRadius: 4, fontSize: 10, fontFamily: FONT, cursor: "pointer", fontWeight: 700 }}
+                  >
+                    {apiKeySaved ? "✓" : "Uložit"}
+                  </button>
+                </div>
+              </label>
+              <div style={{ fontSize: 8, color: C.muted, marginTop: 4 }}>
+                Klíč se uloží lokálně v prohlížeči. Bez klíče appka funguje jako dosud.
+              </div>
+            </div>
+
             <Suspense fallback={<div style={{ fontSize: 11, color: C.muted, textAlign: "center", marginTop: 20 }}>Načítání...</div>}>
-              {docView === "model" ? <DatovyModel /> : <SoloRpgDiagram />}
+              {docView === "model" ? <DatovyModel /> : docView === "diagram" ? <SoloRpgDiagram /> : <AINaseptavac />}
             </Suspense>
           </>
         )}

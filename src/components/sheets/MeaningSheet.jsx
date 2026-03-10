@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { C, FONT } from "../../constants/theme.js";
 import { rollMeaning } from "../../utils/dice.js";
+import { fetchWhisper } from "../../utils/whisper.js";
 import { ELEMENT_NAMES } from "../../constants/elements.js";
 import Sheet from "../ui/Sheet.jsx";
 
@@ -8,21 +9,51 @@ export default function MeaningSheet({ onClose, onInsert }) {
   const [result, setResult] = useState(null);
   const [selectedType, setSelectedType] = useState(null);
   const [selectedElement, setSelectedElement] = useState(ELEMENT_NAMES[0]);
+  const [whisperResult, setWhisperResult] = useState(null);
+  const [whisperLoading, setWhisperLoading] = useState(false);
+  const [kontextText, setKontextText] = useState("");
+  const [selectedWhisper, setSelectedWhisper] = useState(null);
+  const whisperIdRef = useRef(0);
+
+  const fireWhisper = async (rollResult) => {
+    const id = ++whisperIdRef.current;
+    setWhisperLoading(true);
+    setWhisperResult(null);
+    setSelectedWhisper(null);
+    const whispers = await fetchWhisper({
+      word1: rollResult.word1,
+      word2: rollResult.word2,
+      cz1: rollResult.cz1,
+      cz2: rollResult.cz2,
+      kontext: kontextText.trim() || null,
+    });
+    if (id !== whisperIdRef.current) return;
+    setWhisperResult(whispers);
+    setWhisperLoading(false);
+  };
 
   const doSelect = (t) => {
     setSelectedType(t);
-    if (t === "Elements") return; // čeká na výběr z dropdownu + HODIT
+    setWhisperResult(null);
+    setSelectedWhisper(null);
+    if (t === "Elements") return; // ceka na vyber z dropdownu + HODIT
     const table = t === "Descriptions" ? "descriptions" : "actions";
-    setResult(rollMeaning(table));
+    const r = rollMeaning(table);
+    setResult(r);
+    fireWhisper(r);
   };
 
   const doRollElement = () => {
-    setResult(rollMeaning(selectedElement));
+    setWhisperResult(null);
+    setSelectedWhisper(null);
+    const r = rollMeaning(selectedElement);
+    setResult(r);
+    fireWhisper(r);
   };
 
   const insertResult = () => {
     if (!result) return;
-    onInsert({
+    const entry = {
       type: "meaning",
       word1: result.word1,
       word2: result.word2,
@@ -31,7 +62,14 @@ export default function MeaningSheet({ onClose, onInsert }) {
       d1: result.d1,
       d2: result.d2,
       table: selectedType === "Elements" ? selectedElement : selectedType,
-    });
+    };
+    if (kontextText.trim()) {
+      entry.context = kontextText.trim();
+    }
+    if (selectedWhisper) {
+      entry.inspirace = selectedWhisper;
+    }
+    onInsert(entry);
   };
 
   const handleClose = () => {
@@ -90,6 +128,14 @@ export default function MeaningSheet({ onClose, onInsert }) {
 
   return (
     <Sheet title="🔮 MEANING TABLES" onClose={handleClose} help={helpContent}>
+      <input
+        type="text"
+        value={kontextText}
+        onChange={(e) => setKontextText(e.target.value)}
+        placeholder="Na co hážeš? (nepovinné)"
+        style={{ width: "100%", padding: "6px 8px", border: `1px solid ${C.border}`, borderRadius: 6, fontSize: 10, fontFamily: FONT, background: C.bg, color: C.text, marginBottom: 10, boxSizing: "border-box" }}
+      />
+
       <div style={{ display: "flex", gap: 6, marginBottom: 14 }}>
         {tabs.map((t, i) => (
           <button key={i} onClick={() => doSelect(t)} style={{ flex: 1, padding: "6px 0", border: `1px solid ${selectedType === t ? C.purple : C.border}`, background: selectedType === t ? C.purple : "transparent", color: selectedType === t ? "white" : C.muted, borderRadius: 6, fontSize: 10, fontFamily: FONT, cursor: "pointer" }}>{t}</button>
@@ -116,7 +162,39 @@ export default function MeaningSheet({ onClose, onInsert }) {
             <div style={{ fontSize: 22, fontWeight: 700, color: C.purple, fontFamily: FONT }}>{result.word1} + {result.word2}</div>
             {result.cz1 && <div style={{ fontSize: 11, color: C.muted, marginTop: 4, fontFamily: FONT }}>{result.cz1} + {result.cz2}</div>}
           </div>
-          <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 12, fontFamily: FONT }}>Interpretuj v kontextu scény</div>
+          <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 8, fontFamily: FONT }}>Interpretuj v kontextu scény</div>
+
+          {/* Whisper sekce */}
+          {whisperLoading && (
+            <div style={{ fontSize: 10, color: C.muted, textAlign: "center", fontFamily: FONT, marginBottom: 8 }}>···</div>
+          )}
+          {whisperResult && (
+            <div style={{ marginBottom: 8 }}>
+              {whisperResult.map((line, i) => {
+                const isSelected = selectedWhisper === line;
+                return (
+                  <div
+                    key={i}
+                    onClick={() => setSelectedWhisper(isSelected ? null : line)}
+                    style={{
+                      fontSize: 10,
+                      color: C.muted,
+                      fontStyle: "italic",
+                      fontFamily: FONT,
+                      padding: "3px 8px",
+                      marginBottom: 2,
+                      cursor: "pointer",
+                      borderRadius: 4,
+                      border: isSelected ? `1px solid ${C.purple}` : "1px solid transparent",
+                      background: isSelected ? C.purple + "10" : "transparent",
+                    }}
+                  >
+                    💭 {line}
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </>
       ) : (
         <div style={{ fontSize: 11, color: C.muted, textAlign: "center", fontFamily: FONT, marginTop: 20 }}>

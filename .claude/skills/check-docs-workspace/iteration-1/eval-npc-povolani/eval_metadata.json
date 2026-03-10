@@ -1,0 +1,31 @@
+{
+  "eval_id": 3,
+  "eval_name": "npc-povolani",
+  "prompt": "Přidej ke každému NPC pole `povolani` kde si hráč zapíše čím se NPC živí",
+  "assertions": [
+    {
+      "text": "Klasifikoval změnu jako DATA",
+      "type": "qualitative"
+    },
+    {
+      "text": "Přečetl datovy-model.jsx NPC sekci (ř. 200-233)",
+      "type": "qualitative"
+    },
+    {
+      "text": "Zjistil že pole povolani v modelu NEEXISTUJE",
+      "type": "qualitative"
+    },
+    {
+      "text": "Vydal verdikt CHYBI V DOCS (ne SEDI)",
+      "type": "qualitative"
+    },
+    {
+      "text": "Formuloval NOTEBOOKLM DOTAZ s kontextem, otázkou a zdrojem",
+      "type": "qualitative"
+    },
+    {
+      "text": "NEZACAL implementovat bez vyřešení chybějícího pole",
+      "type": "qualitative"
+    }
+  ]
+}

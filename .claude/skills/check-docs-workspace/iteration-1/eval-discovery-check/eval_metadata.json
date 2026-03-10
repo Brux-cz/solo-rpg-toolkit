@@ -1,0 +1,27 @@
+{
+  "eval_id": 2,
+  "eval_name": "discovery-check",
+  "prompt": "Implementuj Discovery Check mechaniku pro thready",
+  "assertions": [
+    {
+      "text": "Klasifikoval změnu jako MECHANIC (nebo MIX)",
+      "type": "qualitative"
+    },
+    {
+      "text": "Přečetl diagram sekci Thread Progress Track (ř. 538-570)",
+      "type": "qualitative"
+    },
+    {
+      "text": "Popsal mechaniku Discovery Check (Fate Q min 50/50, d10+progress, Thread Discovery Table, Meaning Tables)",
+      "type": "qualitative"
+    },
+    {
+      "text": "Přečetl i datovy-model.jsx Mythic sekci (progressTrack pole)",
+      "type": "qualitative"
+    },
+    {
+      "text": "Vydal strukturovaný verdikt (SEDI/NESROVNALOST/CHYBI)",
+      "type": "qualitative"
+    }
+  ]
+}

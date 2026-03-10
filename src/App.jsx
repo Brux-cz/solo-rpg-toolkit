@@ -37,6 +37,16 @@ export default function Prototype() {
 
   const updateGame = (patch) => setGame(g => ({ ...g, ...patch }));
 
+  // API klíč přes URL hash: #apikey=sk-ant-...
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash.startsWith("#apikey=")) {
+      const key = decodeURIComponent(hash.slice(8));
+      if (key) localStorage.setItem("solorpg_api_key", key);
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, []);
+
   useEffect(() => {
     const handler = (e) => { if (e.target.type === "number") e.target.select(); };
     document.addEventListener("focus", handler, true);
@@ -71,6 +81,14 @@ export default function Prototype() {
 
   const handleDeleteEntry = (index) => {
     setGame(g => ({ ...g, entries: g.entries.filter((_, i) => i !== index) }));
+  };
+
+  const handleUpdateEntry = (index, updatedEntry) => {
+    setGame(g => {
+      const entries = [...g.entries];
+      entries[index] = updatedEntry;
+      return { ...g, entries };
+    });
   };
 
   const handleRerollEntry = (index) => {
@@ -116,7 +134,7 @@ export default function Prototype() {
       )}
 
       <div style={{ flex: 1, overflow: "hidden", maxHeight: sheetOpen ? "calc(50% - 10px)" : undefined }}>
-        {tab === "diary" && <EditorArea entries={game.entries} onDeleteEntry={handleDeleteEntry} onRerollEntry={handleRerollEntry} />}
+        {tab === "diary" && <EditorArea entries={game.entries} onDeleteEntry={handleDeleteEntry} onRerollEntry={handleRerollEntry} onUpdateEntry={handleUpdateEntry} swipeSeen={game.hints?.swipeSeen} onSwipeSeen={() => updateGame({ hints: { ...game.hints, swipeSeen: true } })} />}
         {tab === "char" && <PostavaTab character={game.character} onUpdate={(ch) => updateGame({ character: ch })} onCharCreate={() => setSheet("charcreate")} />}
         {tab === "world" && <SvetTab cf={game.cf} npcs={game.npcs} threads={game.threads} keyedScenes={game.keyedScenes || []} perilPoints={game.perilPoints || { aktualni: 2, max: 2 }} onGoToLobby={handleGoToLobby} onNpcsChange={(npcs) => updateGame({ npcs })} onThreadsChange={(threads) => updateGame({ threads })} onKeyedScenesChange={(ks) => updateGame({ keyedScenes: ks })} onPerilPointsChange={(pp) => updateGame({ perilPoints: pp })} />}
       </div>

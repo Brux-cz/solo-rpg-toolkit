@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "run_type": "with_skill",
+  "expectations": [
+    { "text": "Klasifikoval změnu jako DATA", "passed": true, "evidence": "Explicitně: 'DATA + UI'" },
+    { "text": "Přečetl datovy-model.jsx NPC sekci (ř. 200-233)", "passed": true, "evidence": "Cituje r. 200-233, r. 214" },
+    { "text": "Našel existující pole reakce: {hod, stav} s poznámkou o 2d6", "passed": true, "evidence": "Cituje přesnou definici" },
+    { "text": "Vydal strukturovaný verdikt", "passed": true, "evidence": "NESROVNALOST — zlepšení oproti iter1 kde byl SEDI" },
+    { "text": "Upozornil na potřebu migrace", "passed": true, "evidence": "Správně vysvětlil proč NENÍ nutná (volitelné pole s fallback)" },
+    { "text": "Cross-check mezi docs", "passed": true, "evidence": "Explicitní Phase 2b sekce, tabulka Opatrný vs Nejistá" }
+  ]
+}

@@ -303,7 +303,7 @@ function useGridDrag(inventar, onSwap) {
 }
 
 // --- Inventory Card ---
-function InventoryCard({ slot, index, label, isEditing, onEdit, onDotToggle, dragHandlers, gridId, gridRow, gridCol, totalRows, totalCols, gridLabels }) {
+function InventoryCard({ slot, index, label, isEditing, onEdit, onDotToggle, isFlashing, dragHandlers, gridId, gridRow, gridCol, totalRows, totalCols, gridLabels }) {
   const empty = !slot.nazev;
   const color = TYPE_COLOR[slot.typ] || C.muted;
 
@@ -351,7 +351,8 @@ function InventoryCard({ slot, index, label, isEditing, onEdit, onDotToggle, dra
         flexDirection: "column",
         cursor: "pointer",
         minHeight: 56,
-        background: C.bg,
+        background: isFlashing ? `${color}18` : C.bg,
+        transition: "background 0.2s ease",
         touchAction: "none",
         userSelect: "none",
         overflow: "hidden",
@@ -603,7 +604,7 @@ function SlotEditor({ slot, slotIndex, gridCols, gridRows, gridLabels, inv, onUp
 }
 
 // --- Inventory Grid ---
-function InventoryGrid({ inv, gridLabels, cols, editSlot, setEditSlot, updateSlot, clearSlot, gridId }) {
+function InventoryGrid({ inv, gridLabels, cols, editSlot, setEditSlot, updateSlot, clearSlot, gridId, onDotWarning }) {
   const handleSwap = useCallback((fromIdx, toIdx) => {
     // Strip all _occupied before swap, then recalc will rebuild them
     const clean = inv.map(s => s?._occupied ? { ...EMPTY_SLOT } : { ...s });
@@ -628,13 +629,20 @@ function InventoryGrid({ inv, gridLabels, cols, editSlot, setEditSlot, updateSlo
     updateSlot("__swap__", clean);
   }, [inv, updateSlot, cols]);
 
+  const [flashIdx, setFlashIdx] = useState(null);
+
   const handleDotToggle = useCallback((idx, dotIdx) => {
     const slot = inv[idx];
     if (!slot || !slot.tecky) return;
-    // Toggle: if clicking a filled dot, reduce akt to that position; if empty, fill to that position+1
     const newAkt = dotIdx < slot.tecky.akt ? dotIdx : dotIdx + 1;
-    updateSlot(idx, { tecky: { ...slot.tecky, akt: Math.min(newAkt, slot.tecky.max) } });
-  }, [inv, updateSlot]);
+    const clamped = Math.min(newAkt, slot.tecky.max);
+    updateSlot(idx, { tecky: { ...slot.tecky, akt: clamped } });
+    setFlashIdx(idx);
+    setTimeout(() => setFlashIdx(null), 200);
+    if (clamped === 0 && slot.tecky.akt > 0) {
+      onDotWarning?.(slot.nazev || "Předmět");
+    }
+  }, [inv, updateSlot, onDotWarning]);
 
   const drag = useGridDrag(inv, handleSwap);
   const totalRows = Math.ceil(inv.length / cols);
@@ -694,6 +702,7 @@ function InventoryGrid({ inv, gridLabels, cols, editSlot, setEditSlot, updateSlo
             isEditing={false}
             onEdit={setEditSlot}
             onDotToggle={handleDotToggle}
+            isFlashing={flashIdx === idx}
             dragHandlers={drag}
             gridId={gridId}
             gridRow={row}
@@ -731,6 +740,7 @@ export default function PostavaTab({ character, onUpdate, onCharCreate }) {
   const [editHSlot, setEditHSlot] = useState(null); // "pomId:slotIdx"
   const [expandedPom, setExpandedPom] = useState(null);
   const [levelUpResult, setLevelUpResult] = useState(null);
+  const [dotWarning, setDotWarning] = useState(null);
   const inv = ch.inventar || Array.from({ length: 10 }, () => ({ nazev: "", typ: "", tecky: { akt: 0, max: 0 } }));
   const kurazSloty = ch.kurazSloty || Array.from({ length: ch.kuraz || 0 }, () => ({ ...EMPTY_SLOT }));
   const pomocnici = ch.pomocnici || [];
@@ -967,7 +977,13 @@ export default function PostavaTab({ character, onUpdate, onCharCreate }) {
           updateSlot={updateSlot}
           clearSlot={clearSlot}
           gridId="player"
+          onDotWarning={(name) => { setDotWarning(name); setTimeout(() => setDotWarning(null), 3000); }}
         />}
+        {dotWarning && (
+          <div style={{ fontSize: 10, color: C.red, fontFamily: FONT, fontWeight: 600, textAlign: "center", padding: "4px 0" }}>
+            ⚠️ {dotWarning} — 0 teček! Opotřebený/spotřebovaný
+          </div>
+        )}
       </div>
 
       {/* Kuráž sloty */}

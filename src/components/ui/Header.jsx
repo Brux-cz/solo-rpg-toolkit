@@ -105,6 +105,7 @@ export default function Header({ onToggle, expanded, cf, sceneNum, character, ta
   const [showHelp, setShowHelp] = useState(false);
   const ch = character;
   const inv = ch.inventar || [];
+  const activeConditions = inv.filter(s => s.typ === "stav" && s.nazev).map(s => s.nazev);
   const inventarUsed = inv.filter(s => s.nazev || s._occupied).length;
   const dobkySlots = ch.dobky > 250 ? Math.ceil((ch.dobky - 250) / 250) : 0;
   const totalDemand = inventarUsed + dobkySlots;
@@ -142,6 +143,14 @@ export default function Header({ onToggle, expanded, cf, sceneNum, character, ta
           </div>
         )}
       </div>
+      {activeConditions.length > 0 && (
+        <div style={{ padding: "3px 16px", background: C.red + "15", borderBottom: `1px solid ${C.red}30`, fontFamily: FONT, fontSize: 10, color: C.red, display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+          <span style={{ fontWeight: 700 }}>⚠️</span>
+          {activeConditions.map((c, i) => (
+            <span key={i} style={{ background: C.red + "20", padding: "1px 6px", borderRadius: 4, fontWeight: 600 }}>{c}</span>
+          ))}
+        </div>
+      )}
       {showHelp && (
         <div onClick={() => setShowHelp(false)} style={{ position: "fixed", inset: 0, zIndex: 20, background: "rgba(0,0,0,0.35)", display: "flex", flexDirection: "column", justifyContent: "center", padding: 12 }}>
           <div onClick={(e) => e.stopPropagation()} style={{ maxHeight: "70%", overflowY: "auto", WebkitOverflowScrolling: "touch", padding: "14px 16px", background: C.bg, borderRadius: 10, fontFamily: FONT, fontSize: 11, lineHeight: 1.7, color: C.text, boxShadow: "0 2px 12px rgba(0,0,0,0.2)" }}>

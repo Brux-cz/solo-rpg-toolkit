@@ -1,0 +1,130 @@
+{
+  "skill_name": "check-docs",
+  "iteration": 2,
+  "configurations": [
+    {
+      "name": "with_skill_v2",
+      "label": "Se skillem v2 (cross-check + NotebookLM vždy)",
+      "evals": [
+        {
+          "eval_name": "npc-reakce",
+          "pass_rate": 1.0,
+          "passed": 6,
+          "total": 6,
+          "tokens": 29544,
+          "duration_seconds": 94.0
+        },
+        {
+          "eval_name": "discovery-check",
+          "pass_rate": 1.0,
+          "passed": 7,
+          "total": 7,
+          "tokens": 35693,
+          "duration_seconds": 145.0
+        },
+        {
+          "eval_name": "npc-povolani",
+          "pass_rate": 1.0,
+          "passed": 7,
+          "total": 7,
+          "tokens": 26035,
+          "duration_seconds": 89.4
+        }
+      ],
+      "aggregate": {
+        "mean_pass_rate": 1.0,
+        "mean_tokens": 30424,
+        "mean_duration_seconds": 109.5
+      }
+    },
+    {
+      "name": "with_skill_v1",
+      "label": "Se skillem v1 (iterace 1)",
+      "evals": [
+        {
+          "eval_name": "npc-reakce",
+          "pass_rate": 1.0,
+          "passed": 5,
+          "total": 5,
+          "tokens": 29951,
+          "duration_seconds": 88.9
+        },
+        {
+          "eval_name": "discovery-check",
+          "pass_rate": 1.0,
+          "passed": 5,
+          "total": 5,
+          "tokens": 38729,
+          "duration_seconds": 142.2
+        },
+        {
+          "eval_name": "npc-povolani",
+          "pass_rate": 0.83,
+          "passed": 5,
+          "total": 6,
+          "tokens": 23534,
+          "duration_seconds": 100.4
+        }
+      ],
+      "aggregate": {
+        "mean_pass_rate": 0.94,
+        "mean_tokens": 30738,
+        "mean_duration_seconds": 110.5
+      }
+    },
+    {
+      "name": "without_skill",
+      "label": "Bez skillu (jen CLAUDE.md)",
+      "evals": [
+        {
+          "eval_name": "npc-reakce",
+          "pass_rate": 0.8,
+          "passed": 4,
+          "total": 5,
+          "tokens": 34052,
+          "duration_seconds": 82.2
+        },
+        {
+          "eval_name": "discovery-check",
+          "pass_rate": 0.6,
+          "passed": 3,
+          "total": 5,
+          "tokens": 31660,
+          "duration_seconds": 85.5
+        },
+        {
+          "eval_name": "npc-povolani",
+          "pass_rate": 0.5,
+          "passed": 3,
+          "total": 6,
+          "tokens": 20307,
+          "duration_seconds": 65.7
+        }
+      ],
+      "aggregate": {
+        "mean_pass_rate": 0.63,
+        "mean_tokens": 28673,
+        "mean_duration_seconds": 77.8
+      }
+    }
+  ],
+  "delta_v2_vs_baseline": {
+    "pass_rate": "+0.37 (0.63 → 1.00)",
+    "tokens": "+1751 (+6.1%)",
+    "duration": "+31.7s (+41%)"
+  },
+  "delta_v2_vs_v1": {
+    "pass_rate": "+0.06 (0.94 → 1.00)",
+    "tokens": "-314 (-1.0%)",
+    "duration": "-1.0s (-0.9%)"
+  },
+  "analysis": {
+    "key_improvements_v1_to_v2": [
+      "Test 1 (NPC reakce): Verdikt se zlepšil z SEDI na NESROVNALOST — cross-check fáze zachytila rozpor Opatrný/Nejistá",
+      "Test 3 (NPC povolani): Opravený fail — tentokrát formuloval NotebookLM dotaz i u uživatelského požadavku",
+      "Všechny 3 testy mají explicitní Phase 2b cross-check sekci"
+    ],
+    "perfect_score": "100% pass rate na všech assertions ve všech 3 testech",
+    "efficiency": "v2 je prakticky stejně rychlé jako v1 (-1s, -1% tokenů) — nové fáze nepřidaly overhead"
+  }
+}
