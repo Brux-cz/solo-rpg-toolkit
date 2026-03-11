@@ -1,0 +1,504 @@
+{
+  "exportVersion": 1,
+  "name": "Myší dobrodružství",
+  "game": {
+    "version": 10,
+    "cf": 7,
+    "sceneNum": 3,
+    "entries": [
+      {
+        "type": "scene",
+        "sceneNum": 2,
+        "title": "Příchod do Ořechové Tvrze",
+        "sceneType": "expected",
+        "cf": 5,
+        "d10": 8,
+        "id": "mmmkug6oj9cf",
+        "ts": 1773266090352
+      },
+      {
+        "type": "text",
+        "text": "Okřál Trnka, šedý skvrnitý myšák se znamením Žaludu, kráčí blátem po rozmočené cestě. Podzimní slejvák bičuje jeho srst. Po týdnech sběru mízy v divočině konečně vidí cíl — Ořechovou Tvrz, malou osadu na kořenech starého dubu.",
+        "editable": true,
+        "id": "mmmkuy3n42ql",
+        "ts": 1773266113571
+      },
+      {
+        "type": "fate",
+        "question": "Je osada obydlená?",
+        "oddsLabel": "Likely",
+        "d100": 38,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 5,
+        "threshold": 65,
+        "id": "mmmkv21d9lil",
+        "ts": 1773266118673
+      },
+      {
+        "type": "text",
+        "text": "Ano — z okének kořene prosvítá slabé světlo. Okřál zahlédne ceduli: Hostinec U Shnilého Pařezu.",
+        "editable": true,
+        "id": "mmmkvf0ciq7v",
+        "ts": 1773266135484
+      },
+      {
+        "type": "fate",
+        "question": "Potká Okřál někoho u vchodu?",
+        "oddsLabel": "50/50",
+        "d100": 5,
+        "yes": true,
+        "exceptional": true,
+        "randomEvent": false,
+        "cf": 5,
+        "threshold": 50,
+        "id": "mmmkvhjox97m",
+        "ts": 1773266138772
+      },
+      {
+        "type": "meaning",
+        "table": "actions",
+        "word1": "Desert",
+        "word2": "Change",
+        "d1": 24,
+        "d2": 100,
+        "cz1": "Útěk",
+        "cz2": "Změna",
+        "id": "mmmkvomwherr",
+        "ts": 1773266147960
+      },
+      {
+        "type": "text",
+        "text": "Exceptional ANO — u vchodu do hostince na Okřála vrazí stará myška, Babička Líska. Je vyděšená a prchá ven do deště. Její šaty jsou roztrhané a oči plné slz. Opouští osadu — něco ji vyhnalo.",
+        "editable": true,
+        "id": "mmmkvtgxxvvm",
+        "ts": 1773266154225
+      },
+      {
+        "type": "behavior",
+        "npc": "Babička Líska",
+        "word1": "Transform",
+        "word2": "Move",
+        "d1": 97,
+        "d2": 18,
+        "cz1": "Proměna",
+        "cz2": "Pohyb",
+        "id": "mmmkvwi8dppz",
+        "ts": 1773266158160
+      },
+      {
+        "type": "text",
+        "text": "Babička Líska se zastaví, pohlédne na Okřála a řekne: Oni se proměnili\\! Ti sběrači — zmizeli v lese a teď se vracejí... jiní. Utíkej, dokud můžeš\\! Pak zmizí v dešti.",
+        "editable": true,
+        "id": "mmmkw0wx44yq",
+        "ts": 1773266163873
+      },
+      {
+        "type": "fate",
+        "question": "Je Krysák Drápek v hostinci?",
+        "oddsLabel": "Likely",
+        "d100": 99,
+        "yes": false,
+        "exceptional": true,
+        "randomEvent": false,
+        "cf": 5,
+        "threshold": 65,
+        "id": "mmmkw5xvsap7",
+        "ts": 1773266170387
+      },
+      {
+        "type": "text",
+        "text": "Okřál vejde do hostince. Exceptional NE — hostinec je téměř prázdný. Hostinský za barem říká, že Krysák Drápek odešel před dvěma dny do lesa se skupinou sběračů a nevrátil se. To sedí s tím, co říkala Babička Líska.",
+        "editable": true,
+        "id": "mmmkwbly7f8o",
+        "ts": 1773266177734
+      },
+      {
+        "type": "detail",
+        "table": "descriptions",
+        "word1": "Fiercely",
+        "word2": "Offensively",
+        "d1": 35,
+        "d2": 81,
+        "cz1": "Prudce",
+        "cz2": "Útočně",
+        "id": "mmmkwjcahxaw",
+        "ts": 1773266187754
+      },
+      {
+        "type": "text",
+        "text": "Hostinec vypadá neútulně — atmosféra je napjatá. Pár myší u rohového stolu hledí na Okřála s podezřením. Na zdi visí vybledlé HLEDÁME plakáty — tři jména sběračů, co zmizeli.",
+        "editable": true,
+        "id": "mmmkwnire2et",
+        "ts": 1773266193171
+      },
+      {
+        "type": "fate",
+        "question": "Nabídne hostinský Okřálovi informace o práci?",
+        "oddsLabel": "50/50",
+        "d100": 48,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 5,
+        "threshold": 50,
+        "id": "mmmkwqcnjk4e",
+        "ts": 1773266196839
+      },
+      {
+        "type": "text",
+        "text": "Hostinský pokyne Okřálovi blíž: Hledáme někoho odvážného. Tři naši sběrači zmizeli v Černém hvozdu. Každý, kdo se tam podívá a přinese zprávu, dostane 50 ďobků. Okřál přikývne — jako sběrač mízy zná les.",
+        "editable": true,
+        "id": "mmmkwuprev24",
+        "ts": 1773266202495
+      },
+      {
+        "type": "endscene",
+        "sceneNum": 2,
+        "cfOld": 5,
+        "cfNew": 6,
+        "id": "mmmkwxsjyvut",
+        "ts": 1773266206483
+      },
+      {
+        "type": "scene",
+        "sceneNum": 3,
+        "title": "Cesta do Černého hvozdu",
+        "sceneType": "interrupt",
+        "cf": 6,
+        "d10": 2,
+        "focus": "Ambiguous Event",
+        "meaning": {
+          "d1": 37,
+          "d2": 22,
+          "word1": "Struggle",
+          "word2": "Befriend",
+          "cz1": "Zápas",
+          "cz2": "Sblížení"
+        },
+        "id": "mmmkx4lah3eo",
+        "ts": 1773266215294
+      },
+      {
+        "type": "text",
+        "text": "PŘERUŠENÍ — na cestě z osady Okřál narazí na raněnou myš, která bojuje s kudlankou nábožnou. Myš je v úzkých, ale kudlanka je také zraněná. Okřál musí rychle jednat.",
+        "editable": true,
+        "id": "mmmkxfb9l5ug",
+        "ts": 1773266229189
+      },
+      {
+        "type": "fate",
+        "question": "Všimne si stonožka Okřála, který se přibližuje zezadu?",
+        "oddsLabel": "Unlikely",
+        "d100": 54,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 6,
+        "threshold": 50,
+        "id": "mmmm16lqfpvf",
+        "ts": 1773268084142
+      },
+      {
+        "type": "text",
+        "text": "Okřál vidí stonožku zezadu — je zaměřená na svou kořist a nevšímá si ho. Okřál tiše odloží vědro, vytáhne dýku z opasku a plíží se k ní. Déšť maskuje jeho kroky.",
+        "editable": true,
+        "id": "mmmm1b4qxi9m",
+        "ts": 1773268090010
+      },
+      {
+        "type": "fate",
+        "question": "Je zachráněná myš schopná pomoct v boji?",
+        "oddsLabel": "Unlikely",
+        "d100": 36,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 6,
+        "threshold": 50,
+        "id": "mmmm1zbci3ta",
+        "ts": 1773268121352
+      },
+      {
+        "type": "text",
+        "text": "Okřál bodne dýkou stonožku zezadu — jen škrábnutí přes krunýř. Stonožka se otočí a sekne kusadly — Okřál je na zemi, celý rozboleněný (BO 0). Raněná myš se zvedne a popadne klacek.",
+        "editable": true,
+        "id": "mmmm2b47ow7a",
+        "ts": 1773268136647
+      },
+      {
+        "type": "dice",
+        "die": "d6",
+        "value": 6,
+        "id": "mmmm2k6z3j0k",
+        "ts": 1773268148411
+      },
+      {
+        "type": "text",
+        "text": "Okřál sekne znovu — další škrábanec (BO 3→2). Ale raněná myš praští stonožku klackem přes hlavu (d6=6\\!) — drtivý zásah proniká krunýřem (5 dmg). Stonožka padá (BO→0, STR 6→3).",
+        "editable": true,
+        "id": "mmmm2qc95mn0",
+        "ts": 1773268156377
+      },
+      {
+        "type": "text",
+        "text": "Stonožka zaskučí, otočí se a prchá do křoví. Okřál oddechne — celý rozbolavělý, ale živý. Raněná myš padne na kolena.",
+        "editable": true,
+        "id": "mmmm2vqu6ccl",
+        "ts": 1773268163382
+      },
+      {
+        "type": "combat",
+        "enemies": [
+          {
+            "name": "Stonožka",
+            "str": 6,
+            "bo": 2,
+            "weapon": "d6",
+            "armor": 1
+          }
+        ],
+        "initiativeText": "Iniciativa: Myší strana překvapila → automaticky první",
+        "log": [
+          "Iniciativa: Myší strana překvapila → automaticky první",
+          "Hráč d12=2 (zesílený) − zbroj 1 → 1 dmg → Stonožka BO 4→3",
+          "Stonožka d6=6 − zbroj 0 → 6 dmg → Hráč BO 6→0",
+          "Hráč d6=2 − zbroj 1 → 1 dmg → Stonožka BO 3→2",
+          "Morálka Stonožka: d20=8 vs WIL 4 → UTÍKÁ!",
+          "Opotřebení: hráč Dýka d6=1 → OK"
+        ],
+        "result": "victory",
+        "id": "mmmm2vs77lv6",
+        "ts": 1773268163431
+      },
+      {
+        "type": "meaning",
+        "table": "descriptions",
+        "word1": "Energetically",
+        "word2": "Insistently",
+        "d1": 29,
+        "d2": 59,
+        "cz1": "Energicky",
+        "cz2": "Naléhavě",
+        "id": "mmmm328k0r4x",
+        "ts": 1773268171796
+      },
+      {
+        "type": "fate",
+        "question": "Je to jeden ze zmizených sběračů z Ořechové Tvrze?",
+        "oddsLabel": "50/50",
+        "d100": 85,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 6,
+        "threshold": 65,
+        "id": "mmmm37p6fk2f",
+        "ts": 1773268178874
+      },
+      {
+        "type": "text",
+        "text": "Zachráněná myš se představí: Jmenuju se Řebřík. Jsem průvodkyně — znám tenhle les. Energicky vstane a naléhá: Musíš mi pomoct\\! V lese je něco hrozného — viděla jsem to. Nějaká síla mění tvory. Ta stonožka nebyla normální — byla dvakrát větší než obvykle.",
+        "editable": true,
+        "id": "mmmm3edkvu2d",
+        "ts": 1773268187528
+      },
+      {
+        "type": "fate",
+        "question": "Nabídne se Řebřík jít s Okřálem jako průvodkyně?",
+        "oddsLabel": "Likely",
+        "d100": 81,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 6,
+        "threshold": 75,
+        "id": "mmmm3hw8guph",
+        "ts": 1773268192088
+      },
+      {
+        "type": "text",
+        "text": "Okřál požádá Řebříka, aby šla s ním do Černého hvozdu. Řebřík odmítne: Ne, já se tam nevracím. Jsem ráda, že jsem vůbec naživu. Ale dám ti radu — drž se potoka. Sběrači šli podél něj na sever. A pozor na velké tvory — jsou proměnění. Řebřík odchází směrem k Ořechové Tvrzi.",
+        "editable": true,
+        "id": "mmmm3sndii55",
+        "ts": 1773268206025
+      },
+      {
+        "type": "endscene",
+        "sceneNum": 3,
+        "cfOld": 6,
+        "cfNew": 7,
+        "id": "mmmm411uwogp",
+        "ts": 1773268216914
+      }
+    ],
+    "npcs": [
+      {
+        "name": "Babička Líska",
+        "weight": 1,
+        "flag": false
+      },
+      {
+        "name": "Krysák Drápek",
+        "weight": 2,
+        "flag": false
+      },
+      {
+        "name": "Řebřík",
+        "weight": 2,
+        "flag": false
+      }
+    ],
+    "threads": [
+      {
+        "name": "Najít práci v osadě",
+        "weight": 1,
+        "progress": 0,
+        "total": 10,
+        "popis": "",
+        "stav": "aktivní",
+        "typ": "hlavní",
+        "poznamky": ""
+      },
+      {
+        "name": "Záhadné zmizení sběračů",
+        "weight": 2,
+        "progress": 2,
+        "total": 10,
+        "popis": "",
+        "stav": "aktivní",
+        "typ": "hlavní",
+        "poznamky": "Řebřík říká: sběrači šli podél potoka na sever. Tvorové v lese jsou proměnění."
+      }
+    ],
+    "character": {
+      "jmeno": "Okřál",
+      "puvod": "Sběrač mízy",
+      "uroven": 1,
+      "zk": 0,
+      "str": {
+        "akt": 10,
+        "max": 10
+      },
+      "dex": {
+        "akt": 8,
+        "max": 8
+      },
+      "wil": {
+        "akt": 7,
+        "max": 7
+      },
+      "bo": {
+        "akt": 0,
+        "max": 6
+      },
+      "dobky": 3,
+      "prijmeni": "Trnka",
+      "barvaSrsti": "Šedá",
+      "vzorSrsti": "Skvrnitá",
+      "vyraznyRys": "",
+      "znameni": "Žalud",
+      "kuraz": 0,
+      "kurazSloty": [],
+      "inventar": [
+        {
+          "nazev": "Dýka",
+          "typ": "zbraň",
+          "tecky": {
+            "akt": 1,
+            "max": 1
+          },
+          "damage": "d6"
+        },
+        {
+          "nazev": "Dřevěné klíny",
+          "typ": "předmět",
+          "tecky": {
+            "akt": 1,
+            "max": 1
+          }
+        },
+        {
+          "nazev": "Vědro",
+          "typ": "předmět",
+          "tecky": {
+            "akt": 1,
+            "max": 1
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "Pochodně",
+          "typ": "předmět",
+          "tecky": {
+            "akt": 3,
+            "max": 3
+          }
+        },
+        {
+          "nazev": "Zásoby",
+          "typ": "jídlo",
+          "tecky": {
+            "akt": 2,
+            "max": 3
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        }
+      ],
+      "pomocnici": []
+    },
+    "cas": {
+      "den": 1,
+      "hlidka": "odpoledne",
+      "smena": 3,
+      "rocniObdobi": "podzim",
+      "pocasi": "Slejvák",
+      "jeNepriznive": true,
+      "odpocinutoDnes": false
+    },
+    "keyedScenes": [],
+    "perilPoints": {
+      "aktualni": 2,
+      "max": 2
+    }
+  }
+}

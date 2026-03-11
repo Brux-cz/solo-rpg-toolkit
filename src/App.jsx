@@ -52,6 +52,25 @@ export default function Prototype() {
     return () => document.removeEventListener("focus", handler, true);
   }, []);
 
+  // Live sync s CLI agentem — polluje /agent-live.json
+  useEffect(() => {
+    if (screen !== "game") return;
+    let lastSeq = 0;
+    const poll = async () => {
+      try {
+        const res = await fetch("/agent-live.json?t=" + Date.now());
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data._seq && data._seq > lastSeq) {
+          lastSeq = data._seq;
+          setGame(data.game);
+        }
+      } catch { /* agent neběží */ }
+    };
+    const id = setInterval(poll, 2000);
+    return () => clearInterval(id);
+  }, [screen]);
+
   useEffect(() => {
     if (!activeId || screen !== "game") return;
     const timer = setTimeout(() => {

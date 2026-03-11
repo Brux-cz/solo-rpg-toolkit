@@ -1,0 +1,139 @@
+{
+  "exportVersion": 1,
+  "name": "Test Compat",
+  "game": {
+    "version": 10,
+    "cf": 5,
+    "sceneNum": 1,
+    "entries": [],
+    "npcs": [],
+    "threads": [],
+    "character": {
+      "jmeno": "",
+      "puvod": "",
+      "uroven": 1,
+      "zk": 0,
+      "str": {
+        "akt": 8,
+        "max": 8
+      },
+      "dex": {
+        "akt": 10,
+        "max": 10
+      },
+      "wil": {
+        "akt": 7,
+        "max": 7
+      },
+      "bo": {
+        "akt": 4,
+        "max": 4
+      },
+      "dobky": 0,
+      "prijmeni": "",
+      "barvaSrsti": "",
+      "vzorSrsti": "",
+      "vyraznyRys": "",
+      "znameni": "",
+      "kuraz": 0,
+      "kurazSloty": [],
+      "inventar": [
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        }
+      ],
+      "pomocnici": []
+    },
+    "cas": {
+      "den": 1,
+      "hlidka": "ráno",
+      "smena": 1,
+      "rocniObdobi": "podzim",
+      "pocasi": "",
+      "jeNepriznive": false,
+      "odpocinutoDnes": false
+    },
+    "keyedScenes": [],
+    "perilPoints": {
+      "aktualni": 2,
+      "max": 2
+    }
+  }
+}

@@ -30,3 +30,6 @@ test-results/
 
 # playwright
 .playwright-mcp/
+
+# agent live sync
+public/agent-live.json

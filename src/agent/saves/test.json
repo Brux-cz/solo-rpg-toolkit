@@ -1,0 +1,230 @@
+{
+  "exportVersion": 1,
+  "name": "Test Agent v2",
+  "game": {
+    "version": 10,
+    "cf": 6,
+    "sceneNum": 2,
+    "entries": [
+      {
+        "type": "scene",
+        "number": 2,
+        "name": "Příchod do vesnice",
+        "sceneType": "altered",
+        "cf": 5,
+        "d10": 3,
+        "adjRoll": 7,
+        "adj": "DVĚ úpravy",
+        "ts": 1773245347569
+      },
+      {
+        "type": "fate",
+        "question": "Je vesnice opuštěná?",
+        "odds": "Likely",
+        "d100": 53,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "threshold": 65,
+        "answer": "ANO",
+        "ts": 1773245347594
+      },
+      {
+        "type": "meaning",
+        "table": "actions",
+        "d1": 43,
+        "d2": 95,
+        "word1": "Imprison",
+        "word2": "Punish",
+        "cz1": "Uvěznění",
+        "cz2": "Potrestání",
+        "ts": 1773245347619
+      },
+      {
+        "type": "combat",
+        "enemies": [
+          {
+            "name": "Krysa",
+            "str": 12,
+            "bo": 3,
+            "weapon": "d6",
+            "armor": 0
+          }
+        ],
+        "initiativeText": "Hráč první (DEX 10, d20=3)",
+        "log": [
+          "Iniciativa: Hráč první (DEX 10, d20=3)",
+          "K1: Hráč d6=2 → 2 dmg → Krysa BO 3→1",
+          "K1: Krysa d6=2 → 2 dmg → BO 4→2",
+          "K2: Hráč d6=4 → 4 dmg → Krysa BO 1→0, STR 12→9",
+          "Krysa poraněn (STR save d20=19 FAIL)",
+          "K2: Krysa d6=1 → 1 dmg → BO 2→1",
+          "Krysa selhala morálka (d20=18 vs WIL 8) → utíká!"
+        ],
+        "result": "victory",
+        "playerBo": 1,
+        "playerStr": 8,
+        "ts": 1773245347644
+      },
+      {
+        "type": "text",
+        "content": "Myš přežila boj s krysou",
+        "ts": 1773245347669
+      },
+      {
+        "type": "endScene",
+        "number": 2,
+        "cfBefore": 5,
+        "cfAfter": 6,
+        "hadControl": false,
+        "ts": 1773245347743
+      }
+    ],
+    "npcs": [
+      {
+        "name": "Kupec",
+        "weight": 1,
+        "flag": false
+      }
+    ],
+    "threads": [
+      {
+        "name": "Najít léčitele",
+        "weight": 1,
+        "progress": 0,
+        "total": 10,
+        "popis": "",
+        "stav": "aktivní",
+        "typ": "hlavní",
+        "poznamky": ""
+      }
+    ],
+    "character": {
+      "jmeno": "",
+      "prijmeni": "",
+      "puvod": "",
+      "uroven": 1,
+      "zk": 0,
+      "str": {
+        "akt": 8,
+        "max": 8
+      },
+      "dex": {
+        "akt": 10,
+        "max": 10
+      },
+      "wil": {
+        "akt": 7,
+        "max": 7
+      },
+      "bo": {
+        "akt": 1,
+        "max": 4
+      },
+      "dobky": 0,
+      "barvaSrsti": "",
+      "vzorSrsti": "",
+      "vyraznyRys": "",
+      "znameni": "",
+      "kuraz": 0,
+      "kurazSloty": [],
+      "inventar": [
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        }
+      ],
+      "pomocnici": []
+    },
+    "cas": {
+      "den": 1,
+      "hlidka": "ráno",
+      "smena": 1,
+      "rocniObdobi": "podzim",
+      "pocasi": "",
+      "jeNepriznive": false,
+      "odpocinutoDnes": false
+    },
+    "perilPoints": {
+      "aktualni": 2,
+      "max": 2
+    },
+    "keyedScenes": []
+  }
+}
