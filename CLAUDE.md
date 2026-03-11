@@ -71,6 +71,11 @@ src/
       SwipeableBlock.jsx         — swipe gesto na blocích (reroll/smazat)
       TimeTracker.jsx            — tracker času a počasí
       ErrorBoundary.jsx          — zachytí crash komponent (zobrazí chybu místo bílé obrazovky)
+  agent/
+    cli.js                       — CLI rozhraní (node cli.js <cmd> --file <path>)
+    engine.js                    — herní logika (scéna, fate, boj kolo-po-kole, odpočinek...)
+    state.js                     — newGame/loadGame/saveGame + live sync do public/agent-live.json
+    saves/                       — save soubory ({exportVersion, name, game})
 ```
 
 ## Design tokens — VŽDY používej tyto konstanty
@@ -89,6 +94,9 @@ const C = {
 };
 const FONT = "'IBM Plex Mono', monospace";
 ```
+
+## ZAKÁZANÉ OPERACE
+- **NIKDY nepřepisovat localStorage přes `browser_evaluate`!** Neobcházej aplikační UI přímým zápisem do localStorage/sessionStorage. Import save souborů se dělá přes Import tlačítko v Lobby (normální Playwright klik + file upload).
 
 ## Pravidla pro každou změnu
 
