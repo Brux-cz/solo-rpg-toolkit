@@ -129,7 +129,9 @@ export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, o
               <span style={{ fontSize: 11, color: C.muted, minWidth: 14, textAlign: "center" }}>{perilPoints.max}</span>
               <button onClick={() => onPerilPointsChange({ ...perilPoints, max: Math.min(10, perilPoints.max + 1) })} style={{ background: "none", border: `1px solid ${C.border}`, borderRadius: 4, fontSize: 10, cursor: "pointer", padding: "1px 5px", fontFamily: FONT, color: C.muted }}>+</button>
             </div>
-            <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>NPC SEZNAM ({npcs.filter(n => n.weight >= 1).length}/25)</div>
+            <div style={{ fontSize: 9, color: C.muted, fontStyle: "italic", marginBottom: 10 }}>Bod záchrany — utratíš když hrozí konec příběhu. Popiš jak se postava zachránila. Např.: Myš padá z mlýnského kola — utratíš bod: „Chytla se za stéblo a přistála v mouce."</div>
+            <div style={{ fontSize: 9, color: C.muted, marginBottom: 4 }}>NPC SEZNAM ({npcs.filter(n => n.weight >= 1).length}/25)</div>
+            <div style={{ fontSize: 8, color: C.muted, marginBottom: 6, fontStyle: "italic" }}>Důležitost ovlivňuje pravděpodobnost v náhodných událostech</div>
             {npcs.map((n, origIdx) => {
               if (n.weight < 1) return null;
               return (
@@ -159,16 +161,23 @@ export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, o
               </>
             )}
             <div style={{ fontSize: 9, color: C.muted, margin: "12px 0 6px" }}>THREAD SEZNAM ({threads.length}/25)</div>
-            {threads.map((t, i) => (
-              <div key={i} style={{ padding: "6px 10px", border: `1px solid ${C.border}`, borderRadius: 6, marginBottom: 4 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, marginBottom: 4 }}>
-                  <span>{t.name}</span><span style={{ color: C.muted }}>{t.weight} · {t.progress}/{t.total}</span>
+            {threads.map((t, i) => {
+              const isFlashpoint = t.progress >= t.total;
+              return (
+                <div key={i} style={{ padding: "6px 10px", border: `1px solid ${isFlashpoint ? C.red : C.border}`, borderRadius: 6, marginBottom: 4 }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 11, marginBottom: 4 }}>
+                    <span style={{ flex: 1 }}>{t.name}</span>
+                    {isFlashpoint && <span style={{ fontSize: 8, color: C.red, fontWeight: 700, marginRight: 6 }}>FLASHPOINT</span>}
+                    <button onClick={() => changeProgress(i, -1)} style={progressBtnStyle}>−</button>
+                    <span style={{ fontSize: 9, color: isFlashpoint ? C.red : C.purple, minWidth: 28, textAlign: "center" }}>{t.progress}/{t.total}</span>
+                    <button onClick={() => changeProgress(i, 1)} style={progressBtnStyle}>+1</button>
+                  </div>
+                  <div style={{ height: 4, background: C.border, borderRadius: 2, overflow: "hidden" }}>
+                    <div style={{ width: `${Math.min(100, (t.progress / t.total) * 100)}%`, height: "100%", background: isFlashpoint ? C.red : C.purple }} />
+                  </div>
                 </div>
-                <div style={{ height: 4, background: C.border, borderRadius: 2, overflow: "hidden" }}>
-                  <div style={{ width: `${(t.progress / t.total) * 100}%`, height: "100%", background: C.purple }} />
-                </div>
-              </div>
-            ))}
+              );
+            })}
             <div style={{ marginTop: 24, paddingTop: 14, borderTop: `1px solid ${C.border}` }}>
               <button onClick={onGoToLobby} style={{ width: "100%", padding: "8px 0", border: `1px solid ${C.border}`, background: "transparent", borderRadius: 6, fontSize: 10, color: C.muted, fontFamily: FONT, cursor: "pointer" }}>Správa her</button>
             </div>
@@ -191,6 +200,7 @@ export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, o
                       : <span style={{ fontSize: 8, color: C.muted, border: `1px solid ${C.border}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>jen wiki</span>
                     }
                     {n.vztah && <span style={{ fontSize: 8, color: vztahColor, border: `1px solid ${vztahColor}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>{n.vztah}</span>}
+                    <span style={{ fontSize: 8, color: C.muted }}>Důl:</span>
                     <button onClick={e => { e.stopPropagation(); changeNpcWeight(i, -1); }} style={weightBtnStyle}>−</button>
                     <span style={{ fontSize: 10, color: C.yellow, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{n.weight}×</span>
                     <button onClick={e => { e.stopPropagation(); changeNpcWeight(i, 1); }} style={weightBtnStyle}>+</button>
@@ -258,10 +268,10 @@ export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, o
                         {["str", "dex", "wil", "bo"].map(stat => (
                           <div key={stat} style={{ display: "flex", alignItems: "center", gap: 4 }}>
                             <span style={{ fontSize: 9, color: C.muted, width: 24, textTransform: "uppercase" }}>{stat}</span>
-                            <input type="number" value={n[stat]?.akt ?? ""} onChange={e => updateNpcStat(i, stat, "akt", e.target.value)} placeholder="akt"
+                            <input type="number" value={n[stat]?.akt ?? ""} onChange={e => updateNpcStat(i, stat, "akt", e.target.value)} placeholder="akt" aria-label={`${n.name} ${stat} akt`}
                               style={{ width: 32, border: `1px solid ${C.border}`, borderRadius: 3, padding: "2px 4px", fontSize: 10, fontFamily: FONT, textAlign: "center", color: C.text, outline: "none" }} />
                             <span style={{ color: C.muted, fontSize: 9 }}>/</span>
-                            <input type="number" value={n[stat]?.max ?? ""} onChange={e => updateNpcStat(i, stat, "max", e.target.value)} placeholder="max"
+                            <input type="number" value={n[stat]?.max ?? ""} onChange={e => updateNpcStat(i, stat, "max", e.target.value)} placeholder="max" aria-label={`${n.name} ${stat} max`}
                               style={{ width: 32, border: `1px solid ${C.border}`, borderRadius: 3, padding: "2px 4px", fontSize: 10, fontFamily: FONT, textAlign: "center", color: C.text, outline: "none" }} />
                           </div>
                         ))}
@@ -404,6 +414,7 @@ export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, o
             <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>THREAD SEZNAM ({threads.length}/25)</div>
             {threads.map((t, i) => {
               const isExpanded = expandedThread === i;
+              const isFlashpoint = t.progress >= t.total;
               const stavColor = t.stav === "vyřešený" ? C.green : t.stav === "opuštěný" ? C.muted : C.purple;
               return (
                 <div key={i} style={{ marginBottom: 4 }}>
@@ -414,10 +425,12 @@ export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, o
                     <span style={{ flex: 1, fontWeight: isExpanded ? 700 : 400 }}>{t.name}</span>
                     {t.typ && t.typ !== "hlavní" && <span style={{ fontSize: 8, color: C.muted, border: `1px solid ${C.border}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>{t.typ}</span>}
                     <span style={{ fontSize: 8, color: stavColor, border: `1px solid ${stavColor}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>{t.stav || "aktivní"}</span>
+                    {isFlashpoint && <span style={{ fontSize: 8, color: C.red, fontWeight: 700, border: `1px solid ${C.red}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>FLASHPOINT</span>}
                     <button onClick={e => { e.stopPropagation(); changeProgress(i, -1); }} style={progressBtnStyle}>−</button>
                     <span style={{ fontSize: 9, color: C.purple, minWidth: 28, textAlign: "center" }}>{t.progress}/{t.total}</span>
                     <button onClick={e => { e.stopPropagation(); changeProgress(i, 1); }} style={progressBtnStyle}>+1</button>
                     <button onClick={e => { e.stopPropagation(); changeProgress(i, 2); }} style={progressBtnStyle}>+2</button>
+                    <span style={{ fontSize: 8, color: C.muted }}>Důl:</span>
                     <button onClick={e => { e.stopPropagation(); changeThreadWeight(i, -1); }} style={weightBtnStyle}>−</button>
                     <span style={{ fontSize: 10, color: C.yellow, fontWeight: 700, minWidth: 18, textAlign: "center" }}>{t.weight}×</span>
                     <button onClick={e => { e.stopPropagation(); changeThreadWeight(i, 1); }} style={weightBtnStyle}>+</button>
@@ -468,7 +481,8 @@ export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, o
         )}
         {sub === "klicove" && (
           <>
-            <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>KLÍČOVÉ SCÉNY ({keyedScenes.length})</div>
+            <div style={{ fontSize: 9, color: C.muted, marginBottom: 4 }}>KLÍČOVÉ SCÉNY ({keyedScenes.length})</div>
+            <div style={{ fontSize: 9, color: C.muted, fontStyle: "italic", marginBottom: 8 }}>Připravené události se spouštěčem. Např.: Trigger: „Myš vstoupí do sklepa mlýna" → Událost: „Najde starý deník mlynáře." Při konci scény ti appka připomene zkontrolovat spouštěče.</div>
             {keyedScenes.map((ks, i) => {
               const isExpanded = expandedKs === i;
               return (

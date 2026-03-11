@@ -79,7 +79,10 @@ export default function DiceSheet({ onClose, onInsert }) {
           <div style={{ background: C.text + "12", border: `2px solid ${C.text}`, borderRadius: 8, padding: "12px 0", textAlign: "center", marginBottom: 10 }}>
             <div style={{ fontSize: 36, fontWeight: 700, color: C.text, fontFamily: FONT }}>{result}</div>
           </div>
-          <button onClick={() => doRoll(selected)} style={{ width: "100%", height: 46, background: "transparent", color: C.text, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12, fontFamily: FONT, cursor: "pointer" }}>HODIT ZNOVU</button>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button onClick={() => doRoll(selected)} style={{ flex: 1, height: 46, background: "transparent", color: C.text, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12, fontFamily: FONT, cursor: "pointer" }}>HODIT ZNOVU</button>
+            <button onClick={() => { insertResult(); onClose(); }} style={{ flex: 2, height: 46, background: C.text, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT DO DENÍKU</button>
+          </div>
         </>
       ) : (
         <div style={{ fontSize: 11, color: C.muted, textAlign: "center", fontFamily: FONT, marginTop: 20 }}>Vyber kostku</div>

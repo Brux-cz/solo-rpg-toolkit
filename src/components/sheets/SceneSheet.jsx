@@ -3,7 +3,7 @@ import { C, FONT } from "../../constants/theme.js";
 import { checkScene, resolveEventTarget } from "../../utils/dice.js";
 import Sheet from "../ui/Sheet.jsx";
 
-export default function SceneSheet({ onClose, cf, sceneNum, npcs, threads, onInsert }) {
+export default function SceneSheet({ onClose, cf, sceneNum, npcs, threads, keyedScenes, onInsert }) {
   const [step, setStep] = useState("input");
   const [title, setTitle] = useState("");
   const [result, setResult] = useState(null);
@@ -98,6 +98,11 @@ export default function SceneSheet({ onClose, cf, sceneNum, npcs, threads, onIns
     <Sheet title="🎬 NOVÁ SCÉNA" onClose={handleClose} help={helpContent}>
       {step === "input" ? (
         <>
+          {(keyedScenes || []).filter(ks => !ks.spustena).length > 0 && (
+            <div style={{ padding: "6px 10px", marginBottom: 10, background: C.blue + "12", border: `1px solid ${C.blue}30`, borderRadius: 6, fontSize: 10, color: C.blue, fontFamily: FONT }}>
+              Máš {(keyedScenes || []).filter(ks => !ks.spustena).length} nespuštěných klíčových scén
+            </div>
+          )}
           <div style={{ fontSize: 9, color: C.muted, marginBottom: 3, fontFamily: FONT }}>CO OČEKÁVÁŠ?</div>
           <input
             value={title}

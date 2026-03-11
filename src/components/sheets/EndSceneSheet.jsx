@@ -2,7 +2,7 @@ import { useState } from "react";
 import { C, FONT } from "../../constants/theme.js";
 import Sheet from "../ui/Sheet.jsx";
 
-export default function EndSceneSheet({ onClose, cf, sceneNum, onCFChange, npcs, threads, onNpcsChange, onThreadsChange, onInsert }) {
+export default function EndSceneSheet({ onClose, cf, sceneNum, onCFChange, npcs, threads, keyedScenes, onNpcsChange, onThreadsChange, onInsert }) {
   const [choice, setChoice] = useState(null);
   const [newNpc, setNewNpc] = useState("");
   const [newThread, setNewThread] = useState("");
@@ -161,8 +161,21 @@ export default function EndSceneSheet({ onClose, cf, sceneNum, onCFChange, npcs,
         <button onClick={addThread} style={addBtnStyle}>+ Thread</button>
       </div>
 
-      <div style={{ fontSize: 10, color: C.muted, marginBottom: 8, fontFamily: FONT, fontStyle: "italic" }}>
-        💡 Nezapomeň aktualizovat NPC wiki karty po setkání
+      <div style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 8, padding: "10px 12px", marginBottom: 10, fontFamily: FONT }}>
+        <div style={{ fontSize: 9, color: C.muted, fontWeight: 700, marginBottom: 6 }}>PŘIPOMÍNKY</div>
+        <div style={{ fontSize: 10, color: C.muted, marginBottom: 4 }}>💡 Aktualizuj NPC wiki karty po setkání</div>
+        <div style={{ fontSize: 10, color: C.muted, marginBottom: 4 }}>⏰ Zkontroluj čas a počasí</div>
+        {(keyedScenes || []).filter(ks => !ks.spustena).length > 0 && (
+          <div style={{ fontSize: 10, color: C.blue, marginBottom: 4 }}>🔑 Zkontroluj klíčové scény ({(keyedScenes || []).filter(ks => !ks.spustena).length} nespuštěných)</div>
+        )}
+        {threads.filter(t => t.progress >= t.total).length > 0 && (
+          <div style={{ fontSize: 10, color: C.red, fontWeight: 600, marginTop: 6, padding: "6px 8px", background: C.red + "10", border: `1px solid ${C.red}30`, borderRadius: 4 }}>
+            ⚠️ Thready na flashpointu — zvaž jejich vyvrcholení:
+            {threads.filter(t => t.progress >= t.total).map((t, i) => (
+              <div key={i} style={{ fontSize: 9, marginTop: 2, fontWeight: 400 }}>• {t.name}</div>
+            ))}
+          </div>
+        )}
       </div>
 
       <button onClick={doEnd} style={{ width: "100%", height: 46, background: C.text, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>UKONČIT SCÉNU</button>

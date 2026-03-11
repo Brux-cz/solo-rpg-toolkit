@@ -110,6 +110,10 @@ export default function DetailCheckSheet({ onClose, onInsert }) {
             {result.cz1 && <div style={{ fontSize: 11, color: C.muted, marginTop: 4, fontFamily: FONT }}>{result.cz1} + {result.cz2}</div>}
           </div>
           <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 12, fontFamily: FONT }}>Interpretuj v kontextu scény</div>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button onClick={() => setResult(null)} style={{ flex: 1, height: 46, background: "transparent", color: C.muted, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>HODIT ZNOVU</button>
+            <button onClick={() => { insertResult(); onClose(); }} style={{ flex: 2, height: 46, background: C.yellow, color: C.text, border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT DO DENÍKU</button>
+          </div>
         </>
       ) : (
         <div style={{ fontSize: 11, color: C.muted, textAlign: "center", fontFamily: FONT, marginTop: 20 }}>

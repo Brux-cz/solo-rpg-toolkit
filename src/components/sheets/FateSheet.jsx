@@ -160,7 +160,10 @@ export default function FateSheet({ onClose, cf, npcs, threads, onInsert }) {
               )}
             </div>
           )}
-          <button onClick={() => { setStep("input"); setResult(null); }} style={{ width: "100%", height: 46, background: "transparent", color: C.muted, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>HODIT ZNOVU</button>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button onClick={() => { setStep("input"); setResult(null); }} style={{ flex: 1, height: 46, background: "transparent", color: C.muted, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>HODIT ZNOVU</button>
+            <button onClick={() => { insertResult(); onClose(); }} style={{ flex: 2, height: 46, background: C.green, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT DO DENÍKU</button>
+          </div>
         </>
       )}
     </Sheet>

@@ -13,16 +13,27 @@ Hráč je zároveň vypravěč — appka simuluje rozhodování GM přes mechani
 ## Mapa souborů
 ```
 src/
+  main.jsx                       — Vite entry point
   App.jsx                        — orchestrace (Prototype, routing, game state)
   constants/
-    theme.js                     — C (barvy) + FONT
-    tables.js                    — FATE_CHART, ACTIONS, DESCRIPTIONS, SCENE_ADJ, EVENT_FOCUS
+    theme.js                     — C (barvy vč. orange) + FONT
+    tables.js                    — FATE_DIAG, ODDS_LABELS, ACTIONS, ACTIONS_CZ, DESCRIPTIONS,
+                                   DESCRIPTIONS_CZ, SCENE_ADJ, EVENT_FOCUS, THREAD_DISCOVERY,
+                                   WEATHER_TABLE, BACKGROUND_TABLE, WEAPON_CHOICES,
+                                   BIRTHSIGN, FUR_COLOR, FUR_PATTERN, TRAIT, NAMES, SURNAMES
     bestiary.js                  — BESTIARY (12 tvorů)
+    elements.js                  — Mythic GME 2e Elements (45 tabulek)
   utils/
-    dice.js                      — roll(), checkFate(), checkScene(), rollMeaning(), getEventFocus()
-    combat.js                    — resolveDamage(), rollInitiative(), rollMorale()
+    dice.js                      — roll(), checkFate(), checkScene(), rollMeaning(),
+                                   getEventFocus(), rollWeapon(), rollDiscoveryCheck(),
+                                   rollWeather(), resolveEventTarget(), rollFromList()
+    combat.js                    — resolveDamage(), rollInitiative(), rollMorale(),
+                                   assessDanger(), rollMoraleAdvantage()
+    reroll.js                    — reverse mapa odds pro reroll ve FateSheet
+    whisper.js                   — AI našeptávač (Anthropic API, localStorage klíč)
   store/
     gameStore.js                 — INITIAL_GAME, MIGRATIONS, localStorage CRUD, export/import
+                                   (CURRENT_VERSION = 10)
   components/
     Lobby.jsx                    — výběr/správa her (multi-save)
     blocks/
@@ -33,6 +44,9 @@ src/
       CombatBlock.jsx            — inline blok: combat log
       DetailBlock.jsx            — inline blok: detail check
       DiceBlock.jsx              — inline blok: hod kostkou
+      BehaviorBlock.jsx          — inline blok: NPC behavior (oranžový border)
+      EndSceneBlock.jsx          — inline blok: konec scény (gradient border)
+      DiscoveryBlock.jsx         — inline blok: discovery check výsledek
     sheets/
       FateSheet.jsx              — bottom sheet: Fate Question
       SceneSheet.jsx             — bottom sheet: Nová Scéna
@@ -42,6 +56,10 @@ src/
       NoteSheet.jsx              — bottom sheet: Poznámka
       DetailCheckSheet.jsx       — bottom sheet: Detail Check
       DiceSheet.jsx              — bottom sheet: Hod kostkou
+      DiscoveryCheckSheet.jsx    — bottom sheet: Discovery Check (Thread Progress)
+      CharCreateSheet.jsx        — bottom sheet: Tvorba postavy (5-krokový wizard)
+      BehaviorSheet.jsx          — bottom sheet: NPC Behavior Table
+      RestSheet.jsx              — bottom sheet: Odpočinek (jídlo, léčení)
     tabs/
       PostavaTab.jsx             — tab: character sheet (staty, inventář, pomocník)
       SvetTab.jsx                — tab: Mythic GME (CF, NPC wiki karty, Thread seznamy)
@@ -51,6 +69,8 @@ src/
       ActionToolbar.jsx          — toolbar akcí (Stav A)
       BottomNav.jsx              — spodní navigace (Deník/Postava/Svět)
       Sheet.jsx                  — base bottom sheet komponenta
+      SwipeableBlock.jsx         — swipe gesto na blocích (reroll/smazat)
+      TimeTracker.jsx            — tracker času a počasí
 ```
 
 ## Design tokens — VŽDY používej tyto konstanty
@@ -65,6 +85,7 @@ const C = {
   yellow: "#c89030",  // CF, varování
   purple: "#7a5aaa",  // Meaning tables
   blue: "#8888cc",    // Scéna bloky
+  orange: "#cc7a30",  // NPC Behavior
 };
 const FONT = "'IBM Plex Mono', monospace";
 ```
@@ -112,6 +133,9 @@ Header · Editor (max 50% výšky) · ActionToolbar · BottomNav · Sheet (52% v
 - **Scene**: modrý border, nadpis sekce s číslem/názvem/typem/CF
 - **Detail**: žlutý border vlevo `🔍 Slovo + Slovo`
 - **Combat**: červený border vlevo, combat log
+- **Behavior**: oranžový border vlevo, NPC jméno + slova
+- **EndScene**: gradient border (červená→modrá), číslo scény + CF změna
+- **Discovery**: barva dle typu (zelená/červená/žlutá/fialová), typ + slova
 
 ## Co je hotovo ✅
 1. Projekt vytvořen (Vite + React JSX)
@@ -134,86 +158,107 @@ Header · Editor (max 50% výšky) · ActionToolbar · BottomNav · Sheet (52% v
 18. Pomocník — editovatelný (jméno, role, staty, inventář 6 slotů, mzda, věrnost), migrace v4→v5
 19. NPC wiki karty — expandovatelné detaily (popis, lokace, vztah, poznámky, bojové staty, zbraň+dmg, zbroj)
 20. Hod kostkou (🎲) — d4 až d100, DiceSheet + DiceBlock v deníku
+21. Čas a počasí — TimeTracker (den, hlídka, sezóna), WEATHER_TABLE, rollWeather, migrace v9→v10
+22. NPC Behavior Table — BehaviorSheet (6 kontextů) + BehaviorBlock v deníku
+23. Discovery Check — DiscoveryCheckSheet (4 typy: Progress/Flashpoint/Track/Strengthen) + DiscoveryBlock
+24. Tvorba postavy — CharCreateSheet (5-krokový wizard, tabulka původů, generátory)
+25. Odpočinek — RestSheet (jídlo ze zásob, léčení)
+26. SwipeableBlock — swipe gesto na blocích (reroll/smazat)
+27. EndSceneBlock — inline blok konce scény (gradient border, CF změna)
+28. AI našeptávač — whisper.js (Anthropic API interpretace Meaning párů)
+29. Reroll mechanika — reroll.js, swipe na blocích
+30. Danger Assessment — assessDanger() v combat.js
+31. Mythic 2e Elements — elements.js (45 tabulek)
+32. České překlady — ACTIONS_CZ, DESCRIPTIONS_CZ v tables.js
 
 ## Co je potřeba udělat 📋
 - [ ] Visual Viewport API — detekce skutečné klávesnice
-- [ ] Thread Progress Track (Discovery Check mechanika)
-- [ ] Čas a počasí — dynamická správa (den, hlídka, směna)
 - [ ] Osady, Frakce, Hexcrawl mapa
-- [ ] NPC Behavior Table
 
 ## Diagram a datový model — POVINNÁ REFERENCE (viz checklist výše)
 
-Diagram je velký (~1400 řádků). Čti jen sekce relevantní pro aktuální úkol:
+Diagram je velký (~1790 řádků). Čti jen sekce relevantní pro aktuální úkol.
+Rozsahy skupin mají přesah ~5 řádků, aby se nic neztratilo na hranicích.
 
-### Mapa diagramu (řádky)
+### Mapa diagramu (řádky) — `src/docs/solo-rpg-diagram.jsx`
 
-**WIKI — entity a data (ř. 23–640)**
-- ř. 23–40: Kampáňová Wiki (přehled, propojení entit)
-- ř. 41–115: Postava (atributy, inventář, podmínky, leveling, léčení)
-- ř. 116–185: Tvorba postavy (5 kroků, tabulka původů 6×6, zbraně, vzhled)
-- ř. 186–245: Pomocník (Hireling)
-- ř. 177–207: NPC (wiki záznam)
-- ř. 208–239: Thread / Příběhová linka
-- ř. 240–268: NPC Seznam (aktivní mechanický)
-- ř. 269–287: Thread Seznam (aktivní mechanický)
-- ř. 288–332: Osady / Místa
-- ř. 333–378: Frakce
-- ř. 379–426: Úkoly / Hooky
-- ř. 427–497: Předměty / Vybavení / Kouzla
-- ř. 498–537: Chaos Faktor
-- ř. 518–537: Deník kampaně (Scény)
-- ř. 538–570: Thread Progress Track
+**WIKI — entity a data (čti ř. 1–680)**
+- ř. 4–21: _intro — Kompletní přehled (3 vrstvy appky)
+- ř. 24–39: wiki_bg — Kampáňová Wiki (pasivní entity vs aktivní seznamy)
+- ř. 40–117: postava — Postava (atributy, inventář, podmínky, leveling, léčení)
+- ř. 118–193: tvorba_postavy — Tvorba postavy (5 kroků, tabulka původů 6×6, zbraně, vzhled)
+- ř. 195–260: pomocnik — Pomocník (Hireling)
+- ř. 262–293: npc — NPC (wiki záznam)
+- ř. 294–325: thread — Thread / Příběhová linka
+- ř. 326–354: npc_seznam — NPC Seznam (aktivní mechanický)
+- ř. 355–372: thread_seznam — Thread Seznam (aktivní mechanický)
+- ř. 374–418: osady — Osady / Místa
+- ř. 419–463: frakce — Frakce
+- ř. 465–512: ukoly — Úkoly / Hooky / Dobrodružná místa
+- ř. 513–583: predmety — Předměty / Vybavení / Kouzla
+- ř. 584–602: chaos_val — Chaos Faktor (CF)
+- ř. 604–622: denik — Deník kampaně (Scény)
+- ř. 624–678: progress_track — Thread Progress Track
 
-**CYKLUS SCÉNY — gameplay flow (ř. 571–758)**
-- ř. 573–588: Krok 1 — Očekávání
-- ř. 589–612: Krok 2 — Test Chaosu (d10 vs CF)
-- ř. 613–628: Krok 3 — Typ Scény
-- ř. 629–651: Scene Adjustment Table
-- ř. 652–674: Event Focus Table
-- ř. 675–695: Krok 4 — Hraní Scény
-- ř. 696–709: Krok 5 — Scéna Vyčerpána
-- ř. 710–752: Krok 6 — Bookkeeping
-- ř. 753–758: Nová Scéna (cyklus)
+**CYKLUS SCÉNY — gameplay flow (čti ř. 675–870)**
+- ř. 681–695: ocekavani — Krok 1: Očekávání
+- ř. 697–719: test_chaosu — Krok 2: Test Chaosu (d10 vs CF)
+- ř. 721–735: typ_sceny_bg — Krok 3: Typ Scény (tři cesty)
+- ř. 737–758: scene_adj — Scene Adjustment Table (d10)
+- ř. 760–781: event_focus — Event Focus Table (d100)
+- ř. 783–802: hrani — Krok 4: Hraní Scény
+- ř. 804–816: ukonceni — Krok 5: Scéna Vyčerpána
+- ř. 818–859: bookkeeping_bg — Krok 6: Bookkeeping
+- ř. 861–865: zpet — Nová Scéna (cyklus)
 
-**NÁSTROJE — panely a mechaniky (ř. 759–901)**
-- ř. 761–779: Panel Nástrojů (přehled)
-- ř. 780–820: Fate Chart (orákulum, pravděpodobnosti)
-- ř. 821–848: Meaning Tables
-- ř. 849–870: Detail Check
-- ř. 871–886: NPC Behavior Table
-- ř. 887–894: Generátory
-- ř. 895–901: Hod Kostkou
+**NÁSTROJE — panely a mechaniky (čti ř. 865–1025)**
+- ř. 869–886: nastroje_bg — Panel Nástrojů (přehled)
+- ř. 888–940: t_fate — Fate Chart (orákulum, pravděpodobnosti)
+- ř. 942–968: t_meaning — Meaning Tables
+- ř. 970–990: t_detail — Detail Check
+- ř. 992–1006: t_npc_behav — NPC Behavior Table
+- ř. 1008–1014: t_gen — Generátory
+- ř. 1016–1021: t_kostky — Hod Kostkou
 
-**DOPLŇKY A META (ř. 902–1080)**
-- ř. 904–924: Parametry Scény
-- ř. 925–1060: Poznatky ze suchého průchodu (testování, UX)
-- ř. 1061–1081: Random Event Flow
+**DOPLŇKY A META (čti ř. 1020–1207)**
+- ř. 1025–1034: param_bg — Parametry Scény
+- ř. 1036–1044: meritko — Měřítko (mentální přepínač architekt/průzkumník)
+- ř. 1046–1180: poznatky_test — Poznatky ze suchého průchodu (testování, UX)
+- ř. 1182–1201: random_event_flow — Random Event Flow
 
-**PRAVIDLA MAUSRITTER (ř. 1082–1290)**
-- ř. 1084–1162: Boj
-- ř. 1163–1215: Čas, Cestování, Počasí
-- ř. 1216–1254: Reakce NPC
-- ř. 1255–1289: Bestiář
+**PRAVIDLA MAUSRITTER (čti ř. 1200–1412)**
+- ř. 1205–1282: boj — Boj (iniciativa, akce, damage pipeline, morálka, útěk)
+- ř. 1284–1335: cas_cestovani — Čas, Cestování, Počasí
+- ř. 1337–1375: reakce_npc — Reakce NPC (2d6)
+- ř. 1376–1407: bestiar — Bestiář (tvorové se staty)
+- ř. 1408: konec DESCRIPTIONS objektu
 
-**REACT KOMPONENTY diagramu (ř. 1289+)**
-- ř. 1289–1370+: SVG vizualizace (wiki, cyklus, nástroje)
+**REACT KOMPONENTY diagramu (čti ř. 1408–1790)**
+- ř. 1410–1488: NODES — SVG diagram node definice
+- ř. 1490–1502: EDGES — SVG diagram propojení
+- ř. 1504–1568: EdgePath/ArrowHead — renderování šipek
+- ř. 1599–1654: NodeBox — renderování uzlů
+- ř. 1656–1683: InfoPanel — detail panel
+- ř. 1689–1790: SoloRPGDiagram — hlavní komponenta (pan/zoom, touch)
 
-### Mapa datového modelu — `src/docs/datovy-model.jsx` (řádky)
+### Mapa datového modelu — `src/docs/datovy-model.jsx` (799 řádků)
 
+**Entity (čti ř. 1–470)**
 - ř. 5–42: Postava (atributy, inventář, podmínky, kuráž)
-- ř. 43–74: Tvorba postavy (5 kroků, tabulky, zbraně, vzhled)
-- ř. 75–99: Pomocník (hireling)
-- ř. 100–143: Předmět (zbraně, zbroje, kouzla, spotřební)
-- ř. 144–165: Frakce
-- ř. 166–199: Osada (služby, obchody, NPC)
-- ř. 169–202: NPC (reakce, vztah, motivace)
-- ř. 203–234: Mythic GME (CF, NPC seznam, Thread seznam)
-- ř. 235–260: Scéna (typ, chaos test, eventy)
-- ř. 261–283: Hexcrawl Mapa
-- ř. 284–306: Čas a Počasí
-- ř. 307–323: Zvěsti
-- ř. 324+: Bojový Stav
+- ř. 44–74: Tvorba postavy (5 kroků, tabulky, zbraně, vzhled)
+- ř. 76–99: Pomocník (hireling)
+- ř. 101–145: Předmět (zbraně, zbroje, kouzla, spotřební)
+- ř. 147–167: Frakce
+- ř. 169–201: Osada (služby, obchody, NPC)
+- ř. 203–271: NPC (reakce, vztah, motivace, + Mythic GME stav)
+- ř. 273–297: Scéna (typ, chaos test, eventy)
+- ř. 299–320: Hexcrawl Mapa
+- ř. 322–343: Čas a Počasí
+- ř. 345–360: Zvěsti
+- ř. 362–469: Bojový Stav
+
+**Vizualizace (čti ř. 470–799)**
+- ř. 471+: Relationships array + React komponenty
 
 ## Git commit pravidla
 - Formát: `typ(oblast): popis česky`
