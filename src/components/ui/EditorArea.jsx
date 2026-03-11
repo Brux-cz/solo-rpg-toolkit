@@ -17,7 +17,7 @@ function renderBlock(entry, i, onUpdateEntry) {
   if (entry.type === "text") return <TextBlock key={i} entry={entry} onUpdate={(updated) => onUpdateEntry?.(i, updated)} />;
   if (entry.type === "fate") return <FateBlock key={i} entry={entry} />;
   if (entry.type === "meaning") return <MeaningBlock key={i} entry={entry} />;
-  if (entry.type === "scene") return <SceneBlock key={i} entry={entry} />;
+  if (entry.type === "scene") return <SceneBlock key={i} entry={entry} onUpdate={(updated) => onUpdateEntry?.(i, updated)} />;
   if (entry.type === "combat") return <CombatBlock key={i} entry={entry} />;
   if (entry.type === "detail") return <DetailBlock key={i} entry={entry} />;
   if (entry.type === "dice") return <DiceBlock key={i} entry={entry} />;
