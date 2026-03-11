@@ -58,6 +58,19 @@ export default function MeaningSheet({ onClose, onInsert }) {
     setSelected(next);
   };
 
+  const removeRoll = (idx) => {
+    const newRolls = rolls.filter((_, i) => i !== idx);
+    // Přepočítat selected indexy
+    const newSelected = new Set();
+    for (const s of selected) {
+      if (s < idx) newSelected.add(s);
+      else if (s > idx) newSelected.add(s - 1);
+      // s === idx → smazaný, přeskočit
+    }
+    setRolls(newRolls);
+    setSelected(newSelected);
+  };
+
   const insertResult = () => {
     if (rolls.length === 0) return;
     // Při 1 hodu vložit vždy, při 2+ jen vybrané
@@ -164,7 +177,7 @@ export default function MeaningSheet({ onClose, onInsert }) {
             const isSelected = selected.has(i);
             const canToggle = rolls.length > 1;
             return (
-              <div key={i} onClick={canToggle ? () => toggleSelect(i) : undefined} style={{ marginBottom: 8, cursor: canToggle ? "pointer" : "default", opacity: canToggle && !isSelected ? 0.35 : 1, transition: "opacity 0.15s" }}>
+              <div key={i} onClick={canToggle ? () => toggleSelect(i) : undefined} style={{ marginBottom: 8, cursor: canToggle ? "pointer" : "default", opacity: canToggle && !isSelected ? 0.35 : 1, transition: "opacity 0.15s", position: "relative" }}>
                 <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 4, fontFamily: FONT }}>
                   {r.table} · d100={r.d1}, d100={r.d2}
                 </div>
@@ -172,6 +185,9 @@ export default function MeaningSheet({ onClose, onInsert }) {
                   <div style={{ fontSize: i === rolls.length - 1 ? 22 : 16, fontWeight: 700, color: C.purple, fontFamily: FONT }}>{r.word1} + {r.word2}</div>
                   {r.cz1 && <div style={{ fontSize: i === rolls.length - 1 ? 11 : 10, color: C.muted, marginTop: 3, fontFamily: FONT }}>{r.cz1} + {r.cz2}</div>}
                 </div>
+                {canToggle && (
+                  <button onClick={(e) => { e.stopPropagation(); removeRoll(i); }} style={{ position: "absolute", top: 0, right: 0, width: 22, height: 22, borderRadius: "50%", border: `1px solid ${C.border}`, background: C.bg, color: C.muted, fontSize: 12, fontFamily: FONT, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, lineHeight: 1 }}>×</button>
+                )}
               </div>
             );
           })}
