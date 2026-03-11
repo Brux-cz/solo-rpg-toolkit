@@ -56,7 +56,7 @@ export default function EditorArea({ entries, onDeleteEntry, onRerollEntry, onUp
         </div>
       )}
       {entries.map((e, i) => (
-        <div key={i}>
+        <div key={e.id || i}>
           <SwipeableBlock
             isOpen={openSwipeIdx === i}
             onOpen={() => { setOpenSwipeIdx(i); onSwipeSeen?.(); }}

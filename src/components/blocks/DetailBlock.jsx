@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { C } from "../../constants/theme.js";
 
-export default function DetailBlock({ entry }) {
+export default memo(function DetailBlock({ entry }) {
   const [expanded, setExpanded] = useState(false);
   return (
     <div onClick={() => setExpanded(!expanded)} style={{ borderLeft: `3px solid ${C.yellow}`, background: C.yellow + "18", borderRadius: "0 4px 4px 0", padding: "4px 10px", margin: 0, fontSize: 11, color: C.yellow, cursor: "pointer" }}>
@@ -18,4 +18,4 @@ export default function DetailBlock({ entry }) {
       )}
     </div>
   );
-}
+});

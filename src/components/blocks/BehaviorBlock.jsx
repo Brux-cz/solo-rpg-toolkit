@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { C } from "../../constants/theme.js";
 
-export default function BehaviorBlock({ entry }) {
+export default memo(function BehaviorBlock({ entry }) {
   const [expanded, setExpanded] = useState(false);
   return (
     <div onClick={() => setExpanded(!expanded)} style={{ borderLeft: `3px solid ${C.orange}`, background: C.orange + "18", borderRadius: "0 4px 4px 0", padding: "4px 10px", margin: 0, fontSize: 11, color: C.orange, cursor: "pointer" }}>
@@ -18,4 +18,4 @@ export default function BehaviorBlock({ entry }) {
       )}
     </div>
   );
-}
+});

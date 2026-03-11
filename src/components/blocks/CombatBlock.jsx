@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { C, FONT } from "../../constants/theme.js";
 
-export default function CombatBlock({ entry }) {
+export default memo(function CombatBlock({ entry }) {
   const isEscape = entry.result === "fled" || entry.result === "escape" || entry.result === "escape_hit";
   const resultColor = entry.result === "victory" ? C.green : isEscape ? C.yellow : C.red;
   const resultLabel = { victory: "VÍTĚZSTVÍ", fled: "NEPŘÍTEL UTEKL", wounded: "PORANĚNÍ", death: "SMRT", escape: "ÚNIK", escape_hit: "ÚNIK (PO ZÁSAHU)" }[entry.result] || "SMRT";
@@ -25,4 +26,4 @@ export default function CombatBlock({ entry }) {
       )}
     </div>
   );
-}
+});

@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { C, FONT } from "../../constants/theme.js";
 
-export default function EndSceneBlock({ entry }) {
+export default memo(function EndSceneBlock({ entry }) {
   return (
     <div style={{
       borderLeft: `3px solid`,
@@ -16,4 +17,4 @@ export default function EndSceneBlock({ entry }) {
       <span>CF {entry.cfOld}→{entry.cfNew}</span>
     </div>
   );
-}
+});

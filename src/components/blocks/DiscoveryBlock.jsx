@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { C } from "../../constants/theme.js";
 
 const TYPE_COLORS = {
@@ -7,7 +8,7 @@ const TYPE_COLORS = {
   Strengthen: C.purple,
 };
 
-export default function DiscoveryBlock({ entry }) {
+export default memo(function DiscoveryBlock({ entry }) {
   const color = TYPE_COLORS[entry.discoveryType] || C.green;
   return (
     <div style={{ borderLeft: `3px solid ${color}`, background: color + "18", borderRadius: "0 4px 4px 0", padding: "4px 10px", margin: 0, fontSize: 11, color: C.muted }}>
@@ -31,4 +32,4 @@ export default function DiscoveryBlock({ entry }) {
       {entry.randomEvent && <div style={{ fontSize: 10, marginTop: 2, color: C.yellow }}>⚡ {entry.eventFocus}{entry.eventMeaning ? ` · ${entry.eventMeaning.word1} + ${entry.eventMeaning.word2}` : ""}{entry.eventMeaning?.cz1 ? ` (${entry.eventMeaning.cz1} + ${entry.eventMeaning.cz2})` : ""}</div>}
     </div>
   );
-}
+});

@@ -30,10 +30,9 @@ src/
     combat.js                    — resolveDamage(), rollInitiative(), rollMorale(),
                                    assessDanger(), rollMoraleAdvantage()
     reroll.js                    — reverse mapa odds pro reroll ve FateSheet
-    whisper.js                   — AI našeptávač (Anthropic API, localStorage klíč)
   store/
-    gameStore.js                 — INITIAL_GAME, MIGRATIONS, localStorage CRUD, export/import
-                                   (CURRENT_VERSION = 10)
+    migrations.js                — INITIAL_GAME, MIGRATIONS, applyMigrations() (CURRENT_VERSION = 10)
+    gameStore.js                 — localStorage CRUD, export/import (importuje z migrations.js)
   components/
     Lobby.jsx                    — výběr/správa her (multi-save)
     blocks/
@@ -71,6 +70,7 @@ src/
       Sheet.jsx                  — base bottom sheet komponenta
       SwipeableBlock.jsx         — swipe gesto na blocích (reroll/smazat)
       TimeTracker.jsx            — tracker času a počasí
+      ErrorBoundary.jsx          — zachytí crash komponent (zobrazí chybu místo bílé obrazovky)
 ```
 
 ## Design tokens — VŽDY používej tyto konstanty
@@ -95,7 +95,7 @@ const FONT = "'IBM Plex Mono', monospace";
 ### POVINNÝ CHECKLIST PŘED IMPLEMENTACÍ
 1. **Mění se data (NPC, Thread, character, inventář...)?**
    → Přečti `src/docs/datovy-model.jsx` (relevantní entitu)
-   → Přidej MIGRACI (`MIGRATIONS` v `src/store/gameStore.js` + zvýšit `CURRENT_VERSION`)
+   → Přidej MIGRACI (`MIGRATIONS` v `src/store/migrations.js` + zvýšit `CURRENT_VERSION`)
 2. **Mění se herní mechanika (boj, scéna, fate, bookkeeping...)?**
    → Přečti `src/docs/solo-rpg-diagram.jsx` (relevantní sekci — viz mapa řádků níže)
 3. **Nesedí implementace s diagramem/modelem?**
@@ -109,6 +109,31 @@ const FONT = "'IBM Plex Mono', monospace";
 - Hlavní kontejner má `height: 100dvh` (ne 100vh — kvůli iOS Safari)
 - Sheet komponenta: `height: 52%`, pevná, obsah scrollovatelný (`overflow-y: auto`)
 - Po změně řekni co jsi udělal (1-2 věty), nic víc
+
+## Datový tok aplikace
+
+```
+Uživatel (dotyk)
+    ↓
+UI komponenty (sheety, taby, bloky)
+    ↓ callbacky (onInsert, onChange, onUpdate)
+App.jsx — Prototype()
+    │
+    │  game = { cf, sceneNum, entries[], npcs[], threads[],
+    │           keyedScenes[], perilPoints, character{}, cas{} }
+    │
+    │  updateGame(patch) → setGame(g => ({...g, ...patch}))
+    │  handleInsert(entry) → entries.push(entry)
+    │
+    ↓ useEffect [game] — auto-save
+gameStore.js → localStorage ("solorpg_index" + "solorpg_<id>")
+```
+
+- **Jednosměrný tok**: State → Props → Callbacky → updateGame → re-render
+- **Jediný zdroj pravdy**: `game` objekt v App.jsx
+- **Migrace**: `src/store/migrations.js` (sdílené mezi gameStore.js a agent/state.js)
+- **ErrorBoundary**: obaluje celou herní UI (zachytí crash komponent)
+- **Žádný Context/Redux** — vše přes props z App.jsx
 
 ## Architektura — 3 stavy appky
 
@@ -125,7 +150,7 @@ Header · Editor (max 50% výšky) · ActionToolbar · BottomNav · Sheet (52% v
 - `CombatSheet` — Boj (nepřítel → výsledek)
 - `PostavaTab` — character sheet (staty, inventář, pomocník)
 - `SvetTab` — Mythic (CF + NPC seznam + Thread seznam) + sub-taby
-- `Prototype` — hlavní App, state: tab/sheet/showKeyboard/headerExpanded
+- `Prototype` — hlavní App, state: tab/sheet/headerExpanded
 
 ## Inline bloky v editoru
 - **Fate**: zelený border vlevo `❓ otázka · odds · d100=X → ANO/NE`
@@ -165,11 +190,12 @@ Header · Editor (max 50% výšky) · ActionToolbar · BottomNav · Sheet (52% v
 25. Odpočinek — RestSheet (jídlo ze zásob, léčení)
 26. SwipeableBlock — swipe gesto na blocích (reroll/smazat)
 27. EndSceneBlock — inline blok konce scény (gradient border, CF změna)
-28. AI našeptávač — whisper.js (Anthropic API interpretace Meaning párů)
-29. Reroll mechanika — reroll.js, swipe na blocích
-30. Danger Assessment — assessDanger() v combat.js
-31. Mythic 2e Elements — elements.js (45 tabulek)
-32. České překlady — ACTIONS_CZ, DESCRIPTIONS_CZ v tables.js
+28. Reroll mechanika — reroll.js, swipe na blocích
+29. Danger Assessment — assessDanger() v combat.js
+30. Mythic 2e Elements — elements.js (45 tabulek)
+31. České překlady — ACTIONS_CZ, DESCRIPTIONS_CZ v tables.js
+32. ErrorBoundary — zachytí crash komponent
+33. Migrace sjednoceny do migrations.js (sdílené gameStore + agent)
 
 ## Co je potřeba udělat 📋
 - [ ] Visual Viewport API — detekce skutečné klávesnice

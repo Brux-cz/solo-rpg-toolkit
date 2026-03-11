@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { C } from "../../constants/theme.js";
 
-export default function MeaningBlock({ entry }) {
+export default memo(function MeaningBlock({ entry }) {
   const [expanded, setExpanded] = useState(false);
 
   // Nový formát (rolls pole) vs starý formát (word1/word2 přímo na entry)
@@ -54,4 +54,4 @@ export default function MeaningBlock({ entry }) {
       )}
     </div>
   );
-}
+});

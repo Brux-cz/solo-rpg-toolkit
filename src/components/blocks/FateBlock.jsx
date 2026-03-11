@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { C } from "../../constants/theme.js";
 
-export default function FateBlock({ entry }) {
+export default memo(function FateBlock({ entry }) {
   const [expanded, setExpanded] = useState(false);
   const color = entry.yes ? C.green : C.red;
   const label = entry.exceptional
@@ -28,4 +28,4 @@ export default function FateBlock({ entry }) {
       </div>}
     </div>
   );
-}
+});

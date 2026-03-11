@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { C, FONT } from "./constants/theme.js";
-import { loadIndex, saveIndex, loadGameById, saveGameById, INITIAL_GAME } from "./store/gameStore.js";
+import { loadIndex, saveIndex, loadGameById, saveGameById, INITIAL_GAME, genId } from "./store/gameStore.js";
 import { rerollEntry } from "./utils/reroll.js";
 import Header from "./components/ui/Header.jsx";
 import EditorArea from "./components/ui/EditorArea.jsx";
@@ -22,15 +22,14 @@ import TimeTracker from "./components/ui/TimeTracker.jsx";
 import PostavaTab from "./components/tabs/PostavaTab.jsx";
 import SvetTab from "./components/tabs/SvetTab.jsx";
 import Lobby from "./components/Lobby.jsx";
+import ErrorBoundary from "./components/ui/ErrorBoundary.jsx";
 
 export default function Prototype() {
-  const [initIndex] = useState(loadIndex);
-  const [screen, setScreen] = useState(initIndex.activeId ? "game" : "lobby");
-  const [activeId, setActiveId] = useState(initIndex.activeId);
+  const [screen, setScreen] = useState(() => loadIndex().activeId ? "game" : "lobby");
+  const [activeId, setActiveId] = useState(() => loadIndex().activeId);
 
   const [tab, setTab] = useState("diary");
   const [sheet, setSheet] = useState(null);
-  const showKeyboard = false;
   const [headerExpanded, setHeaderExpanded] = useState(false);
 
   const [game, setGame] = useState(() => activeId ? loadGameById(activeId) : INITIAL_GAME);
@@ -54,7 +53,8 @@ export default function Prototype() {
   }, []);
 
   useEffect(() => {
-    if (activeId && screen === "game") {
+    if (!activeId || screen !== "game") return;
+    const timer = setTimeout(() => {
       saveGameById(activeId, game);
       try {
         const idx = loadIndex();
@@ -66,15 +66,17 @@ export default function Prototype() {
           saveIndex(idx);
         }
       } catch { /* ignore */ }
-    }
+    }, 300);
+    return () => clearTimeout(timer);
   }, [game, activeId, screen]);
 
   const sheetOpen = !!sheet;
 
   const handleInsert = (entry) => {
+    const stamped = entry.id ? entry : { ...entry, id: genId() };
     setGame(g => ({
       ...g,
-      entries: [...g.entries, entry],
+      entries: [...g.entries, stamped],
       ...(entry.type === "scene" ? { sceneNum: entry.sceneNum } : {}),
     }));
   };
@@ -119,6 +121,7 @@ export default function Prototype() {
   }
 
   return (
+    <ErrorBoundary>
     <div style={{ width: "100%", height: "100dvh", background: C.bg, display: "flex", flexDirection: "column", fontFamily: FONT, position: "relative", overflow: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap');
@@ -129,9 +132,7 @@ export default function Prototype() {
         ::-webkit-scrollbar-thumb { background: #ddd }
       `}</style>
 
-      {!showKeyboard && (
-        <Header expanded={headerExpanded} onToggle={() => setHeaderExpanded(x => !x)} cf={game.cf} sceneNum={game.sceneNum} character={game.character} tab={tab} cas={game.cas} onTimeOpen={() => setSheet("time")} />
-      )}
+      <Header expanded={headerExpanded} onToggle={() => setHeaderExpanded(x => !x)} cf={game.cf} sceneNum={game.sceneNum} character={game.character} tab={tab} cas={game.cas} onTimeOpen={() => setSheet("time")} />
 
       <div style={{ flex: 1, overflow: "hidden", maxHeight: sheetOpen ? "calc(50% - 10px)" : undefined }}>
         {tab === "diary" && <EditorArea entries={game.entries || []} onDeleteEntry={handleDeleteEntry} onRerollEntry={handleRerollEntry} onUpdateEntry={handleUpdateEntry} swipeSeen={game.hints?.swipeSeen} onSwipeSeen={() => updateGame({ hints: { ...game.hints, swipeSeen: true } })} />}
@@ -172,5 +173,6 @@ export default function Prototype() {
       {sheet === "time" && <TimeTracker cas={game.cas || {}} onCasChange={(c) => updateGame({ cas: c })} onClose={() => setSheet(null)} onInsert={handleInsert} />}
 
     </div>
+    </ErrorBoundary>
   );
 }
