@@ -60,20 +60,28 @@ export default function TimeTracker({ cas, onCasChange, onClose, onInsert }) {
     }
   };
 
-  const handleRandomHlidka = () => {
-    const idx = roll(4) - 1;
-    handleHlidkaChange(HLIDKY[idx]);
-  };
-
   const handleRollWeather = () => {
     const result = rollWeather(cas.rocniObdobi);
     setWeatherResult(result);
     update({ pocasi: result.text, jeNepriznive: result.adverse });
   };
 
-  const handleRandomObdobi = () => {
-    const idx = roll(4) - 1;
-    update({ rocniObdobi: OBDOBI[idx] });
+  const handleRollAll = () => {
+    const novaSezona = OBDOBI[roll(4) - 1];
+    const novaHlidka = HLIDKY[roll(4) - 1];
+    const novyDen = roll(30);
+    const result = rollWeather(novaSezona);
+    setWeatherResult(result);
+    onCasChange({
+      ...cas,
+      rocniObdobi: novaSezona,
+      den: novyDen,
+      hlidka: novaHlidka,
+      smena: 1,
+      pocasi: result.text,
+      jeNepriznive: result.adverse,
+      odpocinutoDnes: false,
+    });
   };
 
   const handleInsertWeather = () => {
@@ -107,12 +115,44 @@ export default function TimeTracker({ cas, onCasChange, onClose, onInsert }) {
 
   return (
     <Sheet title="ČAS A POČASÍ" onClose={onClose}>
+      {/* Dvě hlavní tlačítka */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
+        <button onClick={handleRollAll} style={{ flex: 1, padding: "10px 0", fontSize: 12, fontFamily: FONT, fontWeight: 700, background: C.blue, color: "#fff", border: "none", borderRadius: 8, cursor: "pointer" }}>
+          🎲 Hodit vše
+        </button>
+        <button onClick={handleRollWeather} style={{ flex: 1, padding: "10px 0", fontSize: 12, fontFamily: FONT, fontWeight: 700, background: "none", color: C.blue, border: `1.5px solid ${C.blue}`, borderRadius: 8, cursor: "pointer" }}>
+          🌤️ Hodit počasí
+        </button>
+      </div>
+
+      {/* Výsledek počasí */}
+      {(weatherResult || cas.pocasi) && (
+        <div style={{ marginBottom: 14 }}>
+          <div style={{ fontSize: 12, fontFamily: FONT, textAlign: "center" }}>
+            <span style={{ fontWeight: 700, color: (weatherResult?.adverse ?? cas.jeNepriznive) ? C.red : C.text }}>
+              {weatherResult?.text || cas.pocasi}
+            </span>
+            {weatherResult && (
+              <span style={{ color: C.muted }}> (2d6={weatherResult.total})</span>
+            )}
+            {(weatherResult?.adverse ?? cas.jeNepriznive) && (
+              <span style={{ color: C.red, fontWeight: 700 }}> ★ NEPŘÍZNIVÉ</span>
+            )}
+          </div>
+          {weatherResult && (
+            <button onClick={handleInsertWeather} style={{ marginTop: 8, width: "100%", padding: "8px 0", fontSize: 11, fontFamily: FONT, fontWeight: 600, background: "none", color: C.blue, border: `1px solid ${C.blue}`, borderRadius: 6, cursor: "pointer" }}>
+              📝 Zapsat do deníku
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Oddělovač */}
+      <div style={{ borderTop: `1px solid ${C.border}`, margin: "0 0 14px" }} />
+
       {/* Roční období */}
       <div style={{ marginBottom: 14 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-          <span style={{ fontSize: 10, color: C.muted, letterSpacing: 0.5 }}>ROČNÍ OBDOBÍ</span>
-          <button onClick={handleRandomObdobi} style={{ background: "none", border: "none", cursor: "pointer", color: C.blue, fontSize: 10, padding: 0, fontFamily: FONT }}>🎲</button>
-        </div>
+        <div style={{ fontSize: 10, color: C.muted, marginBottom: 6, letterSpacing: 0.5 }}>ROČNÍ OBDOBÍ</div>
         <div style={{ display: "flex", gap: 6 }}>
           {OBDOBI.map(o => (
             <button key={o} onClick={() => update({ rocniObdobi: o })} style={btnStyle(cas.rocniObdobi === o)}>{o}</button>
@@ -132,10 +172,7 @@ export default function TimeTracker({ cas, onCasChange, onClose, onInsert }) {
 
       {/* Hlídka */}
       <div style={{ marginBottom: 14 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
-          <span style={{ fontSize: 10, color: C.muted, letterSpacing: 0.5 }}>HLÍDKA</span>
-          <button onClick={handleRandomHlidka} style={{ background: "none", border: "none", cursor: "pointer", color: C.blue, fontSize: 10, padding: 0, fontFamily: FONT }}>🎲</button>
-        </div>
+        <div style={{ fontSize: 10, color: C.muted, marginBottom: 6, letterSpacing: 0.5 }}>HLÍDKA</div>
         <div style={{ display: "flex", gap: 6 }}>
           {HLIDKY.map(h => (
             <button key={h} onClick={() => handleHlidkaChange(h)} style={btnStyle(cas.hlidka === h)}>{h}</button>
@@ -153,33 +190,6 @@ export default function TimeTracker({ cas, onCasChange, onClose, onInsert }) {
         </div>
       </div>
 
-      {/* Oddělovač */}
-      <div style={{ borderTop: `1px solid ${C.border}`, margin: "10px 0 14px" }} />
-
-      {/* Počasí */}
-      <div style={{ marginBottom: 14 }}>
-        <button onClick={handleRollWeather} style={{ width: "100%", padding: "10px 0", fontSize: 12, fontFamily: FONT, fontWeight: 700, background: C.blue, color: "#fff", border: "none", borderRadius: 8, cursor: "pointer" }}>
-          🎲 Hodit počasí (2d6)
-        </button>
-        {(weatherResult || cas.pocasi) && (
-          <div style={{ marginTop: 10, fontSize: 12, fontFamily: FONT, textAlign: "center" }}>
-            <span style={{ fontWeight: 700, color: (weatherResult?.adverse ?? cas.jeNepriznive) ? C.red : C.text }}>
-              {weatherResult?.text || cas.pocasi}
-            </span>
-            {weatherResult && (
-              <span style={{ color: C.muted }}> (2d6={weatherResult.total})</span>
-            )}
-            {(weatherResult?.adverse ?? cas.jeNepriznive) && (
-              <span style={{ color: C.red, fontWeight: 700 }}> ★ NEPŘÍZNIVÉ</span>
-            )}
-          </div>
-        )}
-        {weatherResult && (
-          <button onClick={handleInsertWeather} style={{ marginTop: 8, width: "100%", padding: "8px 0", fontSize: 11, fontFamily: FONT, fontWeight: 600, background: "none", color: C.blue, border: `1px solid ${C.blue}`, borderRadius: 6, cursor: "pointer" }}>
-            📝 Zapsat do deníku
-          </button>
-        )}
-      </div>
 
       {/* Odpočinek toggle */}
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
