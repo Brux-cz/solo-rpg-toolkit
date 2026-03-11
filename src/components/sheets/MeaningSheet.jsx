@@ -1,73 +1,76 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { C, FONT } from "../../constants/theme.js";
 import { rollMeaning } from "../../utils/dice.js";
-import { fetchWhisper } from "../../utils/whisper.js";
 import { ELEMENT_NAMES } from "../../constants/elements.js";
 import Sheet from "../ui/Sheet.jsx";
 
 export default function MeaningSheet({ onClose, onInsert }) {
-  const [result, setResult] = useState(null);
+  const [rolls, setRolls] = useState([]);
+  const [selected, setSelected] = useState(new Set()); // indexy vybraných hodů
   const [selectedType, setSelectedType] = useState(null);
   const [selectedElement, setSelectedElement] = useState(ELEMENT_NAMES[0]);
-  const [whisperResult, setWhisperResult] = useState(null);
-  const [whisperLoading, setWhisperLoading] = useState(false);
   const [kontextText, setKontextText] = useState("");
-  const [selectedWhisper, setSelectedWhisper] = useState(null);
-  const whisperIdRef = useRef(0);
 
-  const fireWhisper = async (rollResult) => {
-    const id = ++whisperIdRef.current;
-    setWhisperLoading(true);
-    setWhisperResult(null);
-    setSelectedWhisper(null);
-    const whispers = await fetchWhisper({
-      word1: rollResult.word1,
-      word2: rollResult.word2,
-      cz1: rollResult.cz1,
-      cz2: rollResult.cz2,
-      kontext: kontextText.trim() || null,
-    });
-    if (id !== whisperIdRef.current) return;
-    setWhisperResult(whispers);
-    setWhisperLoading(false);
+  const currentTable = () => selectedType === "Elements" ? selectedElement : selectedType;
+
+  const doRoll = (table) => {
+    const key = table === "Descriptions" ? "descriptions" : table === "Actions" ? "actions" : table;
+    const r = rollMeaning(key);
+    return { ...r, table };
   };
 
   const doSelect = (t) => {
     setSelectedType(t);
-    setWhisperResult(null);
-    setSelectedWhisper(null);
-    if (t === "Elements") return; // ceka na vyber z dropdownu + HODIT
-    const table = t === "Descriptions" ? "descriptions" : "actions";
-    const r = rollMeaning(table);
-    setResult(r);
-    fireWhisper(r);
+    if (t === "Elements") return;
+    const r = doRoll(t);
+    setRolls([r]);
+    setSelected(new Set([0]));
   };
 
   const doRollElement = () => {
-    setWhisperResult(null);
-    setSelectedWhisper(null);
-    const r = rollMeaning(selectedElement);
-    setResult(r);
-    fireWhisper(r);
+    const r = doRoll(selectedElement);
+    setRolls([r]);
+    setSelected(new Set([0]));
+  };
+
+  const doRerollLast = () => {
+    if (rolls.length === 0) return;
+    const lastIdx = rolls.length - 1;
+    const lastTable = rolls[lastIdx].table;
+    const r = doRoll(lastTable);
+    setRolls([...rolls.slice(0, -1), r]);
+    // Zachovat selected — pokud byl poslední vybraný, zůstane
+  };
+
+  const doRollMore = () => {
+    const table = currentTable();
+    if (!table) return;
+    const r = doRoll(table);
+    const newIdx = rolls.length;
+    setRolls([...rolls, r]);
+    setSelected(new Set([...selected, newIdx]));
+  };
+
+  const toggleSelect = (idx) => {
+    const next = new Set(selected);
+    if (next.has(idx)) next.delete(idx);
+    else next.add(idx);
+    setSelected(next);
   };
 
   const insertResult = () => {
-    if (!result) return;
+    if (rolls.length === 0) return;
+    // Při 1 hodu vložit vždy, při 2+ jen vybrané
+    const toInsert = rolls.length === 1
+      ? rolls
+      : rolls.filter((_, i) => selected.has(i));
+    if (toInsert.length === 0) return;
     const entry = {
       type: "meaning",
-      word1: result.word1,
-      word2: result.word2,
-      cz1: result.cz1,
-      cz2: result.cz2,
-      d1: result.d1,
-      d2: result.d2,
-      table: selectedType === "Elements" ? selectedElement : selectedType,
+      rolls: toInsert.map(({ word1, word2, cz1, cz2, d1, d2, table }) => ({ word1, word2, cz1, cz2, d1, d2, table })),
     };
     if (kontextText.trim()) {
       entry.context = kontextText.trim();
-    }
-    if (selectedWhisper) {
-      entry.inspirace = selectedWhisper;
     }
     onInsert(entry);
   };
@@ -155,46 +158,30 @@ export default function MeaningSheet({ onClose, onInsert }) {
           <button onClick={doRollElement} style={{ padding: "6px 14px", background: C.purple, color: "white", border: "none", borderRadius: 6, fontSize: 10, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>HODIT</button>
         </div>
       )}
-      {result ? (
+      {rolls.length > 0 ? (
         <>
-          <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 8, fontFamily: FONT }}>d100 = {result.d1}, d100 = {result.d2}</div>
-          <div style={{ background: C.purple + "20", border: `2px solid ${C.purple}`, borderRadius: 8, padding: "12px 0", textAlign: "center", marginBottom: 10 }}>
-            <div style={{ fontSize: 22, fontWeight: 700, color: C.purple, fontFamily: FONT }}>{result.word1} + {result.word2}</div>
-            {result.cz1 && <div style={{ fontSize: 11, color: C.muted, marginTop: 4, fontFamily: FONT }}>{result.cz1} + {result.cz2}</div>}
-          </div>
+          {rolls.map((r, i) => {
+            const isSelected = selected.has(i);
+            const canToggle = rolls.length > 1;
+            return (
+              <div key={i} onClick={canToggle ? () => toggleSelect(i) : undefined} style={{ marginBottom: 8, cursor: canToggle ? "pointer" : "default", opacity: canToggle && !isSelected ? 0.35 : 1, transition: "opacity 0.15s" }}>
+                <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 4, fontFamily: FONT }}>
+                  {r.table} · d100={r.d1}, d100={r.d2}
+                </div>
+                <div style={{ background: C.purple + "20", border: `2px solid ${isSelected || !canToggle ? C.purple : C.border}`, borderRadius: 8, padding: "10px 0", textAlign: "center" }}>
+                  <div style={{ fontSize: i === rolls.length - 1 ? 22 : 16, fontWeight: 700, color: C.purple, fontFamily: FONT }}>{r.word1} + {r.word2}</div>
+                  {r.cz1 && <div style={{ fontSize: i === rolls.length - 1 ? 11 : 10, color: C.muted, marginTop: 3, fontFamily: FONT }}>{r.cz1} + {r.cz2}</div>}
+                </div>
+              </div>
+            );
+          })}
           <div style={{ fontSize: 9, color: C.muted, textAlign: "center", marginBottom: 8, fontFamily: FONT }}>Interpretuj v kontextu scény</div>
 
-          {/* Whisper sekce */}
-          {whisperLoading && (
-            <div style={{ fontSize: 10, color: C.muted, textAlign: "center", fontFamily: FONT, marginBottom: 8 }}>···</div>
-          )}
-          {whisperResult && (
-            <div style={{ marginBottom: 8 }}>
-              {whisperResult.map((line, i) => {
-                const isSelected = selectedWhisper === line;
-                return (
-                  <div
-                    key={i}
-                    onClick={() => setSelectedWhisper(isSelected ? null : line)}
-                    style={{
-                      fontSize: 10,
-                      color: C.muted,
-                      fontStyle: "italic",
-                      fontFamily: FONT,
-                      padding: "3px 8px",
-                      marginBottom: 2,
-                      cursor: "pointer",
-                      borderRadius: 4,
-                      border: isSelected ? `1px solid ${C.purple}` : "1px solid transparent",
-                      background: isSelected ? C.purple + "10" : "transparent",
-                    }}
-                  >
-                    💭 {line}
-                  </div>
-                );
-              })}
-            </div>
-          )}
+          <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
+            <button onClick={doRerollLast} style={{ flex: 1, height: 40, background: "transparent", color: C.muted, border: `1px solid ${C.border}`, borderRadius: 8, fontSize: 11, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>PŘEHODIT</button>
+            <button onClick={doRollMore} style={{ flex: 1, height: 40, background: "transparent", color: C.purple, border: `1px solid ${C.purple}`, borderRadius: 8, fontSize: 11, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>HODIT DALŠÍ</button>
+          </div>
+          <button onClick={() => { insertResult(); onClose(); }} style={{ width: "100%", height: 46, background: C.purple, color: "white", border: "none", borderRadius: 8, fontSize: 12, fontWeight: 700, fontFamily: FONT, cursor: "pointer" }}>VLOŽIT DO DENÍKU</button>
         </>
       ) : (
         <div style={{ fontSize: 11, color: C.muted, textAlign: "center", fontFamily: FONT, marginTop: 20 }}>

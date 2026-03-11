@@ -45,7 +45,19 @@ export function rerollEntry(entry, cf, npcs, threads) {
   if (!entry || !REROLLABLE.has(entry.type)) return null;
 
   switch (entry.type) {
-    case "meaning":
+    case "meaning": {
+      // Nový formát (rolls pole) → přidej roll na konec sekvence
+      if (Array.isArray(entry.rolls) && entry.rolls.length > 0) {
+        const lastTable = entry.rolls[entry.rolls.length - 1].table;
+        const key = tableToKey(lastTable);
+        const m = rollMeaning(key);
+        return { ...entry, rolls: [...entry.rolls, { word1: m.word1, word2: m.word2, cz1: m.cz1, cz2: m.cz2, d1: m.d1, d2: m.d2, table: lastTable }] };
+      }
+      // Starý formát (word1/word2 přímo) → přepsat jako dosud
+      const key = tableToKey(entry.table);
+      const m = rollMeaning(key);
+      return { ...entry, word1: m.word1, word2: m.word2, cz1: m.cz1, cz2: m.cz2, d1: m.d1, d2: m.d2 };
+    }
     case "detail": {
       const key = tableToKey(entry.table);
       const m = rollMeaning(key);
