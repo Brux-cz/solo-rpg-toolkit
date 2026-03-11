@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { C, FONT } from "../../constants/theme.js";
-import { rollWeather } from "../../utils/dice.js";
+import { roll, rollWeather } from "../../utils/dice.js";
+import { WEATHER_TABLE } from "../../constants/tables.js";
 import Sheet from "./Sheet.jsx";
 
 const HLIDKY = ["ráno", "odpoledne", "večer", "noc"];
@@ -60,10 +61,21 @@ export default function TimeTracker({ cas, onCasChange, onClose, onInsert }) {
     }
   };
 
+  const handleRandomHlidka = () => {
+    const idx = roll(4) - 1;
+    handleHlidkaChange(HLIDKY[idx]);
+  };
+
   const handleRollWeather = () => {
     const result = rollWeather(cas.rocniObdobi);
     setWeatherResult(result);
     update({ pocasi: result.text, jeNepriznive: result.adverse });
+  };
+
+  const handleManualWeather = (entry) => {
+    const result = { text: entry.text, adverse: entry.adverse, total: "—" };
+    setWeatherResult(result);
+    update({ pocasi: entry.text, jeNepriznive: entry.adverse });
   };
 
   const handleInsertWeather = () => {
@@ -119,7 +131,10 @@ export default function TimeTracker({ cas, onCasChange, onClose, onInsert }) {
 
       {/* Hlídka */}
       <div style={{ marginBottom: 14 }}>
-        <div style={{ fontSize: 10, color: C.muted, marginBottom: 6, letterSpacing: 0.5 }}>HLÍDKA</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}>
+          <span style={{ fontSize: 10, color: C.muted, letterSpacing: 0.5 }}>HLÍDKA</span>
+          <button onClick={handleRandomHlidka} style={{ background: "none", border: "none", cursor: "pointer", color: C.blue, fontSize: 10, padding: 0, fontFamily: FONT }}>🎲</button>
+        </div>
         <div style={{ display: "flex", gap: 6 }}>
           {HLIDKY.map(h => (
             <button key={h} onClick={() => handleHlidkaChange(h)} style={btnStyle(cas.hlidka === h)}>{h}</button>
@@ -163,6 +178,30 @@ export default function TimeTracker({ cas, onCasChange, onClose, onInsert }) {
             📝 Zapsat do deníku
           </button>
         )}
+        {/* Ruční výběr počasí */}
+        <div style={{ textAlign: "center", fontSize: 10, color: C.muted, margin: "10px 0 6px" }}>— nebo vyber —</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          {WEATHER_TABLE[cas.rocniObdobi].map((entry) => (
+            <button
+              key={entry.text}
+              onClick={() => handleManualWeather(entry)}
+              style={{
+                padding: "6px 10px",
+                fontSize: 11,
+                fontFamily: FONT,
+                fontWeight: cas.pocasi === entry.text ? 700 : 400,
+                background: cas.pocasi === entry.text ? (entry.adverse ? C.red + "15" : C.blue + "15") : "none",
+                color: entry.adverse ? C.red : C.text,
+                border: `1px solid ${cas.pocasi === entry.text ? (entry.adverse ? C.red : C.blue) : C.border}`,
+                borderRadius: 6,
+                cursor: "pointer",
+                textAlign: "left",
+              }}
+            >
+              {entry.text}{entry.adverse ? " ★" : ""}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Odpočinek toggle */}
