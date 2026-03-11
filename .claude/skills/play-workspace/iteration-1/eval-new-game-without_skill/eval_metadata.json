@@ -1,0 +1,6 @@
+{
+  "eval_id": 0,
+  "eval_name": "new-game-2-scenes-baseline",
+  "prompt": "Vytvoř novou hru a odehraj 2 scény. Hraj dokud neodehraješ obě scény.",
+  "assertions": []
+}

@@ -1,0 +1,198 @@
+{
+  "exportVersion": 1,
+  "name": "Test Compat",
+  "game": {
+    "version": 10,
+    "cf": 4,
+    "sceneNum": 2,
+    "entries": [
+      {
+        "type": "scene",
+        "sceneNum": 2,
+        "title": "U starého mlýna",
+        "sceneType": "altered",
+        "cf": 5,
+        "d10": 1,
+        "adj": "DVĚ úpravy",
+        "id": "mmmkn3pnqc1a",
+        "ts": 1773265747595
+      },
+      {
+        "type": "fate",
+        "question": "Je tu stráž?",
+        "oddsLabel": "50/50",
+        "d100": 75,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 5,
+        "threshold": 50,
+        "id": "mmmkn7bhk36l",
+        "ts": 1773265752269
+      },
+      {
+        "type": "meaning",
+        "table": "actions",
+        "word1": "Dominate",
+        "word2": "Return",
+        "d1": 25,
+        "d2": 35,
+        "cz1": "Nadvláda",
+        "cz2": "Návrat",
+        "id": "mmmkn7c7gpkg",
+        "ts": 1773265752295
+      },
+      {
+        "type": "text",
+        "text": "Konrád opatrně nahlédl dovnitř.",
+        "editable": true,
+        "id": "mmmkn7cv4vwj",
+        "ts": 1773265752319
+      },
+      {
+        "type": "dice",
+        "die": "d6",
+        "value": 3,
+        "id": "mmmkn7dh9llh",
+        "ts": 1773265752341
+      },
+      {
+        "type": "endscene",
+        "sceneNum": 2,
+        "cfOld": 5,
+        "cfNew": 4,
+        "id": "mmmkn7e4o7ps",
+        "ts": 1773265752364
+      }
+    ],
+    "npcs": [],
+    "threads": [],
+    "character": {
+      "jmeno": "",
+      "puvod": "",
+      "uroven": 1,
+      "zk": 0,
+      "str": {
+        "akt": 8,
+        "max": 8
+      },
+      "dex": {
+        "akt": 10,
+        "max": 10
+      },
+      "wil": {
+        "akt": 7,
+        "max": 7
+      },
+      "bo": {
+        "akt": 4,
+        "max": 4
+      },
+      "dobky": 0,
+      "prijmeni": "",
+      "barvaSrsti": "",
+      "vzorSrsti": "",
+      "vyraznyRys": "",
+      "znameni": "",
+      "kuraz": 0,
+      "kurazSloty": [],
+      "inventar": [
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        },
+        {
+          "nazev": "",
+          "typ": "",
+          "tecky": {
+            "akt": 0,
+            "max": 0
+          }
+        }
+      ],
+      "pomocnici": []
+    },
+    "cas": {
+      "den": 1,
+      "hlidka": "ráno",
+      "smena": 1,
+      "rocniObdobi": "podzim",
+      "pocasi": "",
+      "jeNepriznive": false,
+      "odpocinutoDnes": false
+    },
+    "keyedScenes": [],
+    "perilPoints": {
+      "aktualni": 2,
+      "max": 2
+    }
+  }
+}
