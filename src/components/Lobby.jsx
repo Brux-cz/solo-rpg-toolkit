@@ -1,12 +1,51 @@
 import { useState } from "react";
 import { C, FONT } from "../constants/theme.js";
 import { loadIndex, saveIndex, loadGameById, saveGameById, deleteGameById, exportGame, formatDate, genId, INITIAL_GAME, CURRENT_VERSION } from "../store/gameStore.js";
+import scenarioRaw from "../agent/saves/okral-scenar.md?raw";
+function MdRenderer({ text }) {
+  const lines = text.split("\n");
+  const elements = [];
+  let i = 0;
+  const fmt = (s) => {
+    const parts = [];
+    const re = /(\*\*(.+?)\*\*|\*(.+?)\*)/g;
+    let last = 0, m;
+    while ((m = re.exec(s)) !== null) {
+      if (m.index > last) parts.push(s.slice(last, m.index));
+      if (m[2]) parts.push(<strong key={m.index}>{m[2]}</strong>);
+      else if (m[3]) parts.push(<em key={m.index} style={{ color: C.muted }}>{m[3]}</em>);
+      last = re.lastIndex;
+    }
+    if (last < s.length) parts.push(s.slice(last));
+    return parts.length ? parts : s;
+  };
+  while (i < lines.length) {
+    const line = lines[i];
+    if (line.startsWith("### ")) {
+      elements.push(<h3 key={i} style={{ fontSize: 13, fontWeight: 700, color: C.green, margin: "18px 0 6px" }}>{line.slice(4)}</h3>);
+    } else if (line.startsWith("## ")) {
+      elements.push(<h2 key={i} style={{ fontSize: 15, fontWeight: 700, color: C.text, margin: "24px 0 8px", borderBottom: `1px solid ${C.border}`, paddingBottom: 6 }}>{line.slice(3)}</h2>);
+    } else if (line.startsWith("# ")) {
+      elements.push(<h1 key={i} style={{ fontSize: 18, fontWeight: 700, color: C.text, margin: "0 0 4px" }}>{line.slice(2)}</h1>);
+    } else if (line.startsWith("---")) {
+      elements.push(<hr key={i} style={{ border: "none", borderTop: `1px solid ${C.border}`, margin: "12px 0" }} />);
+    } else if (line.trim() === "") {
+      // skip
+    } else {
+      elements.push(<p key={i} style={{ fontSize: 11, lineHeight: 1.7, color: C.text, margin: "4px 0" }}>{fmt(line)}</p>);
+    }
+    i++;
+  }
+  return <>{elements}</>;
+}
+
 export default function Lobby({ onPlay }) {
   const [index, setIndex] = useState(loadIndex);
   const [newName, setNewName] = useState("");
   const [creating, setCreating] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [importError, setImportError] = useState(null);
+  const [showScenario, setShowScenario] = useState(false);
 
   const handleCreate = () => {
     const name = newName.trim() || ("Hra " + (index.saves.length + 1));
@@ -80,6 +119,26 @@ export default function Lobby({ onPlay }) {
     };
     input.click();
   };
+
+  if (showScenario) {
+    return (
+      <div style={{ width: "100%", height: "100dvh", background: C.bg, display: "flex", flexDirection: "column", fontFamily: FONT, overflow: "hidden" }}>
+        <style>{`
+          @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap');
+          * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+          ::-webkit-scrollbar { width: 2px }
+          ::-webkit-scrollbar-thumb { background: #ddd }
+        `}</style>
+        <div style={{ padding: "12px 16px", flexShrink: 0, borderBottom: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 10 }}>
+          <button onClick={() => setShowScenario(false)} style={{ background: "none", border: `1px solid ${C.border}`, borderRadius: 6, padding: "5px 12px", fontSize: 10, fontFamily: FONT, color: C.muted, cursor: "pointer" }}>Zpět</button>
+          <span style={{ fontSize: 12, fontWeight: 700, color: C.text }}>Scénář</span>
+        </div>
+        <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 40px" }}>
+          <MdRenderer text={scenarioRaw} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ width: "100%", height: "100dvh", background: C.bg, display: "flex", flexDirection: "column", fontFamily: FONT, overflow: "hidden" }}>
@@ -160,6 +219,14 @@ export default function Lobby({ onPlay }) {
 
         <button onClick={handleImport} style={{ width: "100%", padding: "8px 0", border: `1px solid ${C.border}`, background: "transparent", borderRadius: 6, fontSize: 10, color: C.muted, fontFamily: FONT, cursor: "pointer" }}>Importovat</button>
         {importError && <div style={{ fontSize: 10, color: C.red, textAlign: "center", marginTop: 6 }}>{importError}</div>}
+
+        <div style={{ marginTop: 20, paddingTop: 14, borderTop: `1px solid ${C.border}` }}>
+          <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>SCÉNÁŘE</div>
+          <button onClick={() => setShowScenario(true)} style={{ width: "100%", padding: "10px 14px", border: `1px solid ${C.blue}`, background: C.blue + "10", borderRadius: 8, fontSize: 11, color: C.text, fontFamily: FONT, cursor: "pointer", textAlign: "left" }}>
+            <div style={{ fontWeight: 700, marginBottom: 2 }}>Okřál Trnka</div>
+            <div style={{ fontSize: 9, color: C.muted }}>Filmový scénář · Prolog + 4 akty</div>
+          </button>
+        </div>
       </div>
     </div>
   );
