@@ -25,6 +25,11 @@ const DatovyModel = lazy(() => import("../../docs/datovy-model.jsx"));
 const SoloRpgDiagram = lazy(() => import("../../docs/solo-rpg-diagram.jsx"));
 const AgentDiagram = lazy(() => import("../../docs/agent-diagram.jsx"));
 
+const autoGrow = (e) => {
+  e.target.style.height = "auto";
+  e.target.style.height = e.target.scrollHeight + "px";
+};
+
 export default function SvetTab({ cf, npcs, threads, locations, keyedScenes, perilPoints, onGoToLobby, onNpcsChange, onThreadsChange, onLocationsChange, onKeyedScenesChange, onPerilPointsChange }) {
   const [sub, setSub] = useState("mythic");
   const [newNpc, setNewNpc] = useState("");
@@ -234,8 +239,8 @@ export default function SvetTab({ cf, npcs, threads, locations, keyedScenes, per
                     <div style={{ border: `1px solid ${C.green}`, borderTop: "none", borderRadius: "0 0 6px 6px", padding: 10, background: C.bg, fontSize: 10 }}>
                       <label style={{ display: "block", marginBottom: 6 }}>
                         <span style={{ color: C.muted, fontSize: 9 }}>Popis</span>
-                        <textarea value={n.popis || ""} onChange={e => updateNpc(i, { popis: e.target.value })} rows={2}
-                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                        <textarea value={n.popis || ""} onChange={e => updateNpc(i, { popis: e.target.value })} onInput={autoGrow} rows={2}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "none", overflow: "hidden", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
                       </label>
                       <label style={{ display: "block", marginBottom: 6 }}>
                         <span style={{ color: C.muted, fontSize: 9 }}>Lokace</span>
@@ -254,8 +259,8 @@ export default function SvetTab({ cf, npcs, threads, locations, keyedScenes, per
                       </label>
                       <label style={{ display: "block", marginBottom: 8 }}>
                         <span style={{ color: C.muted, fontSize: 9 }}>Poznámky</span>
-                        <textarea value={n.poznamky || ""} onChange={e => updateNpc(i, { poznamky: e.target.value })} rows={2}
-                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                        <textarea value={n.poznamky || ""} onChange={e => updateNpc(i, { poznamky: e.target.value })} onInput={autoGrow} rows={2}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "none", overflow: "hidden", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
                       </label>
                       <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
                         <div style={{ flex: 1 }}>
@@ -373,8 +378,8 @@ export default function SvetTab({ cf, npcs, threads, locations, keyedScenes, per
                         <div style={{ border: `1px solid ${C.muted}`, borderTop: "none", borderRadius: "0 0 6px 6px", padding: 10, background: C.bg, fontSize: 10 }}>
                           <label style={{ display: "block", marginBottom: 6 }}>
                             <span style={{ color: C.muted, fontSize: 9 }}>Popis</span>
-                            <textarea value={n.popis || ""} onChange={e => updateNpc(i, { popis: e.target.value })} rows={2}
-                              style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                            <textarea value={n.popis || ""} onChange={e => updateNpc(i, { popis: e.target.value })} onInput={autoGrow} rows={2}
+                              style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "none", overflow: "hidden", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
                           </label>
                           <label style={{ display: "block", marginBottom: 6 }}>
                             <span style={{ color: C.muted, fontSize: 9 }}>Lokace</span>
@@ -383,8 +388,8 @@ export default function SvetTab({ cf, npcs, threads, locations, keyedScenes, per
                           </label>
                           <label style={{ display: "block", marginBottom: 6 }}>
                             <span style={{ color: C.muted, fontSize: 9 }}>Poznámky</span>
-                            <textarea value={n.poznamky || ""} onChange={e => updateNpc(i, { poznamky: e.target.value })} rows={2}
-                              style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                            <textarea value={n.poznamky || ""} onChange={e => updateNpc(i, { poznamky: e.target.value })} onInput={autoGrow} rows={2}
+                              style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "none", overflow: "hidden", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
                           </label>
                           <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
                             <div style={{ flex: 1 }}>
@@ -484,13 +489,13 @@ export default function SvetTab({ cf, npcs, threads, locations, keyedScenes, per
                       </div>
                       <label style={{ display: "block", marginBottom: 6 }}>
                         <span style={{ color: C.muted, fontSize: 9 }}>Popis</span>
-                        <textarea value={t.popis || ""} onChange={e => updateThread(i, { popis: e.target.value })} rows={2}
-                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                        <textarea value={t.popis || ""} onChange={e => updateThread(i, { popis: e.target.value })} onInput={autoGrow} rows={2}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "none", overflow: "hidden", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
                       </label>
                       <label style={{ display: "block" }}>
                         <span style={{ color: C.muted, fontSize: 9 }}>Poznámky</span>
-                        <textarea value={t.poznamky || ""} onChange={e => updateThread(i, { poznamky: e.target.value })} rows={2}
-                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                        <textarea value={t.poznamky || ""} onChange={e => updateThread(i, { poznamky: e.target.value })} onInput={autoGrow} rows={2}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "none", overflow: "hidden", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
                       </label>
                     </div>
                   )}
@@ -536,12 +541,12 @@ export default function SvetTab({ cf, npcs, threads, locations, keyedScenes, per
                       </label>
                       <label style={{ display: "block", marginBottom: 8 }}>
                         <span style={{ color: C.muted, fontSize: 9 }}>Popis / Poznámky</span>
-                        <textarea value={loc.popis || ""} onChange={e => updateLocation(i, { popis: e.target.value })} rows={3}
-                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                        <textarea value={loc.popis || ""} onChange={e => updateLocation(i, { popis: e.target.value })} onInput={autoGrow} rows={3}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "none", overflow: "hidden", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
                       </label>
-                      {npcs.length > 0 && (
-                        <div style={{ marginBottom: 8 }}>
-                          <span style={{ color: C.muted, fontSize: 9, display: "block", marginBottom: 4 }}>Propojené NPC</span>
+                      <div style={{ marginBottom: 8 }}>
+                        <span style={{ color: C.muted, fontSize: 9, display: "block", marginBottom: 4 }}>Propojené NPC</span>
+                        {npcs.length > 0 ? (
                           <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
                             {npcs.map((n) => {
                               const linked = (loc.npcNames || []).includes(n.name);
@@ -553,11 +558,13 @@ export default function SvetTab({ cf, npcs, threads, locations, keyedScenes, per
                               );
                             })}
                           </div>
-                        </div>
-                      )}
-                      {threads.length > 0 && (
-                        <div style={{ marginBottom: 4 }}>
-                          <span style={{ color: C.muted, fontSize: 9, display: "block", marginBottom: 4 }}>Propojené Thready</span>
+                        ) : (
+                          <span style={{ fontSize: 9, color: C.muted, fontStyle: "italic" }}>Žádné NPC — přidej v záložce NPC</span>
+                        )}
+                      </div>
+                      <div style={{ marginBottom: 4 }}>
+                        <span style={{ color: C.muted, fontSize: 9, display: "block", marginBottom: 4 }}>Propojené Thready</span>
+                        {threads.length > 0 ? (
                           <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
                             {threads.map((t) => {
                               const linked = (loc.threadNames || []).includes(t.name);
@@ -569,8 +576,10 @@ export default function SvetTab({ cf, npcs, threads, locations, keyedScenes, per
                               );
                             })}
                           </div>
-                        </div>
-                      )}
+                        ) : (
+                          <span style={{ fontSize: 9, color: C.muted, fontStyle: "italic" }}>Žádné Thready — přidej v záložce Thready</span>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -613,8 +622,8 @@ export default function SvetTab({ cf, npcs, threads, locations, keyedScenes, per
                       </label>
                       <label style={{ display: "block" }}>
                         <span style={{ color: C.muted, fontSize: 9 }}>Událost</span>
-                        <textarea value={ks.udalost} onChange={e => onKeyedScenesChange(keyedScenes.map((k, j) => j === i ? { ...k, udalost: e.target.value } : k))} rows={2}
-                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                        <textarea value={ks.udalost} onChange={e => onKeyedScenesChange(keyedScenes.map((k, j) => j === i ? { ...k, udalost: e.target.value } : k))} onInput={autoGrow} rows={2}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "none", overflow: "hidden", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
                       </label>
                     </div>
                   )}
