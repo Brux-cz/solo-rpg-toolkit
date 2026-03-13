@@ -16,6 +16,7 @@ function usage() {
       "load <path>": "Načti hru z JSON",
       "save": "Ulož hru (vyžaduje --file)",
       "state": "Zobraz stav hry",
+      "wiki": "NPC wiki karty (popis, lokace, vztah, poznámky, staty)",
       "scene <name>": "Nová scéna",
       "endscene <yes|no>": "Konec scény (yes=hráč měl kontrolu)",
       "fate <question> [odds]": "Fate Question",
@@ -47,6 +48,8 @@ function usage() {
       "removenpc <index>": "Odebrat NPC",
       "removethread <index>": "Odebrat Thread",
       "setchar <key=value> [key=value...]": "Nastavit postavu (jmeno, str, dex, wil, bo, dobky...)",
+      "setslot <slot> <key=value> [key=value...] [--who pomocník]": "Nastavit slot inventáře (nazev, typ, damage, armor, tecky.akt, tecky.max)",
+      "clearslot <slot> [--who pomocník]": "Vyprázdnit slot inventáře",
       "time": "Posuň čas",
       "weather": "Hoď počasí",
       "bestiary": "Seznam tvorů",
@@ -127,6 +130,10 @@ try {
   switch (cmd) {
     case "state":
       result = engine.getState();
+      break;
+
+    case "wiki":
+      result = engine.wiki();
       break;
 
     case "scene":
@@ -288,6 +295,29 @@ try {
         }
       }
       result = engine.setCharacter(charPatch);
+      break;
+    }
+
+    case "setslot":
+    case "clearslot": {
+      const whoIdx = args.indexOf("--who");
+      const who = whoIdx >= 0 ? args[whoIdx + 1] : "hráč";
+      const si = parseInt(args[1]);
+      if (cmd === "clearslot") {
+        result = engine.clearSlot(who, si);
+      } else {
+        const patch = {};
+        for (const kv of args.slice(2)) {
+          if (kv.startsWith("--")) continue;
+          const [k, ...rest] = kv.split("=");
+          const v = rest.join("=");
+          if (k === "tecky.akt") { patch.tecky = { ...patch.tecky, akt: parseInt(v) }; }
+          else if (k === "tecky.max") { patch.tecky = { ...patch.tecky, max: parseInt(v) }; }
+          else if (["armor", "rows", "cols"].includes(k)) { patch[k] = parseInt(v); }
+          else { patch[k] = v; }
+        }
+        result = engine.setSlot(who, si, patch);
+      }
       break;
     }
 

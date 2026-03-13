@@ -701,6 +701,99 @@ export class GameEngine {
     return { ok: true, character: char };
   }
 
+  // --- INVENTÁŘ ---
+
+  _getInv(who) {
+    if (who === "pomocník") return { inv: this.game.character.pomocnici[0]?.inventar || [], cols: 3 };
+    return { inv: this.game.character.inventar, cols: 5 };
+  }
+
+  _recalcOccupied(inv, cols) {
+    const rows = Math.ceil(inv.length / cols);
+    const next = inv.map(s => s?._occupied ? { nazev: "", typ: "", tecky: { akt: 0, max: 0 } } : { ...s });
+    for (let i = 0; i < next.length; i++) {
+      const s = next[i];
+      if (!s?.nazev || !s.span || (s.span.rows <= 1 && s.span.cols <= 1)) continue;
+      const r = Math.floor(i / cols), c = i % cols;
+      if (c + (s.span.cols || 1) > cols || r + (s.span.rows || 1) > rows) continue;
+      const indices = [];
+      for (let sr = 0; sr < (s.span.rows || 1); sr++)
+        for (let sc = 0; sc < (s.span.cols || 1); sc++)
+          indices.push((r + sr) * cols + c + sc);
+      let canFit = true;
+      for (const idx of indices) {
+        if (idx === i || idx >= next.length) continue;
+        if (next[idx].nazev || next[idx]._occupied) { canFit = false; break; }
+      }
+      if (!canFit) continue;
+      for (const idx of indices) {
+        if (idx !== i && idx < next.length) next[idx] = { _occupied: true, _owner: i };
+      }
+    }
+    return next;
+  }
+
+  _writeInv(who, inv, cols) {
+    const result = this._recalcOccupied(inv, cols);
+    if (who === "pomocník") this.game.character.pomocnici[0].inventar = result;
+    else this.game.character.inventar = result;
+    return result;
+  }
+
+  /**
+   * Nastaví slot inventáře. Řeší multi-slot (span, _occupied).
+   * @param {string} who — "hráč" nebo "pomocník"
+   * @param {number} slotIndex — 0-9 (hráč) nebo 0-5 (pomocník)
+   * @param {object} patch — {nazev, typ, dmg, obrana, tecky: {akt, max}, span: {rows, cols}, ...}
+   */
+  setSlot(who, slotIndex, patch) {
+    const { inv, cols } = this._getInv(who);
+    const totalRows = Math.ceil(inv.length / cols);
+    if (slotIndex < 0 || slotIndex >= inv.length) return { error: `Neplatný slot ${slotIndex}` };
+    // Cílový slot nesmí být _occupied jiným předmětem
+    if (inv[slotIndex]?._occupied) return { error: `Slot ${slotIndex} je obsazený předmětem ze slotu ${inv[slotIndex]._owner}. Nejdřív clearslot ${inv[slotIndex]._owner}.` };
+    // Vyčisti starý multi-slot pokud tam byl
+    const clean = inv.map(s => s?._occupied && s._owner === slotIndex
+      ? { nazev: "", typ: "", tecky: { akt: 0, max: 0 } } : { ...s });
+    clean[slotIndex] = { ...clean[slotIndex], ...patch };
+    // Pokud patch má span, parsuj z rows/cols
+    if (patch.rows || patch.cols) {
+      clean[slotIndex].span = { rows: parseInt(patch.rows) || 1, cols: parseInt(patch.cols) || 1 };
+    }
+    // Validace: multi-slot musí fyzicky projít gridem
+    const span = clean[slotIndex].span;
+    if (span && (span.rows > 1 || span.cols > 1)) {
+      const r = Math.floor(slotIndex / cols), c = slotIndex % cols;
+      if (r + (span.rows || 1) > totalRows) return { error: `Nevejde se: slot ${slotIndex} řádek ${r}, span ${span.rows} řádky, grid má jen ${totalRows} řádky` };
+      if (c + (span.cols || 1) > cols) return { error: `Nevejde se: slot ${slotIndex} sloupec ${c}, span ${span.cols} sloupce, grid má jen ${cols} sloupců` };
+      // Sekundární sloty musí být volné
+      for (let sr = 0; sr < span.rows; sr++) {
+        for (let sc = 0; sc < span.cols; sc++) {
+          if (sr === 0 && sc === 0) continue;
+          const idx = (r + sr) * cols + c + sc;
+          if (clean[idx].nazev || clean[idx]._occupied) return { error: `Nevejde se: slot ${idx} je obsazený (${clean[idx].nazev || 'occupied'})` };
+        }
+      }
+    }
+    const result = this._writeInv(who, clean, cols);
+    return { ok: true, slot: slotIndex, item: result[slotIndex] };
+  }
+
+  /**
+   * Vyprázdní slot (i multi-slot — vyčistí _occupied).
+   */
+  clearSlot(who, slotIndex) {
+    const { inv, cols } = this._getInv(who);
+    if (slotIndex < 0 || slotIndex >= inv.length) return { error: `Neplatný slot ${slotIndex}` };
+    const clean = inv.map((s, i) => {
+      if (i === slotIndex) return { nazev: "", typ: "", tecky: { akt: 0, max: 0 } };
+      if (s?._occupied && s._owner === slotIndex) return { nazev: "", typ: "", tecky: { akt: 0, max: 0 } };
+      return { ...s };
+    });
+    const result = this._writeInv(who, clean, cols);
+    return { ok: true, slot: slotIndex };
+  }
+
   // --- ZÁSOBY ---
 
   /**
@@ -921,6 +1014,33 @@ export class GameEngine {
       if (enemy) return enemy[attr] ?? null;
     }
     return null;
+  }
+
+  // --- WIKI ---
+
+  /**
+   * Vrátí wiki karty všech NPC (jméno, popis, lokace, vztah, poznámky, bojové staty).
+   * Filtruje prázdná pole — vrátí jen vyplněné informace.
+   */
+  wiki() {
+    return this.game.npcs.map((npc, i) => {
+      const card = { index: i, name: npc.name, weight: npc.weight };
+      if (npc.popis) card.popis = npc.popis;
+      if (npc.lokace) card.lokace = npc.lokace;
+      if (npc.vztah) card.vztah = npc.vztah;
+      if (npc.poznamky) card.poznamky = npc.poznamky;
+      if (npc.druh) card.druh = npc.druh;
+      if (npc.vzhled) card.vzhled = npc.vzhled;
+      if (npc.zvlastnost) card.zvlastnost = npc.zvlastnost;
+      if (npc.motivace) card.motivace = npc.motivace;
+      if (npc.str) card.str = npc.str;
+      if (npc.dex) card.dex = npc.dex;
+      if (npc.wil) card.wil = npc.wil;
+      if (npc.bo) card.bo = npc.bo;
+      if (npc.zbran) card.zbran = npc.zbran;
+      if (npc.zbroj) card.zbroj = npc.zbroj;
+      return card;
+    });
   }
 
   // --- STAV ---

@@ -14,20 +14,26 @@ Pravidla: CLAUDE.md → "Mapa diagramu" → řádky v `src/docs/solo-rpg-diagram
 
 ## Smyčka
 
-1. `scene '<název>'` → hraj scénu (note, fate, meaning, detail, behavior, dice)
-2. **BOOKKEEPING** (po KAŽDÉ scéně, PŘESNĚ v tomto pořadí):
+1. **PŘED SCÉNOU**: `state` + `wiki` → přečti si stav hry a NPC wiki karty. Znalost NPC (kdo kde je, jaký má vztah, co se s ním stalo) ovlivňuje tvé rozhodování ve scéně.
+2. `scene '<název>'` → hraj scénu (note, fate, meaning, detail, behavior, dice)
+3. **BOOKKEEPING** (po KAŽDÉ scéně, PŘESNĚ v tomto pořadí):
    - `endscene yes|no`
    - `eat` (1× denně! zásoby 0 = zítra Hlad!)
    - NPC váhy (zvýšit důležité, snížit nepřítomné)
+   - **NPC wiki karty** — pro každého nového nebo změněného NPC vyplň wiki pole:
+     `updatenpc <idx> popis="..." lokace="..." vztah="..." poznamky="..."`
+     Při prvním setkání: popis (vzhled, osobnost), lokace, vztah k hráči.
+     Při dalších setkáních: aktualizuj poznamky o nové události.
+     Bojové staty (`str`, `dex`, `wil`, `bo`, `zbran`, `zbroj`) vyplň jen pokud NPC bojoval nebo je to relevantní.
    - Thread váhy + progress
    - `time` + `weather` (pokud nový den)
    - Inventář odpovídá příběhu?
-3. **AUDITOR AGENT** → po bookkeepingu spusť Agent tool NA POZADÍ (`run_in_background: true`):
+4. **AUDITOR AGENT** → po bookkeepingu spusť Agent tool NA POZADÍ (`run_in_background: true`):
    ```
    Prompt pro auditora:
    Jsi auditor solo RPG hry. Přečti save soubor <path> a log <path>-log.md.
    Zkontroluj POSLEDNÍ scénu:
-   1. BOOKKEEPING: Jedl dnes? CF odpovídá (yes=−1, no=+1)? NPC váhy dávají smysl? Thready aktualizovány?
+   1. BOOKKEEPING: Jedl dnes? CF odpovídá (yes=−1, no=+1)? NPC váhy dávají smysl? NPC wiki karty vyplněné (popis, lokace, vztah, poznamky)? Thready aktualizovány?
    2. PRAVIDLA: Přečti relevantní sekce z src/docs/solo-rpg-diagram.jsx (viz CLAUDE.md mapa řádků).
       Byly saves (d20 vs atribut) správně? Boj podle pravidel? Mechaniky Mythic GME správně?
    3. KONZISTENCE: Inventář odpovídá příběhu? Staty odpovídají zraněním/léčení?
@@ -35,7 +41,7 @@ Pravidla: CLAUDE.md → "Mapa diagramu" → řádky v `src/docs/solo-rpg-diagram
    Vrať: OK nebo seznam problémů k opravě.
    ```
    Auditor běží na pozadí. Než začneš další scénu, POČKEJ na jeho výsledek. Pokud našel problém → oprav.
-4. → zpět na 1
+5. → zpět na 1
 
 ## Myší optika
 
