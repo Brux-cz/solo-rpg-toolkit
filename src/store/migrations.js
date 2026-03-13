@@ -1,7 +1,7 @@
 // Sdílené migrace a INITIAL_GAME — jediný zdroj pravdy
 // Importuje gameStore.js (browser/localStorage) i agent/state.js (Node/fs)
 
-export const CURRENT_VERSION = 10;
+export const CURRENT_VERSION = 11;
 
 export const INITIAL_GAME = {
   version: CURRENT_VERSION,
@@ -41,6 +41,7 @@ export const INITIAL_GAME = {
   },
   keyedScenes: [],
   perilPoints: { aktualni: 2, max: 2 },
+  locations: [],
 };
 
 export const MIGRATIONS = {
@@ -146,6 +147,11 @@ export const MIGRATIONS = {
       odpocinutoDnes: false,
     },
     version: 10,
+  }),
+  10: (data) => ({
+    ...data,
+    locations: [],
+    version: 11,
   }),
 };
 
