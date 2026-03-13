@@ -3,8 +3,8 @@
   "name": "Myší dobrodružství",
   "game": {
     "version": 10,
-    "cf": 6,
-    "sceneNum": 15,
+    "cf": 2,
+    "sceneNum": 24,
     "entries": [
       {
         "type": "scene",
@@ -4060,6 +4060,1888 @@
         "editable": true,
         "id": "mmo56rvtqstr",
         "ts": 1773360723881
+      },
+      {
+        "type": "dice",
+        "die": "d20",
+        "value": 11,
+        "id": "mmo56z53gk4d",
+        "ts": 1773360733287
+      },
+      {
+        "type": "text",
+        "text": "DEX save d20=11 > DEX 8 = NEÚSPĚCH. Proud Okřála smýkl o kořen, pochodeň vymáčená (zničena). Vynořil se u osady, ale na špatné straně — za hřbitůvkem, ne u hlavní brány. Modřiny, ale žádné vážné zranění.",
+        "editable": true,
+        "id": "mmo57e4n0h51",
+        "ts": 1773360752711
+      },
+      {
+        "type": "fate",
+        "question": "Je Drápek už u osady (předběhl Okřála po stezce)?",
+        "oddsLabel": "Unlikely",
+        "d100": 45,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 6,
+        "threshold": 50,
+        "id": "mmo57jx0qosl",
+        "ts": 1773360760212
+      },
+      {
+        "type": "fate",
+        "question": "Útočí Drápek na osadu, nebo vyjednává?",
+        "oddsLabel": "50/50",
+        "d100": 36,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 6,
+        "threshold": 65,
+        "id": "mmo57otzchmd",
+        "ts": 1773360766583
+      },
+      {
+        "type": "behavior",
+        "npc": "Krysák Drápek",
+        "word1": "Attainment",
+        "word2": "Oppress",
+        "d1": 1,
+        "d2": 99,
+        "cz1": "Dosažení",
+        "cz2": "Útisk",
+        "id": "mmo57ue5tkyn",
+        "ts": 1773360773789
+      },
+      {
+        "type": "text",
+        "text": "Pohled ze hřbitůvku: Drápek stojí před hlavní bránou s dvěma postavami (Jizva + ještě někdo menší). Řve na osadníky za palisádou. Chce 50 ďobků HNED — jinak prý přijde \"velký\". Neví, že brouk je mrtvý. Okřál je za ním, nespozorovaný.",
+        "editable": true,
+        "id": "mmo586jhy4yw",
+        "ts": 1773360789533
+      },
+      {
+        "type": "fate",
+        "question": "Je Bodlák v osadě nebo poblíž?",
+        "oddsLabel": "Unlikely",
+        "d100": 99,
+        "yes": false,
+        "exceptional": true,
+        "randomEvent": false,
+        "cf": 6,
+        "threshold": 50,
+        "id": "mmo58elcnwik",
+        "ts": 1773360799968
+      },
+      {
+        "type": "text",
+        "text": "Bodlák nikde — Exceptional NE. Okřál je úplně sám. Rozhoduje se: vyjít z úkrytu a veřejně oznámit, že brouk je mrtvý. Znemožnit Drápka před celou osadou.",
+        "editable": true,
+        "id": "mmo58onbtl0s",
+        "ts": 1773360812999
+      },
+      {
+        "type": "dice",
+        "die": "d20",
+        "value": 20,
+        "id": "mmo58w0tyqef",
+        "ts": 1773360822557
+      },
+      {
+        "type": "text",
+        "text": "WIL save d20=20 vs WIL 7 = KRITICKÝ NEÚSPĚCH. Drápek se rozesmál. \"Brouk mrtvý? A ty jsi ho zabil? TY?\" Ukázal na Okřálova zranění. \"Podívejte se na něj — sotva stojí!\" Osadníci za palisádou zaváhali. Drápek využil chvíle — otočil se zpět k bráně. \"Padesát ďobků. Nebo ta myšička schytá to, co mělo schytat vaše městečko.\"",
+        "editable": true,
+        "id": "mmo593vjv61f",
+        "ts": 1773360832735
+      },
+      {
+        "type": "text",
+        "text": "Okřál zavolal přes palisádu: \"Zabil jsem toho brouka! Podívejte se — mám jeho štít!\" Ukázal chitinový štít na zádech. \"Drápek je sám — jedna krysa a dva usmrkanci!\"",
+        "editable": true,
+        "id": "mmo59beip80m",
+        "ts": 1773360842490
+      },
+      {
+        "type": "fate",
+        "question": "Uvěří osadníci Okřálovi díky chitinovému štítu jako důkazu?",
+        "oddsLabel": "Likely",
+        "d100": 55,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": true,
+        "cf": 6,
+        "threshold": 75,
+        "eventFocus": "Move toward thread",
+        "eventMeaning": {
+          "d1": 55,
+          "d2": 89,
+          "word1": "Disrupt",
+          "word2": "Attract",
+          "cz1": "Narušení",
+          "cz2": "Přitažení"
+        },
+        "eventTargetName": null,
+        "eventTargetReroll": false,
+        "eventTargetEmpty": false,
+        "id": "mmo59g8ob035",
+        "ts": 1773360848760
+      },
+      {
+        "type": "text",
+        "text": "RANDOM EVENT: Move toward thread (Osvobodit cestu). Narušení/Přitažení. Osadníci uviděli chitinový štít — důkaz. Brána se otevřela. Starosta vyšel ven s dvěma myšáky s vidlemi. \"Ten štít znám — to je krunýř toho monstra! Ten kluk mluví pravdu!\" Drápkova hrozba se zhroutila. Jizva couvla. Menší krysa utekla.",
+        "editable": true,
+        "id": "mmo59s1frsvn",
+        "ts": 1773360864051
+      },
+      {
+        "type": "behavior",
+        "npc": "Krysák Drápek",
+        "word1": "Desert",
+        "word2": "Agree",
+        "d1": 24,
+        "d2": 59,
+        "cz1": "Útěk",
+        "cz2": "Souhlas",
+        "id": "mmo59xkf7bcn",
+        "ts": 1773360871215
+      },
+      {
+        "type": "text",
+        "text": "Drápek upustil oštěp. \"Dobře, dobře! Nemám s vámi spor. Šel jsem v míru — jen jsem chtěl co mi patří.\" Couval. \"Brouk je mrtvý? Fajn. Nemám tu co dělat.\" Otočil se a rozběhl se na sever. Starosta k Okřálovi: \"Nech ho. Ať zmizí.\" Okřál sledoval, jak Drápkova postava mizí v dešti.",
+        "editable": true,
+        "id": "mmo5a7zzho36",
+        "ts": 1773360884735
+      },
+      {
+        "type": "fate",
+        "question": "Je Drápek definitivně poražen (odejde z oblasti)?",
+        "oddsLabel": "50/50",
+        "d100": 40,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 6,
+        "threshold": 65,
+        "id": "mmo5adaazqxp",
+        "ts": 1773360891586
+      },
+      {
+        "type": "text",
+        "text": "Drápek odešel definitivně. Bez brouka, bez posil, znemožněn před osadou. Cesta je volná. Okřál vešel branou do osady. Osadníci ho vítali — mokrý, zraněný, ale jako hrdina.",
+        "editable": true,
+        "id": "mmo5agqvf7a4",
+        "ts": 1773360896071
+      },
+      {
+        "type": "fate",
+        "question": "Zaplatí rada plnou odměnu (100ď za brouka + Drápka)?",
+        "oddsLabel": "Likely",
+        "d100": 65,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 6,
+        "threshold": 75,
+        "id": "mmo5al61uu6b",
+        "ts": 1773360901801
+      },
+      {
+        "type": "text",
+        "text": "Starosta svolal krátkou radu. Rozhodnutí: Okřál splnil zakázku — brouk zabit (důkaz: chitinový štít), Drápek vyhnán. Plná odměna: 100 ďobků. Hostinský protestoval — \"měl bych dostat polovinu, já to celé zorganizoval!\" Starosta ho umlčel: \"Ty jsi zorganizoval jen svůj vlastní zisk.\" Okřál dostal 100ď.",
+        "editable": true,
+        "id": "mmo5apo6kjqm",
+        "ts": 1773360907638
+      },
+      {
+        "type": "text",
+        "text": "INVENTÁŘ ZMĚNY: Pochodně ZNIČENY (vymáčeny v kanálku, 1/3→0). Přidán Léčivý obklad (od Pecky, 1 použití, léčí STR). Ďobky: 43→143 (+100 odměna od rady). Okřál přenocoval v radní komoře. Obklad přiložen na ránu v boku.",
+        "editable": true,
+        "id": "mmo5b7ofo14m",
+        "ts": 1773360930975
+      },
+      {
+        "type": "endscene",
+        "sceneNum": 15,
+        "cfOld": 6,
+        "cfNew": 5,
+        "id": "mmo5bbgb8axk",
+        "ts": 1773360935867
+      },
+      {
+        "type": "scene",
+        "sceneNum": 16,
+        "title": "Odpočinek v Ořechové Tvrzi",
+        "sceneType": "altered",
+        "cf": 5,
+        "d10": 1,
+        "adj": "DVĚ úpravy",
+        "id": "mmo78jungeca",
+        "ts": 1773364166015
+      },
+      {
+        "type": "dice",
+        "die": "d10",
+        "value": 1,
+        "id": "mmo78o8qjk1l",
+        "ts": 1773364171706
+      },
+      {
+        "type": "dice",
+        "die": "d10",
+        "value": 10,
+        "id": "mmo78ocam71j",
+        "ts": 1773364171834
+      },
+      {
+        "type": "dice",
+        "die": "d10",
+        "value": 2,
+        "id": "mmo78rolaje4",
+        "ts": 1773364176165
+      },
+      {
+        "type": "meaning",
+        "table": "actions",
+        "word1": "Inform",
+        "word2": "Trick",
+        "d1": 38,
+        "d2": 71,
+        "cz1": "Informování",
+        "cz2": "Lest",
+        "id": "mmo78wked6rq",
+        "ts": 1773364182494
+      },
+      {
+        "type": "text",
+        "text": "Okřál se probudil v radní komoře. Ráno — léčivý obklad přiložen na ránu v boku, hřeje příjemně. Venku stále prší, ale slábne. Vyšel na náměstíčko — něco se děje. Kopřivka běžela k Starostovi: \"Hostinský je pryč! Odešel v noci — pokladna hospody prázdná!\"",
+        "editable": true,
+        "id": "mmo79b1ppmqd",
+        "ts": 1773364201261
+      },
+      {
+        "type": "long",
+        "boRestored": true,
+        "strHeal": 1,
+        "dexHeal": 0,
+        "wilHeal": 0,
+        "id": "mmo79fkz4nv9",
+        "ts": 1773364207139
+      },
+      {
+        "type": "behavior",
+        "npc": "Starosta (lysá myška)",
+        "word1": "Disrupt",
+        "word2": "Open",
+        "d1": 55,
+        "d2": 67,
+        "cz1": "Narušení",
+        "cz2": "Otevření",
+        "id": "mmo79mu82x00",
+        "ts": 1773364216544
+      },
+      {
+        "type": "text",
+        "text": "Starosta na náměstíčku, v dešti: \"Hostinský utekl! Odnesl peníze z pokladny — 200 ďobků společných prostředků.\" Zlostně se rozhlédl. Pak pohled na Okřála: \"Ty jsi schopný. Hospodu potřebujeme — ale správce taky. Nemáš zájem?\" Starosta nabízí Okřálovi správu hospody. SCENE ADJ: Odeber postavu (Hostinský) + Přidej postavu (nový host).",
+        "editable": true,
+        "id": "mmo79t1d15ca",
+        "ts": 1773364224577
+      },
+      {
+        "type": "fate",
+        "question": "Přijme Starosta odklad?",
+        "oddsLabel": "Likely",
+        "d100": 48,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 5,
+        "threshold": 65,
+        "id": "mmo7a0dlkgyg",
+        "ts": 1773364234089
+      },
+      {
+        "type": "fate",
+        "question": "Je nová postava z NPC seznamu (existující NPC)?",
+        "oddsLabel": "50/50",
+        "d100": 55,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": true,
+        "cf": 5,
+        "threshold": 50,
+        "eventFocus": "Close thread",
+        "eventMeaning": {
+          "d1": 72,
+          "d2": 34,
+          "word1": "Arrive",
+          "word2": "Lie",
+          "cz1": "Příchod",
+          "cz2": "Lež"
+        },
+        "eventTargetName": null,
+        "eventTargetReroll": true,
+        "eventTargetEmpty": false,
+        "id": "mmo7a3kft2d0",
+        "ts": 1773364238223
+      },
+      {
+        "type": "detail",
+        "table": "descriptions",
+        "word1": "Rudely",
+        "word2": "Impatiently",
+        "d1": 95,
+        "d2": 56,
+        "cz1": "Nevychovaně",
+        "cz2": "Netrpělivě",
+        "id": "mmo7ajsmqcad",
+        "ts": 1773364259254
+      },
+      {
+        "type": "dice",
+        "die": "d6",
+        "value": 2,
+        "id": "mmo7atfhoxbk",
+        "ts": 1773364271741
+      },
+      {
+        "type": "dice",
+        "die": "d6",
+        "value": 4,
+        "id": "mmo7atg994jz",
+        "ts": 1773364271769
+      },
+      {
+        "type": "text",
+        "text": "Zatímco Starosta mluvil o hospodě, branou vešel cizí myšák — hubený, s rozcuchaným kožíškem a pytlem přes rameno. Nevychovaně se protlačil davem. \"Kdo tu velí?! Mám naléhavé zprávy ze severu!\" Netrpělivě podupával. Starosta se naježil. \"Kdo jsi?\" Cizinec: \"Jmenuju se Rezek. A nesete špatné zprávy — ten šílený alchymista z hvozdu se prý dostal na svobodu. Slyšel jsem to od krys u Suchého potoka. Má nové nestvůry.\"",
+        "editable": true,
+        "id": "mmo7b9d4d66o",
+        "ts": 1773364292392
+      },
+      {
+        "type": "fate",
+        "question": "Uvěří osadníci Okřálovi nad Rezkem?",
+        "oddsLabel": "Very likely",
+        "d100": 8,
+        "yes": true,
+        "exceptional": true,
+        "randomEvent": false,
+        "cf": 5,
+        "threshold": 75,
+        "id": "mmo7bhn9cstr",
+        "ts": 1773364303125
+      },
+      {
+        "type": "text",
+        "text": "EXCEPTIONAL ANO — osadníci stojí plně za Okřálem. Starosta: \"Ten kluk nám zachránil kůži. Tobě nevěřím ani slovo.\" Kopřivka prohledala Rezkův pytel — falešné ochranné amulety, levné sklo vydávané za léčivé krystaly. \"Podvodník!\" Osadníci Rezka obklíčili. Starosta: \"Vypadni. A jestli tě tu uvidím znovu...\"",
+        "editable": true,
+        "id": "mmo7bnhfg1o2",
+        "ts": 1773364310691
+      },
+      {
+        "type": "fate",
+        "question": "Prodává někdo v osadě pochodně?",
+        "oddsLabel": "Likely",
+        "d100": 22,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": true,
+        "cf": 5,
+        "threshold": 65,
+        "eventFocus": "New NPC",
+        "eventMeaning": {
+          "d1": 34,
+          "d2": 18,
+          "word1": "Lie",
+          "word2": "Move",
+          "cz1": "Lež",
+          "cz2": "Pohyb"
+        },
+        "id": "mmo7bt0tub2p",
+        "ts": 1773364317869
+      },
+      {
+        "type": "text",
+        "text": "RANDOM EVENT: New NPC + Lež/Pohyb. V krámku u brány Okřál potkal novou prodejkyni — mladá myška s roztřesenýma rukama, představila se jako Píšťalka. Tvrdí, že přišla z jihu (Lež — stopy na tlapkách od severního jílu). Prodává pochodně, zásoby, provazy. Nervózně se rozhlíží. Okřál koupil 3 pochodně (obnovil na 3/3) za 6ď.",
+        "editable": true,
+        "id": "mmo7c8qb5ita",
+        "ts": 1773364338227
+      },
+      {
+        "type": "behavior",
+        "npc": "Kopřivka",
+        "word1": "Attainment",
+        "word2": "Imprison",
+        "d1": 1,
+        "d2": 43,
+        "cz1": "Dosažení",
+        "cz2": "Uvěznění",
+        "id": "mmo7crg79c0d",
+        "ts": 1773364362487
+      },
+      {
+        "type": "text",
+        "text": "Kopřivka: \"Zadržet ji! Kdo ví, co tu ještě kradla!\" Píšťalka se roztřásla: \"Prosím — já jen utíkám! Utekla jsem z Kožíškovy dílny, před měsícem. Nemám kam jít.\" Okřál se zastavil. Z Kožíškovy dílny? Další zajatkyně? Tichý, zraněný pohled malé myšky. Okřál ke Starostovi: \"Nech ji. Ať prodává — ale dej jí najevo, že lhát se tu nevyplácí.\" Starosta přikývl.",
+        "editable": true,
+        "id": "mmo7d23dfzog",
+        "ts": 1773364376281
+      },
+      {
+        "type": "endscene",
+        "sceneNum": 16,
+        "cfOld": 5,
+        "cfNew": 4,
+        "id": "mmo7d81g2wbl",
+        "ts": 1773364383988
+      },
+      {
+        "type": "scene",
+        "sceneNum": 17,
+        "title": "Drápkův opuštěný tábor",
+        "sceneType": "interrupt",
+        "cf": 4,
+        "d10": 2,
+        "focus": "NPC Action",
+        "meaning": {
+          "d1": 79,
+          "d2": 71,
+          "word1": "Intolerance",
+          "word2": "Trick",
+          "cz1": "Nesnášenlivost",
+          "cz2": "Lest"
+        },
+        "eventTargetName": null,
+        "eventTargetReroll": true,
+        "eventTargetEmpty": false,
+        "id": "mmo9da5fcsxz",
+        "ts": 1773367745955
+      },
+      {
+        "type": "dice",
+        "die": "d20",
+        "value": 20,
+        "id": "mmo9drmg0ud7",
+        "ts": 1773367768600
+      },
+      {
+        "type": "dice",
+        "die": "d20",
+        "value": 18,
+        "id": "mmo9dwtx9cmc",
+        "ts": 1773367775349
+      },
+      {
+        "type": "text",
+        "text": "SCÉNA 17 — INTERRUPT: NPC Action (Píšťalka) + Nesnášenlivost/Lest. Původní plán (Drápkův tábor) zrušen. Na cestě na sever Okřál uslyšel kroky za sebou. Otočil se — Píšťalka, udýchaná, s malým uzlíkem.",
+        "editable": true,
+        "id": "mmo9ecttretc",
+        "ts": 1773367796081
+      },
+      {
+        "type": "behavior",
+        "npc": "Píšťalka",
+        "word1": "Release",
+        "word2": "Gratify",
+        "d1": 44,
+        "d2": 15,
+        "cz1": "Osvobození",
+        "cz2": "Uspokojení",
+        "id": "mmo9ehwzp66y",
+        "ts": 1773367802675
+      },
+      {
+        "type": "text",
+        "text": "Píšťalka promluvila rychle, ostře: \"Vím, že jdeš na sever. K tomu táboru. Ale já potřebuju dál — ke Kožíškově dílně. Musím zničit jeho zápisky. VŠECHNY.\" Hlas se jí třásl hněvem. \"Nebyla jsem jen zajatkyně. Byla jsem jeho učednice. Naučil mě číst znaky, míchát tinktury. A pak mě zavřel, protože jsem odmítla jeho... experimenty.\" Plivla na zem. \"Pokud ty zápisky někdo najde, začne to znovu. Musím je spálit.\"",
+        "editable": true,
+        "id": "mmo9esy7kecd",
+        "ts": 1773367816975
+      },
+      {
+        "type": "fate",
+        "question": "Říká Píšťalka pravdu o zápisech (opravdu existují)?",
+        "oddsLabel": "Likely",
+        "d100": 96,
+        "yes": false,
+        "exceptional": true,
+        "randomEvent": false,
+        "cf": 4,
+        "threshold": 50,
+        "id": "mmo9f1f3k5l3",
+        "ts": 1773367827951
+      },
+      {
+        "type": "meaning",
+        "table": "actions",
+        "word1": "Carry",
+        "word2": "Create",
+        "d1": 66,
+        "d2": 57,
+        "cz1": "Nesení",
+        "cz2": "Tvorba",
+        "id": "mmo9f9u3hzmp",
+        "ts": 1773367838859
+      },
+      {
+        "type": "text",
+        "text": "Okřál si všiml: Píšťalčin uzlík je PRÁZDNÝ. Kdo jde pálit zápisky s prázdným pytlem? \"Ty je nechceš zničit,\" řekl pomalu. \"Ty je chceš VZÍT.\" Píšťalka ztuhla. Pak pomalu přikývla. \"Ano. Chci jeho tinktury, kořeny, nástroje. Chci si otevřít vlastní dílnu — POCTIVOU. Bez zajatých tvorů, bez šílených experimentů. Jen léčivé masti a tinktury. To jsem chtěla vždycky.\"",
+        "editable": true,
+        "id": "mmo9fkxqdcna",
+        "ts": 1773367853246
+      },
+      {
+        "type": "fate",
+        "question": "Je cesta na sever k Drápkovu táboru bezpečná?",
+        "oddsLabel": "50/50",
+        "d100": 41,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 4,
+        "threshold": 35,
+        "id": "mmo9ftetpmxm",
+        "ts": 1773367864229
+      },
+      {
+        "type": "detail",
+        "table": "descriptions",
+        "word1": "Irritatingly",
+        "word2": "Delightfully",
+        "d1": 62,
+        "d2": 26,
+        "cz1": "Podrážděně",
+        "cz2": "Rozkošně",
+        "id": "mmo9fx9g8g1w",
+        "ts": 1773367869220
+      },
+      {
+        "type": "text",
+        "text": "Na stezce se zastavili. Před nimi — obří červenka. Krásná, s nafouklým rudým hrdlem, zobákem zabořeným v mokré hlíně. Lovila červy po dešti. Její drobné oči ještě nezaregistrovaly dvě myšky ve stínu kapradiny. Ale cesta vede přímo kolem ní. \"To je jako procházet kolem spícího draka,\" zašeptal Okřál. Píšťalka ho chytila za rukáv: \"Znám objížďku — přes kořeny starého dubu. Je to delší, ale bezpečné.\"",
+        "editable": true,
+        "id": "mmo9gafqovov",
+        "ts": 1773367886294
+      },
+      {
+        "type": "fate",
+        "question": "Funguje Píšťalčina objížďka přes kořeny?",
+        "oddsLabel": "Likely",
+        "d100": 34,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 4,
+        "threshold": 50,
+        "id": "mmo9gcp4lblo",
+        "ts": 1773367889224
+      },
+      {
+        "type": "text",
+        "text": "Objížďka přes kořeny starého dubu — Píšťalka vedla jistě. Znala cestu z dob, kdy nosila Kožíškovi zásoby. Proklouzli pod kořeny, přes malý potůček (voda po kolena), kolem houby s červeným kloboukem. Po půl hodině vyšli na mýtinu. Píšťalka ukázala: \"Tamhle. To je Drápkův tábor.\"",
+        "editable": true,
+        "id": "mmo9glifsc52",
+        "ts": 1773367900647
+      },
+      {
+        "type": "fate",
+        "question": "Je tábor opuštěný (Drápek skutečně odešel)?",
+        "oddsLabel": "Very likely",
+        "d100": 32,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 4,
+        "threshold": 65,
+        "id": "mmo9gorq43kh",
+        "ts": 1773367904870
+      },
+      {
+        "type": "detail",
+        "table": "descriptions",
+        "word1": "Sharply",
+        "word2": "Gracefully",
+        "d1": 100,
+        "d2": 44,
+        "cz1": "Ostře",
+        "cz2": "Elegantně",
+        "id": "mmo9gr7fjea6",
+        "ts": 1773367908027
+      },
+      {
+        "type": "text",
+        "text": "Drápkův tábor: překvapivě propracovaný. Ostré bambusy jako palisáda, elegantně vyřezávané značky na stromech (krysí znaky — teritorium). Tři nory pod kořeny — hlavní s kobercem z mechu, malá zbrojnice (prázdná), zásobárna. Drápek vše odnesl — zbývají jen rozbitá bedýnka, zrezivělý špendlík (kopí) a stopy po ohni. Ale STRUKTURA je cenná — hradba, průhledy, únikové tunely. Přesně co hrabě potřebuje do hlášení.",
+        "editable": true,
+        "id": "mmo9gz6outlf",
+        "ts": 1773367918368
+      },
+      {
+        "type": "fate",
+        "question": "Najde Okřál v táboře něco cenného co Drápek zanechal?",
+        "oddsLabel": "50/50",
+        "d100": 34,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 4,
+        "threshold": 35,
+        "id": "mmo9h33sxvdf",
+        "ts": 1773367923448
+      },
+      {
+        "type": "detail",
+        "table": "descriptions",
+        "word1": "Ferociously",
+        "word2": "Boldly",
+        "d1": 34,
+        "d2": 9,
+        "cz1": "Zuřivě",
+        "cz2": "Odvážně",
+        "id": "mmo9h5tvftph",
+        "ts": 1773367926979
+      },
+      {
+        "type": "text",
+        "text": "V hlavní noře, pod mechovým kobercem — kůra s vyřezanou mapou. Drápkovy odvážné plány: značky osad (Ořechová Tvrz, Bobulín, Mechový Práh), obchodní cesty, zásobovací trasy. Zuřivě vyškrábané poznámky krysím písmem — \"vzít Tvrz → ovládnout cestu → daně\". Drápek plánoval miniaturní říši. CENNÝ DŮKAZ pro hraběte — mapa krysích ambicí v regionu.",
+        "editable": true,
+        "id": "mmo9hhndlvpr",
+        "ts": 1773367942297
+      },
+      {
+        "type": "text",
+        "text": "Taktické přemýšlení: Průzkum hotový — mapa + popis tábora. Můžu se vrátit s hlášením pro hraběte. ALE: Píšťalka chce ke Kožíškovi. Je to na cestě (severovýchod). A Kožíšek... je pořád naživu. STR 3, ale naživu. Pokud se uzdraví — mohl by začít znovu. Píšťalka má pravdu v jednom: vybavení by nemělo zůstat. Rozhodnutí: půjdu s Píšťalkou. Krátká objížďka, cenná informace pro hlášení.",
+        "editable": true,
+        "id": "mmo9hrp6857m",
+        "ts": 1773367955322
+      },
+      {
+        "type": "fate",
+        "question": "Dorazí bez problémů ke Kožíškově dílně?",
+        "oddsLabel": "Likely",
+        "d100": 90,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 4,
+        "threshold": 50,
+        "id": "mmo9hwxniolp",
+        "ts": 1773367962107
+      },
+      {
+        "type": "meaning",
+        "table": "actions",
+        "word1": "Assist",
+        "word2": "Struggle",
+        "d1": 83,
+        "d2": 37,
+        "cz1": "Pomoc",
+        "cz2": "Zápas",
+        "id": "mmo9i01m5cdu",
+        "ts": 1773367966138
+      },
+      {
+        "type": "fate",
+        "question": "Je to Kožíšek, kdo zápasí (přežívá v troskách)?",
+        "oddsLabel": "50/50",
+        "d100": 67,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 4,
+        "threshold": 35,
+        "id": "mmo9i7pohv4w",
+        "ts": 1773367976076
+      },
+      {
+        "type": "detail",
+        "table": "descriptions",
+        "word1": "Carelessly",
+        "word2": "Ruthlessly",
+        "d1": 14,
+        "d2": 96,
+        "cz1": "Bezstarostně",
+        "cz2": "Nelítostně",
+        "id": "mmo9iabo3hu3",
+        "ts": 1773367979460
+      },
+      {
+        "type": "text",
+        "text": "U vstupu do Kožíškovy rokle — pískání. Malý rejsek, chycený v lepkavé kaluži — zbytek Kožíškova alchymistického odpadu. Rejsek se bezstarostně vydal na průzkum a padl do nelítostné pasti. Lepidlo tvrdne a pálí. Píšťalka okamžitě: \"Znám to! Neutralizuje se vodou s popelem. Rychle — vědro!\" Okřál nabral vodu z potůčku, Píšťalka přisypala popel z ohniště. Polili rejska — lepidlo se rozpustilo. Rejsek uprskl a utekl.",
+        "editable": true,
+        "id": "mmo9il4equue",
+        "ts": 1773367993454
+      },
+      {
+        "type": "fate",
+        "question": "Je Kožíšek stále v troskách dílny?",
+        "oddsLabel": "Unlikely",
+        "d100": 44,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": true,
+        "cf": 4,
+        "threshold": 25,
+        "eventFocus": "Move away from thread",
+        "eventMeaning": {
+          "d1": 98,
+          "d2": 37,
+          "word1": "Overthrow",
+          "word2": "Struggle",
+          "cz1": "Svržení",
+          "cz2": "Zápas"
+        },
+        "eventTargetName": null,
+        "eventTargetReroll": false,
+        "eventTargetEmpty": false,
+        "id": "mmo9is8joab1",
+        "ts": 1773368002675
+      },
+      {
+        "type": "text",
+        "text": "Kožíšek PRYČ. Trosky prázdné — stopy tažení krví vedou na sever. Někdo ho odnesl, nebo se odplazil. RANDOM EVENT: Move away from thread (Hrabě) + Svržení/Zápas. Komplikace: šílený alchymista na svobodě. Svržení/Zápas — Kožíšek bojuje o přežití, ale může se vrátit silnější. Region je v ohrožení. Průzkumové hlášení pro hraběte se komplikuje — nestačí jen Drápek, je tu větší hrozba.",
+        "editable": true,
+        "id": "mmo9j7ri6d9i",
+        "ts": 1773368022798
+      },
+      {
+        "type": "fate",
+        "question": "Je v dílně stále vybavení k sebrání (Kožíšek ho neodnesl)?",
+        "oddsLabel": "Likely",
+        "d100": 13,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 4,
+        "threshold": 50,
+        "id": "mmo9jfinq4dm",
+        "ts": 1773368032847
+      },
+      {
+        "type": "text",
+        "text": "Dílna stále plná: moždíře, lahvičky, sušené kořeny, pryskyřice, zápisy na březové kůře. Píšťalka začala třídít — \"Tohle jsou léčivé receptury. Tohle je ten jedovatý svinčík — spálíme.\" Okřál pomáhal nosit. Píšťalka naplnila svůj uzlík: moždíř, sada kořenů, čistá lahvička, receptury na obklady. \"S tímhle můžu otevřít dílnu. POCTIVOU dílnu.\" Okřál: \"Kde?\" Píšťalka se zamyslela. \"Ořechová Tvrz nemá bylinkáře...\"",
+        "editable": true,
+        "id": "mmo9jp15yzv5",
+        "ts": 1773368045177
+      },
+      {
+        "type": "endscene",
+        "sceneNum": 17,
+        "cfOld": 4,
+        "cfNew": 3,
+        "id": "mmo9jva69zmx",
+        "ts": 1773368053278
+      },
+      {
+        "type": "scene",
+        "sceneNum": 18,
+        "title": "Cesta zpět do Ořechové Tvrze",
+        "sceneType": "expected",
+        "cf": 3,
+        "d10": 8,
+        "id": "mmobim065py0",
+        "ts": 1773371353830
+      },
+      {
+        "type": "text",
+        "text": "Cesta zpět šla hladce. Přeháňky ustávaly, mezi mraky prosvítalo bledé podzimní slunce. Píšťalka šla vedle Okřála, uzlík s alchymistickým vybavením na zádech. Poprvé od začátku cesty se usmívala.",
+        "editable": true,
+        "id": "mmobir87wtei",
+        "ts": 1773371360599
+      },
+      {
+        "type": "behavior",
+        "npc": "Píšťalka",
+        "word1": "Intolerance",
+        "word2": "Expose",
+        "d1": 79,
+        "d2": 41,
+        "cz1": "Nesnášenlivost",
+        "cz2": "Odhalení",
+        "id": "mmobixgqhh9s",
+        "ts": 1773371368682
+      },
+      {
+        "type": "text",
+        "text": "Píšťalka o Mechovém Prahu: \"Znám ho. Vyrůstala jsem tam.\" Hořkost v hlase. \"Nesnáším to místo. Rada tam je zkorumpovaná — prodávají les těžařům, kácí stébla, ničí domovy. Proto jsem odešla. Proto jsem skončila u Kožíška — hledala jsem někoho, kdo umí pracovat s přírodou, ne ji ničit.\" Odhalení: \"A víš co? Drápkova mapa ukazuje zásobovací trasu přes Mechový Práh. Někdo tam s ním obchodoval. Někdo z rady.\"",
+        "editable": true,
+        "id": "mmobj57pae23",
+        "ts": 1773371378725
+      },
+      {
+        "type": "discovery",
+        "threadName": "Hrabě Oříšek — kontrola obchodních cest",
+        "discoveryPoints": 2,
+        "meaning": {
+          "d1": 57,
+          "d2": 42,
+          "word1": "Create",
+          "word2": "Haggle",
+          "cz1": "Tvorba",
+          "cz2": "Smlouvání"
+        },
+        "id": "mmobjbtiufxs",
+        "ts": 1773371387286
+      },
+      {
+        "type": "text",
+        "text": "Okřál si srovnal v hlavě celé hlášení: 1) Drápek vyhnán, tábor popsán (3 nory, palisáda, tunely). 2) Mapa Drápkových plánů — zásobovací trasy, spojenci v Mechovém Prahu. 3) Kožíšek — šílený alchymista, poražen ale unikl. 4) Region potřebuje stálou hlídku, ne jednorázový průzkum. S tímhle může smlouvat o víc než 20 ďobků denně.",
+        "editable": true,
+        "id": "mmobjmdbs0n1",
+        "ts": 1773371400959
+      },
+      {
+        "type": "fate",
+        "question": "Je Otec (verbíř z Bobulína) stále v osadě?",
+        "oddsLabel": "50/50",
+        "d100": 40,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 3,
+        "threshold": 25,
+        "id": "mmobjqxyd8h4",
+        "ts": 1773371406886
+      },
+      {
+        "type": "text",
+        "text": "Otec (verbíř) odejel — Kopřivka říká, že zamířil zpět do Bobulína se dvěma rekruty. Okřál má tři možnosti: 1) Jít do Bobulína osobně (cesta na jih, 1-2 dny). 2) Počkat na hraběcí hlídku (za týden). 3) Poslat zprávu s někým. Okřál se rozhodl: půjde do Bobulína. Má mapu, má hlášení, a má co nabídnout hraběti — víc než jen průzkum.",
+        "editable": true,
+        "id": "mmobjxiliwa8",
+        "ts": 1773371415405
+      },
+      {
+        "type": "text",
+        "text": "Okřál se ubytoval na noc v radní komoře. Dlouhý odpočinek — BO plné, STR se léčí. Snídaně ráno (den 7). Pak cesta na jih do Bobulína.",
+        "editable": true,
+        "id": "mmobk4kjc2q8",
+        "ts": 1773371424547
+      },
+      {
+        "type": "endscene",
+        "sceneNum": 18,
+        "cfOld": 3,
+        "cfNew": 2,
+        "id": "mmobk85s5iic",
+        "ts": 1773371429200
+      },
+      {
+        "type": "long",
+        "boRestored": true,
+        "strHeal": 2,
+        "dexHeal": 0,
+        "wilHeal": 0,
+        "id": "mmobkb77pkej",
+        "ts": 1773371433139
+      },
+      {
+        "type": "scene",
+        "sceneNum": 19,
+        "title": "Cesta do Bobulína",
+        "sceneType": "expected",
+        "cf": 2,
+        "d10": 6,
+        "id": "mmodno0xebky",
+        "ts": 1773374948961
+      },
+      {
+        "type": "text",
+        "text": "Den 7, ráno. Okřál vyrazil z Ořechové Tvrze na jih. Poprvé cestoval po obchodní cestě — široká, udusaná stezka mezi kořeny, značená kamínky s červeným pruhem. Přeháňky zvlhčovaly vzduch, ale nebrzdily. Les se měnil — místo hustého hvozdu se otevíral do řidšího lesa s mohutnými duby. Pachy nové: kouř z ohňů, trus domácích zvířat, vzdálené hlasy.",
+        "editable": true,
+        "id": "mmodnvpc27df",
+        "ts": 1773374958912
+      },
+      {
+        "type": "dice",
+        "die": "d6",
+        "value": 6,
+        "id": "mmodo04xh9hl",
+        "ts": 1773374964657
+      },
+      {
+        "type": "text",
+        "text": "Klidná cesta. Míjel dva karavany — malé, po třech čtyřech myšácích s nákladem na zádech. Pozdravili se kývnutím. Jedna karavanka nesla sušené houby, druhá drobné kovové předměty (hřebíky, dráty). Obchodní cesta žije.",
+        "editable": true,
+        "id": "mmodo5618rfk",
+        "ts": 1773374971177
+      },
+      {
+        "type": "detail",
+        "table": "descriptions",
+        "word1": "Hastily",
+        "word2": "Sharply",
+        "d1": 47,
+        "d2": 100,
+        "cz1": "Ukvapeně",
+        "cz2": "Ostře",
+        "id": "mmodoai6xm3v",
+        "ts": 1773374978094
+      },
+      {
+        "type": "text",
+        "text": "Bobulín: pětkrát větší než Ořechová Tvrz. Ostrá palisáda z naštípaných větviček, věže ze šišek, brána z prasklého ořechu — vše vypadá, jako by rostlo příliš rychle. Nové stavby všude — lešení, hromady hlíny, dělníci. Na bráně dva stráži s kopími (šroubky na dřevěných tyčkách). \"Stůj! Jméno a účel!\" Okřál: \"Okřál Trnka. Průzkumník pro hraběte Oříška. Mám hlášení.\" Stráž se podívala na chitinový štít na jeho zádech. \"Průzkumník, říkáš? Třetí tohle měsíc. Projdi — správcova kancelář je na náměstí, vedle fontány.\"",
+        "editable": true,
+        "id": "mmodol940qyh",
+        "ts": 1773374992024
+      },
+      {
+        "type": "meaning",
+        "table": "actions",
+        "word1": "Ruin",
+        "word2": "Starting",
+        "d1": 69,
+        "d2": 2,
+        "cz1": "Zničení",
+        "cz2": "Začátek",
+        "id": "mmodorrll09k",
+        "ts": 1773375000465
+      },
+      {
+        "type": "text",
+        "text": "V kanceláři seděl starší myšák v čistém kabátku — Správce Olšík. Suchý, přísný pohled. \"Průzkumník Trnka? Otec o tobě mluvil. Ukaž, co máš.\" Okřál rozvinul mapu na stole. Správce se nahnal, oči se rozšířily. \"Tohle... Drápek měl kontakty v Mechovém Prahu?\" Okřál referoval: brouk zabit, Drápek vyhnán, Kožíšek poražen ale unikl, zásobovací trasy, spojenci. Správce poslouchal mlčky. Pak: \"Tohle mění situaci. Zničení Drápkovy sítě je začátek. Ale ne konec.\"",
+        "editable": true,
+        "id": "mmodp12i1tte",
+        "ts": 1773375012522
+      },
+      {
+        "type": "behavior",
+        "npc": "Otec (verbíř z Bobulína)",
+        "word1": "Bestow",
+        "word2": "Return",
+        "d1": 39,
+        "d2": 35,
+        "cz1": "Darování",
+        "cz2": "Návrat",
+        "id": "mmodp40znae6",
+        "ts": 1773375016355
+      },
+      {
+        "type": "text",
+        "text": "Správce Olšík vytáhl z truhly měšec. \"Za průzkum: 40 ďobků — dva dny po 20. Za mapu...\" Přemýšlel. \"Dalších 60. To je intel, ne průzkum.\" Položil 100ď na stůl. Pak dodal: \"Hrabě bude chtít víc. Kožíšek na svobodě, Mechový Práh zkorumpovaný... Potřebujeme někoho v terénu. Trvale. Vrať se sem za týden — domluvíme podmínky. Plat, zásoby, podpora.\"",
+        "editable": true,
+        "id": "mmodpay7vokn",
+        "ts": 1773375025327
+      },
+      {
+        "type": "text",
+        "text": "Okřál vzal peníze (137+100=237ď). \"Děkuju, Správce. Vrátím se za týden.\" Než odešel, zeptal se: \"Co víte o Mechovém Prahu? Kdo tam s Drápkem spolupracoval?\" Správce: \"Na to se zeptejte sám. Jestli jdete pracovat pro hraběte — Mechový Práh bude váš první úkol.\"",
+        "editable": true,
+        "id": "mmodpjd0omv4",
+        "ts": 1773375036228
+      },
+      {
+        "type": "fate",
+        "question": "Může Okřál doplnit zásoby v Bobulíně (obchod s jídlem)?",
+        "oddsLabel": "Very likely",
+        "d100": 24,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 2,
+        "threshold": 35,
+        "id": "mmodps54eh7a",
+        "ts": 1773375047608
+      },
+      {
+        "type": "text",
+        "text": "Okřál doplnil zásoby v krámku na náměstí — 3 porce sušeného obilí za 6ď (zásoby 3→6/6). Bobulín je drahý — dvojnásobek cen Ořechové Tvrze. Přenocoval v noclehárně za 2ď. Čistý slamník, teplá polévka. Ďobky: 237-6-2=229.",
+        "editable": true,
+        "id": "mmodpy5ps95m",
+        "ts": 1773375055405
+      },
+      {
+        "type": "endscene",
+        "sceneNum": 19,
+        "cfOld": 2,
+        "cfNew": 1,
+        "id": "mmodqhnycbou",
+        "ts": 1773375080686
+      },
+      {
+        "type": "long",
+        "boRestored": true,
+        "strHeal": 5,
+        "dexHeal": 0,
+        "wilHeal": 0,
+        "id": "mmodr3kcvkru",
+        "ts": 1773375109068
+      },
+      {
+        "type": "scene",
+        "sceneNum": 20,
+        "title": "Cesta zpět do Ořechové Tvrze",
+        "sceneType": "expected",
+        "cf": 1,
+        "d10": 6,
+        "id": "mmofsw5k83sl",
+        "ts": 1773378552008
+      },
+      {
+        "type": "text",
+        "text": "Den 8, ráno. Okřál opustil Bobulín za úsvitu. Chladno — první mrazík na stéblech, dech se srážel v obláčky. Podzim pokročil. Obchodní cesta na sever, značená červenými kamínky. V kapse 229 ďobků, na zádech chitinový štít, v hlavě dvě nabídky.",
+        "editable": true,
+        "id": "mmoft590fi3z",
+        "ts": 1773378563796
+      },
+      {
+        "type": "dice",
+        "die": "d6",
+        "value": 1,
+        "id": "mmoftajvbxl5",
+        "ts": 1773378570667
+      },
+      {
+        "type": "meaning",
+        "table": "actions",
+        "word1": "Assist",
+        "word2": "Move",
+        "d1": 83,
+        "d2": 18,
+        "cz1": "Pomoc",
+        "cz2": "Pohyb",
+        "id": "mmoftjgzt8ft",
+        "ts": 1773378582227
+      },
+      {
+        "type": "detail",
+        "table": "descriptions",
+        "word1": "Positively",
+        "word2": "Generously",
+        "d1": 89,
+        "d2": 41,
+        "cz1": "Pozitivně",
+        "cz2": "Štědře",
+        "id": "mmoftlwa22qv",
+        "ts": 1773378585370
+      },
+      {
+        "type": "text",
+        "text": "Setkání na cestě: obchodní karavana — čtyři myšáci s nákladem na malém vozíku (ořechová skořápka na kolečkách z žaludů). Náklad příliš těžký, jedno kolo se zlomilo. Potřebují pomoc s opravou. Vůdce karavany — starý, pozitivní myšák s veselým čenichem: \"Hele, ještě jeden pár tlapek! Pomoct nám kolo dát dohromady?\" Okřál pomohl — klíny a provaz se hodily. Oprava trvala hodinu.",
+        "editable": true,
+        "id": "mmoftuwuqk2i",
+        "ts": 1773378597054
+      },
+      {
+        "type": "fate",
+        "question": "Popisuje Bobek Kožíška (chemikálie, kulhání, mumlání)?",
+        "oddsLabel": "Likely",
+        "d100": 15,
+        "yes": true,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 15,
+        "id": "mmofu29wvf1r",
+        "ts": 1773378606596
+      },
+      {
+        "type": "text",
+        "text": "Bobek potvrdil: viděli kulhající postavu páchnoucí po chemikáliích, šla na východ. \"Asi před dnem, dvěma? Nemluvila s námi, jen se schovala za kořen, když nás uviděla.\" Na východ = směr Mechový Práh. Kožíšek jde tam, kde je korupce. Kde ho možná někdo přijme. Tohle je špatná zpráva.",
+        "editable": true,
+        "id": "mmofubdg4oak",
+        "ts": 1773378618388
+      },
+      {
+        "type": "discovery",
+        "threadName": "Kožíšek na svobodě",
+        "discoveryPoints": 2,
+        "meaning": {
+          "d1": 74,
+          "d2": 69,
+          "word1": "Divide",
+          "word2": "Ruin",
+          "cz1": "Rozdělení",
+          "cz2": "Zničení"
+        },
+        "id": "mmofuh2lk6a1",
+        "ts": 1773378625773
+      },
+      {
+        "type": "text",
+        "text": "Discovery: Kožíšek thread +2 (Rozdělení/Zničení). Interpretace: Kožíšek plánuje rozdělit region — postavit osady proti sobě (Ořechová Tvrz vs Mechový Práh). Zničení obchodních cest = pomsta za svou porážku. Pokud najde útočiště v Mechovém Prahu, může zevnitř sabotovat hraběcí kontrolu regionu. URGENTNÍ — Okřál musí přijmout práci pro hraběte a jet do Mechového Prahu.",
+        "editable": true,
+        "id": "mmofuobu6qij",
+        "ts": 1773378635178
+      },
+      {
+        "type": "text",
+        "text": "Příchod do Ořechové Tvrze podvečer. Píšťalka u brány — usmívala se. \"Už mám dílnu! Starosta mi dal zadní místnost v hospodě. Přijď se podívat.\" Okřál si uvědomil: hospoda + bylinkářská dílna pod jednou střechou. Pokud by převzal hospodu, Píšťalka by byla jeho \"kolegou\". Rozhodnutí se komplikuje... ale Kožíšek v Mechovém Prahu nemůže čekat.",
+        "editable": true,
+        "id": "mmofuul8332r",
+        "ts": 1773378643292
+      },
+      {
+        "type": "endscene",
+        "sceneNum": 20,
+        "cfOld": 1,
+        "cfNew": 1,
+        "id": "mmofuzhbe0eb",
+        "ts": 1773378649631
+      },
+      {
+        "type": "scene",
+        "sceneNum": 21,
+        "title": "Rozhodnutí a příprava",
+        "sceneType": "expected",
+        "cf": 1,
+        "d10": 7,
+        "id": "mmol0oddo6tq",
+        "ts": 1773387313249
+      },
+      {
+        "type": "text",
+        "text": "Večer v Ořechové Tvrzi. Okřál seděl v hospodě — prázdné, bez hostinského. Jen Píšťalka v zadní místnosti míchala tinktury, a Starosta přišel na pivo. Ticho. Praskání ohně.",
+        "editable": true,
+        "id": "mmol0utu8enk",
+        "ts": 1773387321618
+      },
+      {
+        "type": "behavior",
+        "npc": "Starosta",
+        "word1": "Attach",
+        "word2": "Trust",
+        "d1": 65,
+        "d2": 80,
+        "cz1": "Připojení",
+        "cz2": "Důvěra",
+        "id": "mmol3nsaxs9e",
+        "ts": 1773387452458
+      },
+      {
+        "type": "meaning",
+        "table": "actions",
+        "word1": "Attainment",
+        "word2": "Haggle",
+        "d1": 1,
+        "d2": 42,
+        "cz1": "Dosažení",
+        "cz2": "Smlouvání",
+        "id": "mmol3o7othlh",
+        "ts": 1773387453012
+      },
+      {
+        "type": "text",
+        "text": "Starosta přisedl k Okřálovi. Položil na stůl hrnek medoviny a přitlumeně řekl: \"Víš, Okřále, já ti věřím. Po tom, co jsi udělal s Drápkem — to nebyla maličkost. Celá Tvrz ti dluhuje.\" Pauza. Upil. \"Ten hostinský — utekl. Prostě zmizel v noci. Bál se, že se Drápkovi kumpáni vrátí. A teď tu máme prázdnou hospodu.\"",
+        "editable": true,
+        "id": "mmol3vdr8bm4",
+        "ts": 1773387462303
+      },
+      {
+        "type": "text",
+        "text": "Starosta se naklonil blíž. \"Nabídka pořád platí. Hospoda je tvoje — za podíl z tržeb, dvacet z každé stovky. Máš střechu, zázemí, a Tvrz tě potřebuje.\" V jeho hlase bylo něco naléhavého — Připojení, Důvěra. Chtěl Okřála přivázat k osadě. Ne lstí, ale upřímně.",
+        "editable": true,
+        "id": "mmol41tvcjmm",
+        "ts": 1773387470659
+      },
+      {
+        "type": "text",
+        "text": "Okřál si zahřál packy o hrnek. Hospoda... Zázemí. Klid. Ale v hlavě mu zněl jiný hlas — Bodlákův dopis od hraběte. Zvěd na obchodních cestách. A pak ten pach — chemikálie, kulhání. Kožíšek. Kožíšek, který pálil mosty a plánoval něco zlého.",
+        "editable": true,
+        "id": "mmol46s03p1q",
+        "ts": 1773387477072
+      },
+      {
+        "type": "fate",
+        "question": "Rozhodne se Okřál pro práci zvěda místo hospody?",
+        "oddsLabel": "Likely",
+        "d100": 46,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 15,
+        "id": "mmol494ycduo",
+        "ts": 1773387480130
+      },
+      {
+        "type": "text",
+        "text": "\"Staroste,\" řekl Okřál pomalu. \"Já tu hospodu vezmu.\" Starosta se zarazil — nečekal tak rychlou odpověď. \"Ale mám podmínku. Potřebuju se ještě vypravit — na východ. Je tu věc, kterou musím vyřídit, než se usadím. Kožíšek.\" Starosta ztuhl. Jméno znal.",
+        "editable": true,
+        "id": "mmol4jn3sjdc",
+        "ts": 1773387493743
+      },
+      {
+        "type": "fate",
+        "question": "Souhlasí Starosta s odkladem (Okřál nejdřív vyřídí Kožíška, pak se vrátí k hospodě)?",
+        "oddsLabel": "Very_likely",
+        "d100": 31,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 10,
+        "id": "mmol4q5sxfco",
+        "ts": 1773387502192
+      },
+      {
+        "type": "text",
+        "text": "\"Ne,\" řekl Starosta tvrdě. \"Žádné odkládání. Hospoda potřebuje hostinského TEĎ. Já tu nemůžu čekat, až se vybouříš někde na východě. Buď tady, nebo ne.\" Zaklepal na stůl. \"Bodlák ti může sehnat další práci — ale já potřebuju odpověď do rána.\"",
+        "editable": true,
+        "id": "mmol4xrx6e7s",
+        "ts": 1773387512061
+      },
+      {
+        "type": "meaning",
+        "table": "descriptions",
+        "word1": "Fully",
+        "word2": "Offensively",
+        "d1": 40,
+        "d2": 81,
+        "cz1": "Plně",
+        "cz2": "Útočně",
+        "id": "mmol50auhyom",
+        "ts": 1773387515334
+      },
+      {
+        "type": "text",
+        "text": "Ticho. Oheň praskal. Píšťalka přestala míchat v zadní místnosti — slyšela všechno. Okřál cítil, jak se vzduch v hospodě zhustil. Starostova slova byla plná a útočná — ne zlostí, ale zoufalstvím. Tvrz potřebovala stabilitu. A Okřál byl jediný, kdo ji mohl přinést.",
+        "editable": true,
+        "id": "mmol57g9hfdh",
+        "ts": 1773387524601
+      },
+      {
+        "type": "behavior",
+        "npc": "Píšťalka",
+        "word1": "Delay",
+        "word2": "Open",
+        "d1": 32,
+        "d2": 67,
+        "cz1": "Zdržení",
+        "cz2": "Otevření",
+        "id": "mmol59omdyxf",
+        "ts": 1773387527494
+      },
+      {
+        "type": "text",
+        "text": "Píšťalka vyšla z dílny. V packách měla hrnek s něčím zeleným — vonělo to po mátě a kopřivách. \"Staroste, nespěchejte na něj,\" řekla klidně. Zdržení, Otevření. \"Okřál právě přišel z cesty. Nechte ho přespat, ráno bude moudřejší.\" Podala Okřálovi hrnek. \"Vypij. Pomůže na únavu.\" Starosta zavrčel, ale ustoupil. Dopil medovinu, vstal. \"Do rána.\" A odešel.",
+        "editable": true,
+        "id": "mmol5gj95yen",
+        "ts": 1773387536373
+      },
+      {
+        "type": "text",
+        "text": "Okřál a Píšťalka zůstali sami. \"Co si myslíš?\" zeptal se. Píšťalka si sedla naproti. \"Myslím, že ta hospoda je dobrá věc. Ale taky vím, že Kožíšek tam venku pořád je. A ten čekat nebude.\"",
+        "editable": true,
+        "id": "mmol5l2jxqwk",
+        "ts": 1773387542251
+      },
+      {
+        "type": "fate",
+        "question": "Navrhne Píšťalka, že by mohla hlídat hospodu zatímco Okřál vyřídí Kožíška?",
+        "oddsLabel": "Somewhat_likely",
+        "d100": 28,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 10,
+        "id": "mmol5noublf2",
+        "ts": 1773387545646
+      },
+      {
+        "type": "text",
+        "text": "\"Já mám svoji dílnu,\" pokračovala Píšťalka. \"Nemůžu hlídat hospodu za tebe. Ale...\" zamyslela se. \"Bodlák. On přece hledá zvěda pro hraběte. Co kdybys to zkombinoval — hospodu přijmeš, ale vyjednáš s Bodlákem, že budeš zvědovat JEN na trase kolem Tvrze. Blízko domova. A na Kožíška upozorníš hraběte — ať pošle vojáky.\"",
+        "editable": true,
+        "id": "mmol5tw5xaop",
+        "ts": 1773387553685
+      },
+      {
+        "type": "fate",
+        "question": "Přijme Okřál Píšťalčin kompromis (hospoda + lokální zvěd + delegovat Kožíška na hraběte)?",
+        "oddsLabel": "50/50",
+        "d100": 56,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 10,
+        "id": "mmol5xnacpqk",
+        "ts": 1773387558550
+      },
+      {
+        "type": "text",
+        "text": "Okřál zavrtěl hlavou. \"Ne. Kožíšek... to není věc pro vojáky. On mě hledá. Já ho zradil — utekl jsem z jeho pokusu, pomohl Drápka dostat. Jestli někdo přijde, přijde SEM. Do Tvrze.\" Upil z Píšťalčina čaje. Hořký, ale hřál. \"Musím to vyřešit sám. A rychle. Než přijde on za mnou.\"",
+        "editable": true,
+        "id": "mmol65wcb4g6",
+        "ts": 1773387569244
+      },
+      {
+        "type": "text",
+        "text": "Píšťalka mlčela. Pak řekla tiše: \"Tak běž. Ale vrať se.\" Okřál přikývl. Rozhodnutí padlo — hospodu řekne Starostovi ráno ANO, ale nejdřív musí najít Kožíška. Směr: východ, k Mechovému Prahu, kde ho naposledy viděli. Jeden, dva dny cesty. Sbalí se za svítání.\"",
+        "editable": true,
+        "id": "mmol6b7oapej",
+        "ts": 1773387576132
+      },
+      {
+        "type": "detail",
+        "table": "descriptions",
+        "word1": "Honestly",
+        "word2": "Kindly",
+        "d1": 52,
+        "d2": 65,
+        "cz1": "Upřímně",
+        "cz2": "Laskavě",
+        "id": "mmol6djlu83y",
+        "ts": 1773387579153
+      },
+      {
+        "type": "text",
+        "text": "Píšťalka vstala a zmizela v dílně. Vrátila se s malým váčkem. \"Tady. Sušené byliny proti horečce a obklad na rány. Beru to jako investici — až otevřeš hospodu, budu tvoje první dodavatelka čajů.\" Usmála se — upřímně a laskavě. Okřál schoval váček do batohu. \"Díky, Píšťalko.\" Zhasla lampu. \"Spi tady v hospodě. Ráno je moudřejší večera.\"",
+        "editable": true,
+        "id": "mmol6j60v1dm",
+        "ts": 1773387586440
+      },
+      {
+        "type": "endscene",
+        "sceneNum": 21,
+        "cfOld": 1,
+        "cfNew": 1,
+        "id": "mmol6m18wc29",
+        "ts": 1773387590156
+      },
+      {
+        "type": "long",
+        "boRestored": true,
+        "strHeal": 0,
+        "dexHeal": 0,
+        "wilHeal": 0,
+        "id": "mmol8te57f2y",
+        "ts": 1773387693005
+      },
+      {
+        "type": "scene",
+        "sceneNum": 22,
+        "title": "Cesta na východ",
+        "sceneType": "expected",
+        "cf": 1,
+        "d10": 10,
+        "id": "mmol90u2zx14",
+        "ts": 1773387702650
+      },
+      {
+        "type": "text",
+        "text": "Ráno. Okřál vstal se svítáním, sbalil batoh. Hospoda voněla dřevem a studeným popelem. Na stole ležel vzkaz od Píšťalky — list suché máty a nakreslenou kytičku. Žádná slova.",
+        "editable": true,
+        "id": "mmol96oulbik",
+        "ts": 1773387710238
+      },
+      {
+        "type": "fate",
+        "question": "Zastihne Okřál Starostu před odchodem?",
+        "oddsLabel": "Likely",
+        "d100": 48,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 15,
+        "id": "mmol99u1rtvg",
+        "ts": 1773387714313
+      },
+      {
+        "type": "text",
+        "text": "Starosta nikde. Ještě spal, nebo se vyhýbal. Okřál nechal na dveřích radnice krátký vzkaz: \"Beru hospodu. Vrátím se do tří dnů. — O.T.\" Pak vzal kladívko do pacek a vyšel z brány. Cesta na východ — úzká lesní pěšina mezi buky. Chladno. Mlha v údolích.",
+        "editable": true,
+        "id": "mmol9gjooawq",
+        "ts": 1773387723012
+      },
+      {
+        "type": "fate",
+        "question": "Narazí Okřál na cestě na někoho/něco během dopoledního pochodu?",
+        "oddsLabel": "50/50",
+        "d100": 43,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 10,
+        "id": "mmol9n4bfaa3",
+        "ts": 1773387731532
+      },
+      {
+        "type": "text",
+        "text": "Klidný pochod. Žádné setkání — les byl tichý, jen ptáci a praskání větví. Okřál šel rychle, kladívko v jedné pacce, štít na zádech. Kolem poledne dorazil k rozcestí: vlevo potok tekl na sever, vpravo cesta stoupala do kopce. Starý ukazatel — vybledlý nápis \"Mechový Práh\" s šipkou vpravo.",
+        "editable": true,
+        "id": "mmol9spizj4l",
+        "ts": 1773387738774
+      },
+      {
+        "type": "detail",
+        "table": "descriptions",
+        "word1": "Interestingly",
+        "word2": "Quaintly",
+        "d1": 61,
+        "d2": 91,
+        "cz1": "Zajímavě",
+        "cz2": "Svérázně",
+        "id": "mmol9xgsix59",
+        "ts": 1773387744940
+      },
+      {
+        "type": "text",
+        "text": "U rozcestí — zajímavý detail. Někdo tu nedávno táhl příčné rýhy přes cestu k Mechovému Prahu. Svérázné značky — trojúhelníky vyryté do hlíny, jako varování nebo teritoriální značka. Čerstvé, maximálně den staré. Kožíšek? Nebo někdo jiný?",
+        "editable": true,
+        "id": "mmola2g8jj6h",
+        "ts": 1773387751400
+      },
+      {
+        "type": "fate",
+        "question": "Jsou ty značky od Kožíška?",
+        "oddsLabel": "Somewhat_likely",
+        "d100": 69,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 10,
+        "id": "mmola5f4ssvv",
+        "ts": 1773387755248
+      },
+      {
+        "type": "meaning",
+        "table": "actions",
+        "word1": "Passion",
+        "word2": "Develop",
+        "d1": 86,
+        "d2": 46,
+        "cz1": "Vášeň",
+        "cz2": "Rozvoj",
+        "id": "mmola8jlp1nu",
+        "ts": 1773387759297
+      },
+      {
+        "type": "text",
+        "text": "Značky nebyly od Kožíška — příliš úhledné, příliš geometrické. Spíš jako rituální. Vášeň, Rozvoj. Někdo tu budoval... teritorium? Oltář? Okřál si vzpomněl na zvěsti o Tajemném Staviteli ze severu — ale ten případ byl dávno uzavřený. Možná místní poustevník. Značky vedly směrem k Mechovému Prahu. Okřál pokračoval opatrněji.",
+        "editable": true,
+        "id": "mmolaeakqnw6",
+        "ts": 1773387766748
+      },
+      {
+        "type": "fate",
+        "question": "Dorazí Okřál do Mechového Prahu ještě za světla (odpoledne)?",
+        "oddsLabel": "Somewhat_likely",
+        "d100": 77,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 10,
+        "id": "mmolaju75sjc",
+        "ts": 1773387773935
+      },
+      {
+        "type": "text",
+        "text": "Cesta byla delší, než čekal. Stoupání do kopce, pak sestup do dalšího údolí. Les houstl — staré duby, spadané listí po kotníky. Když slunce začalo klesat, Mechový Práh nebyl v dohledu. Okřál se rozhlédl po vhodném místě na přenocování.",
+        "editable": true,
+        "id": "mmolaq3s0ro6",
+        "ts": 1773387782056
+      },
+      {
+        "type": "detail",
+        "table": "descriptions",
+        "word1": "Hastily",
+        "word2": "Daintily",
+        "d1": 47,
+        "d2": 22,
+        "cz1": "Ukvapeně",
+        "cz2": "Jemně",
+        "id": "mmolathxzrbx",
+        "ts": 1773387786453
+      },
+      {
+        "type": "text",
+        "text": "Našel dutý pařez pod skalním převisem — ukvapené řešení, ale funkční. Uvnitř jemná vrstva suchého mechu. Někdo tu už nocoval — zbytky ohniska, zčernalé kameny. Okřál zapálil jednu pochodeň (2/3), ohřál si packy a snědl zásoby.",
+        "editable": true,
+        "id": "mmolaz26cozk",
+        "ts": 1773387793662
+      },
+      {
+        "type": "endscene",
+        "sceneNum": 22,
+        "cfOld": 1,
+        "cfNew": 1,
+        "id": "mmolboc7h3hy",
+        "ts": 1773387826423
+      },
+      {
+        "type": "short",
+        "boHealed": 0,
+        "roll": 3,
+        "id": "mmolbxptvkre",
+        "ts": 1773387838577
+      },
+      {
+        "type": "scene",
+        "sceneNum": 23,
+        "title": "Příchod do Mechového Prahu",
+        "sceneType": "expected",
+        "cf": 1,
+        "d10": 10,
+        "id": "mmolcl7ilhsi",
+        "ts": 1773387869022
+      },
+      {
+        "type": "text",
+        "text": "Den 10, poledne. Okřál sešel z kopce a uviděl ho — Mechový Práh. Osada na skalním výběžku nad říčkou. Kamenné domy porostlé mechem, odtud jméno. Větší než Ořechová Tvrz — dvě ulice, tržiště, kamenná věž na kopci. Kouř z komínů. Na první pohled klidné místo.",
+        "editable": true,
+        "id": "mmolcvbl7062",
+        "ts": 1773387882129
+      },
+      {
+        "type": "detail",
+        "table": "descriptions",
+        "word1": "Interestingly",
+        "word2": "Energetically",
+        "d1": 61,
+        "d2": 29,
+        "cz1": "Zajímavě",
+        "cz2": "Energicky",
+        "id": "mmolcy9wuo1i",
+        "ts": 1773387885956
+      },
+      {
+        "type": "text",
+        "text": "Ale něco bylo zvláštní — zajímavě energické. U brány stály tři myši ve stejných zelených plášťovkách. Hlídky? Stráže? V Ořechové Tvrzi žádné hlídky nebyly. A na tržišti — ruch. Obchodníci, řemeslníci. Mechový Práh nebyl jen vesnice — byla to obchodní stanice. Okřál přitáhl kapuci a vešel branou.",
+        "editable": true,
+        "id": "mmold4z2crps",
+        "ts": 1773387894638
+      },
+      {
+        "type": "fate",
+        "question": "Zastaví stráže Okřála u brány?",
+        "oddsLabel": "Somewhat_likely",
+        "d100": 98,
+        "yes": false,
+        "exceptional": true,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 10,
+        "id": "mmold84dzn72",
+        "ts": 1773387898717
+      },
+      {
+        "type": "text",
+        "text": "Stráže ho ani nezastavily — ba naopak. Jedna z nich mu přátelsky pokynula: \"Vítej, cestovníku! Dneska je tržní den, volný vstup pro všechny!\" Druhá přidala: \"Hospoda U Mokrého Nosu je rovně, pokud hledáš jídlo a nocleh.\" Okřál se usmál pod kapucí. Tohle nebyl nepřátelský Mechový Práh, jak čekal. Možná moc přátelský?",
+        "editable": true,
+        "id": "mmoldepl8j6z",
+        "ts": 1773387907257
+      },
+      {
+        "type": "fate",
+        "question": "Slyšel někdo na trhu o kulhající myši páchnoucí po chemikáliích (Kožíšek)?",
+        "oddsLabel": "50/50",
+        "d100": 17,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 10,
+        "id": "mmoldiuimtgb",
+        "ts": 1773387912618
+      },
+      {
+        "type": "text",
+        "text": "Okřál opatrně obcházel tržiště. Ptal se prodavačů, dříčů, jedné staré myši s vozíkem plným hub. Nikdo o kulhající myši neslyšel. Žádné stopy po Kožíškovi. Buď tu ještě nebyl, nebo přišel a zůstal mimo dohled.",
+        "editable": true,
+        "id": "mmoldnv83rmz",
+        "ts": 1773387919124
+      },
+      {
+        "type": "meaning",
+        "table": "descriptions",
+        "word1": "Mildly",
+        "word2": "Cheerfully",
+        "d1": 74,
+        "d2": 17,
+        "cz1": "Mírně",
+        "cz2": "Vesele",
+        "id": "mmoldr4tvpdu",
+        "ts": 1773387923357
+      },
+      {
+        "type": "text",
+        "text": "Hospoda U Mokrého Nosu — mírně veselé místo. Dřevěné stoly, svíčky z včelího vosku, vůně pečeného žaludu. U pultu tlustá myška v zástěře leštila hrnky. Pět šest hostů u stolů — obchodníci, dva zeleně odění strážci mimo službu. Okřál si objednal žaludový odvar a přisedl k pultu.",
+        "editable": true,
+        "id": "mmoldxj4yvfu",
+        "ts": 1773387931648
+      },
+      {
+        "type": "dice",
+        "die": "d6",
+        "value": 1,
+        "id": "mmole0ybex0b",
+        "ts": 1773387936083
+      },
+      {
+        "type": "dice",
+        "die": "d6",
+        "value": 3,
+        "id": "mmole16v54a0",
+        "ts": 1773387936391
+      },
+      {
+        "type": "behavior",
+        "npc": "Hostinská",
+        "word1": "Divide",
+        "word2": "Move",
+        "d1": 74,
+        "d2": 18,
+        "cz1": "Rozdělení",
+        "cz2": "Pohyb",
+        "id": "mmole4k7xgfk",
+        "ts": 1773387940759
+      },
+      {
+        "type": "text",
+        "text": "Hostinská — křepká myška se jménem Hruška — se na Okřála podívala přes rameno. Nepřátelsky. \"Cizí. Máme plno,\" řekla suše, přestože polovina stolů byla prázdná. Rozdělení, Pohyb. Okřál si všiml, jak lehce kývla jednomu ze strážců. Ten vstal a šel ke dveřím — jako by někomu šel říct, že je tu cizinec.",
+        "editable": true,
+        "id": "mmolearq961f",
+        "ts": 1773387948806
+      },
+      {
+        "type": "fate",
+        "question": "Má nepřátelskost hostinské souvislost s Kožíškem (je Kožíšek v kontaktu s místními)?",
+        "oddsLabel": "Somewhat_likely",
+        "d100": 46,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 10,
+        "id": "mmoleefz5ltg",
+        "ts": 1773387953567
+      },
+      {
+        "type": "text",
+        "text": "Ne — tohle nebylo o Kožíškovi. Mechový Práh prostě neměl rád cizince. Obchodní stanice, ale uzavřená komunita. Okřál dopil odvar, nechal na pultu 2 ďobky a vyšel. Lepší nevyčnívat.",
+        "editable": true,
+        "id": "mmolej46j0cq",
+        "ts": 1773387959622
+      },
+      {
+        "type": "meaning",
+        "table": "actions",
+        "word1": "Oppress",
+        "word2": "Abuse",
+        "d1": 61,
+        "d2": 60,
+        "cz1": "Útlak",
+        "cz2": "Zneužití",
+        "id": "mmoler6sg6hk",
+        "ts": 1773387970084
+      },
+      {
+        "type": "text",
+        "text": "Okřál obcházel osadu po obvodu. Za tržištěm — úzká ulička vedoucí dolů k říčce. Tam uviděl scénu, která ho zastavila. Tři zelení strážci obklopili starou myš — drobného chlapíka s košem hub. Jeden mu vzal koš, druhý ho strčil. \"Poplatek za sběr. Dvacet ďobků.\" Starý se třásl. \"Ale já nemám... vždycky jsem tady sbíral zadarmo...\" Třetí strážce mu vzal i batoh. Útlak. Zneužití moci.",
+        "editable": true,
+        "id": "mmolf1dyn81f",
+        "ts": 1773387983302
+      },
+      {
+        "type": "fate",
+        "question": "Zasáhne Okřál? (WIL save — d20 ≤ 7 = odolá nutkání nezasahovat)",
+        "oddsLabel": "Unlikely",
+        "d100": 87,
+        "yes": false,
+        "exceptional": true,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 5,
+        "id": "mmolf55ggjwd",
+        "ts": 1773387988180
+      },
+      {
+        "type": "text",
+        "text": "Okřál zaťal packy v kapsách. Každý sval v těle říkal ZASÁHNI. Ale mozek říkal NE. Ne teď. Ne tady. Tři strážci — ozbrojení, ve zbroji. On sám, v cizím městě, bez spojenců. Kožíšek je priorita. Zabit nebo zmrzačen kvůli cizímu hubáři — to by nikomu nepomohlo. Stáhl se za roh. Zapamatoval si obličeje strážců. A pohltila ho hořkost.",
+        "editable": true,
+        "id": "mmolfd1bvte7",
+        "ts": 1773387998399
+      },
+      {
+        "type": "discovery",
+        "threadName": "Najít práci v osadě",
+        "discoveryPoints": 1,
+        "meaning": {
+          "d1": 18,
+          "d2": 79,
+          "word1": "Move",
+          "word2": "Intolerance",
+          "cz1": "Pohyb",
+          "cz2": "Nesnášenlivost"
+        },
+        "id": "mmolffzr4o64",
+        "ts": 1773388002231
+      },
+      {
+        "type": "discovery",
+        "threadName": "Kožíšek na svobodě",
+        "discoveryPoints": 1,
+        "meaning": {
+          "d1": 3,
+          "d2": 96,
+          "word1": "Neglect",
+          "word2": "Guide",
+          "cz1": "Zanedbání",
+          "cz2": "Vedení"
+        },
+        "id": "mmolfmfk4kpi",
+        "ts": 1773388010576
+      },
+      {
+        "type": "text",
+        "text": "Discovery: Kožíšek thread +1 (Zanedbání/Vedení). Nikdo v Mechovém Prahu Kožíška nesleduje — místní stráž se stará jen o výběr poplatků, ne o hrozby zvenčí. Kožíškova stopa je zanedbána. Okřál potřebuje průvodce — někoho, kdo zná okolí lépe než on. Kde hledat?",
+        "editable": true,
+        "id": "mmolfsk8pz0o",
+        "ts": 1773388018520
+      },
+      {
+        "type": "fate",
+        "question": "Najde Okřál na tržišti někoho ochotného pomoci — lovce, stopaře, poutníka?",
+        "oddsLabel": "Somewhat_unlikely",
+        "d100": 14,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 10,
+        "id": "mmolfwp7k6tt",
+        "ts": 1773388023883
+      },
+      {
+        "type": "text",
+        "text": "Žádný průvodce. Mechový Práh byl uzavřená komunita — přátelský k penězům, nepřátelský k otázkám. Okřál se vydal z osady ven, aby prozkoumal okolí sám. Na východním okraji — stará stezka podél říčky, vedoucí dál do kopců. Kožíšek šel touhle cestou, pokud karavanka Bobek mluvila pravdu.",
+        "editable": true,
+        "id": "mmolg2iw5e4x",
+        "ts": 1773388031432
+      },
+      {
+        "type": "dice",
+        "die": "d20",
+        "value": 2,
+        "id": "mmolg96rtzjy",
+        "ts": 1773388040067
+      },
+      {
+        "type": "text",
+        "text": "DEX save (d20=2 ≤ 8): ÚSPĚCH. Okřál byl sběrač mízy — uměl číst les jako knihu. Na stezce podél říčky — otisky. Malé, nepravidelné. Jedna noha se táhla, zanechávala rýhu v hlíně. KULHÁNÍ. A u jednoho kamene — zaschlá skvrna. Přičichl. Chemikálie. Kyselý pach. Kožíšek tudy šel. Před dvěma dny, možná třemi. Stopa vedla na jihovýchod, pryč od říčky, do hustého lesa.",
+        "editable": true,
+        "id": "mmolghi72yiw",
+        "ts": 1773388050847
+      },
+      {
+        "type": "endscene",
+        "sceneNum": 23,
+        "cfOld": 1,
+        "cfNew": 1,
+        "id": "mmolglg9z86z",
+        "ts": 1773388055961
+      },
+      {
+        "type": "scene",
+        "sceneNum": 24,
+        "title": "Sledování stopy",
+        "sceneType": "expected",
+        "cf": 1,
+        "d10": 8,
+        "id": "mmolheihdy3y",
+        "ts": 1773388093625
+      },
+      {
+        "type": "text",
+        "text": "Okřál sledoval otisky na jihovýchod. Les houstl — nízké borůvčí, kapradí vysoké jako myš. Stopa se občas ztrácela v listí, ale ten pach... chemikálie. Slabý, ale nezaměnitelný. Kožíšek tu šel a zanechával za sebou jedovatou stopu jako hlemýžď sliz.",
+        "editable": true,
+        "id": "mmolhkbwbkj0",
+        "ts": 1773388101164
+      },
+      {
+        "type": "fate",
+        "question": "Vede stopa ke Kožíškovu úkrytu (ne jen dál do lesa)?",
+        "oddsLabel": "Somewhat_likely",
+        "d100": 48,
+        "yes": false,
+        "exceptional": false,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 10,
+        "id": "mmolho4y8frs",
+        "ts": 1773388106098
+      },
+      {
+        "type": "text",
+        "text": "Stopa se rozptýlila. Les se otevřel do malé mýtiny — někdo tu nedávno táboril. Vyhaslé ohniště, zbytky jídla. Ale pak stopy pokračovaly třemi různými směry. Kožíšek se tu buď rozhodoval, nebo záměrně mátl stopaře. Tma padala rychle.",
+        "editable": true,
+        "id": "mmolhush619a",
+        "ts": 1773388114721
+      },
+      {
+        "type": "dice",
+        "die": "d20",
+        "value": 4,
+        "id": "mmolhy8wzg2x",
+        "ts": 1773388119200
+      },
+      {
+        "type": "text",
+        "text": "WIL save (d20=4 ≤ 7): ÚSPĚCH. Okřál zavřel oči a nadechl se. Dvě stopy páchly jen hlínou a listím — falešné. Třetí — ta na jihovýchod — nesla slabou chemickou stopu. Kožíšek byl chytrý, ale nemohl skrýt svůj pach. Okřál se rozběhl po pravé stopě. Ale slunce už bylo nízko — musel se rozhodnout: sledovat dál ve tmě, nebo přenocovat a ztratit čas.",
+        "editable": true,
+        "id": "mmoli5313r61",
+        "ts": 1773388128061
+      },
+      {
+        "type": "fate",
+        "question": "Riskne Okřál a půjde dál ve tmě?",
+        "oddsLabel": "50/50",
+        "d100": 2,
+        "yes": true,
+        "exceptional": true,
+        "randomEvent": false,
+        "cf": 1,
+        "threshold": 10,
+        "id": "mmoli8peo9ba",
+        "ts": 1773388132754
+      },
+      {
+        "type": "text",
+        "text": "Okřál zapálil pochodeň (1/3) a BĚŽEL. Výjimečná odvaha — nebo šílenství. Stopa byla čerstvější, pach silnější. Kožíšek tu byl DNES. Možná pár hodin před ním. Okřál cítil adrenalin v žilách — myslivecký instinkt, který ho poháněl kupředu tmou lesa. Kořeny, kameny, nízké větve — uhýbal, skákal, běžel. Pochodeň praskala a blikala.",
+        "editable": true,
+        "id": "mmoligquvt4q",
+        "ts": 1773388143174
+      },
+      {
+        "type": "dice",
+        "die": "d20",
+        "value": 6,
+        "id": "mmoliwlh25ry",
+        "ts": 1773388163717
+      },
+      {
+        "type": "text",
+        "text": "DEX save (d20=6 ≤ 8): ÚSPĚCH. Okřál se neporanil — hbitě přeskakoval překážky. A pak — zastavil se. Stopa končila. Před ním: kamenný svah, porostlý mechem. Ve svahu — temný otvor. Vchod do nory. Nebo jeskyně. Pach chemikálií byl tady tak silný, že Okřálovi slzely oči.",
+        "editable": true,
+        "id": "mmolj2oi8d55",
+        "ts": 1773388171602
+      },
+      {
+        "type": "detail",
+        "table": "descriptions",
+        "word1": "Heroically",
+        "word2": "Seriously",
+        "d1": 51,
+        "d2": 99,
+        "cz1": "Hrdinně",
+        "cz2": "Vážně",
+        "id": "mmolj5miys9y",
+        "ts": 1773388175418
+      },
+      {
+        "type": "text",
+        "text": "Okřál stál před vchodem. Pochodeň praskala — zbývala jí polovina. Uvnitř ticho. Žádný pohyb, žádné světlo. Hrdinně. Vážně. Tohle nebyla hra. Za tím otvorem mohl být Kožíšek — šílený alchymista s chemikáliemi, který plánoval zničit obchodní cesty. STR 3, ale chytrý a zoufalý. Okřál se nadechl. Vstoupit teď — v noci, sám, s dohořívající pochodní? Nebo počkat do rána a riskovat, že Kožíšek uteče?",
+        "editable": true,
+        "id": "mmoljdfxldwe",
+        "ts": 1773388185549
+      },
+      {
+        "type": "endscene",
+        "sceneNum": 24,
+        "cfOld": 1,
+        "cfNew": 2,
+        "id": "mmoljiez1dgb",
+        "ts": 1773388191995
       }
     ],
     "npcs": [
@@ -4070,7 +5952,7 @@
       },
       {
         "name": "Krysák Drápek",
-        "weight": 3,
+        "weight": 1,
         "flag": false
       },
       {
@@ -4085,7 +5967,7 @@
       },
       {
         "name": "Mistr Kožíšek",
-        "weight": 3,
+        "weight": 2,
         "flag": false
       },
       {
@@ -4110,12 +5992,12 @@
       },
       {
         "name": "Hostinský",
-        "weight": 3,
+        "weight": 1,
         "flag": false
       },
       {
         "name": "Starosta (lysá myška)",
-        "weight": 1,
+        "weight": 2,
         "flag": false
       },
       {
@@ -4130,17 +6012,37 @@
       },
       {
         "name": "Jizva (Drápkova posila)",
-        "weight": 1,
+        "weight": 0,
         "flag": false
       },
       {
         "name": "Otec (verbíř z Bobulína)",
-        "weight": 2,
+        "weight": 1,
         "flag": false
       },
       {
         "name": "Pecka (bylinkář)",
-        "weight": 2,
+        "weight": 1,
+        "flag": false
+      },
+      {
+        "name": "Píšťalka",
+        "weight": 1,
+        "flag": false
+      },
+      {
+        "name": "Rezek (podvodník)",
+        "weight": 1,
+        "flag": false
+      },
+      {
+        "name": "Správce Olšík (Bobulín)",
+        "weight": 1,
+        "flag": false
+      },
+      {
+        "name": "Hruška",
+        "weight": 1,
         "flag": false
       }
     ],
@@ -4148,7 +6050,7 @@
       {
         "name": "Najít práci v osadě",
         "weight": 1,
-        "progress": 2,
+        "progress": 3,
         "total": 10,
         "popis": "",
         "stav": "uzavřený",
@@ -4167,13 +6069,13 @@
       },
       {
         "name": "Krysák Drápek — lupič na cestě",
-        "weight": 3,
-        "progress": 3,
+        "weight": 1,
+        "progress": 10,
         "total": 10,
         "popis": "",
-        "stav": "aktivní",
+        "stav": "uzavřený",
         "typ": "hlavní",
-        "poznamky": "Drápek chytil Okřála, vzal mu dýku. Okřál osvobodil 3 zajatce. Drápek je nepřítel. Hryzalka potvrdila: Drápek má 2-3 posily a je naštvaný. NOVÉ: Jizva (posila) doručila ultimátum — 50ď za 3 dny nebo útok na osadu. ALE: bez brouka je Drápek slabý (1 krysa + 2 nýmandi)."
+        "poznamky": "UZAVŘENO. Drápek vyhnán z oblasti. Cesta volná."
       },
       {
         "name": "Tajemný Stavitel na severu",
@@ -4187,23 +6089,43 @@
       },
       {
         "name": "Osvobodit cestu od Drápka",
+        "weight": 1,
+        "progress": 10,
+        "total": 10,
+        "popis": "",
+        "stav": "uzavřený",
+        "typ": "hlavní",
+        "poznamky": "UZAVŘENO. Drápek vyhnán, brouk zabit. Rada vyplatila 100ď. Hostinský se pokusil urvat polovinu, Starosta ho odmítl."
+      },
+      {
+        "name": "Hrabě Oříšek — kontrola obchodních cest",
         "weight": 2,
+        "progress": 9,
+        "total": 10,
+        "popis": "",
+        "stav": "aktivní",
+        "typ": "hlavní",
+        "poznamky": "Hlášení předáno Správci Olšíkovi. Odměna: 100ď (40 za průzkum + 60 za mapu). Nabídka trvalé práce: průzkumník v terénu (plat, zásoby, podpora). Vrátit se za týden. První úkol: Mechový Práh (korupce). Zbývá: rozhodnout se (přijmout/odmítnout)."
+      },
+      {
+        "name": "Nabídka správy hospody",
+        "weight": 1,
+        "progress": 3,
+        "total": 10,
+        "popis": "",
+        "stav": "aktivní",
+        "typ": "hlavní",
+        "poznamky": "Starosta dal ultimátum: hospoda TEĎ, žádný odklad. Okřál přijal, ale nejdřív musí vyřešit Kožíška. Píšťalka podpořila Okřála. Starosta čeká odpověď do rána dne 9."
+      },
+      {
+        "name": "Kožíšek na svobodě",
+        "weight": 3,
         "progress": 6,
         "total": 10,
         "popis": "",
         "stav": "aktivní",
         "typ": "hlavní",
-        "poznamky": "Zakázka od rady: 50ď za Drápka + 50ď za brouka. Hostinský chce polovinu (vyděračství). Deadline: před prvním mrazem."
-      },
-      {
-        "name": "Hrabě Oříšek — kontrola obchodních cest",
-        "weight": 1,
-        "progress": 0,
-        "total": 10,
-        "popis": "",
-        "stav": "aktivní",
-        "typ": "hlavní",
-        "poznamky": "Hrabě z Bobulína verbuje stráž pro obchodní cesty. Okřál přijal průzkum: zmapovat Drápkův tábor za 20ď/den + zásoby. Záloha 10ď. Hlášení předat Otcovi v Bobulíně nebo hlídce za týden."
+        "poznamky": "Kožíšek nalezen JV od Mechového Prahu (den 10 noc). Nora/jeskyně v mechovém svahu. Stopa chemikálií potvrzena. Okřál stojí u vchodu — rozhoduje se. STR 3, ale chytrý. Plánuje rozdělit region (discovery: Rozdělení/Zničení)."
       }
     ],
     "character": {
@@ -4212,7 +6134,7 @@
       "uroven": 1,
       "zk": 0,
       "str": {
-        "akt": 6,
+        "akt": 10,
         "max": 10
       },
       "dex": {
@@ -4227,7 +6149,7 @@
         "akt": 6,
         "max": 6
       },
-      "dobky": 43,
+      "dobky": 227,
       "prijmeni": "Trnka",
       "barvaSrsti": "Šedá",
       "vzorSrsti": "Skvrnitá",
@@ -4281,16 +6203,16 @@
           "nazev": "Zásoby",
           "typ": "jídlo",
           "tecky": {
-            "akt": 5,
+            "akt": 2,
             "max": 6
           }
         },
         {
-          "nazev": "",
-          "typ": "",
+          "nazev": "Léčivý obklad",
+          "typ": "předmět",
           "tecky": {
-            "akt": 0,
-            "max": 0
+            "akt": 1,
+            "max": 1
           }
         },
         {
@@ -4322,12 +6244,12 @@
       "pomocnici": []
     },
     "cas": {
-      "den": 5,
-      "hlidka": "ráno",
-      "smena": 1,
+      "den": 10,
+      "hlidka": "večer",
+      "smena": 4,
       "rocniObdobi": "podzim",
-      "pocasi": "Slejvák",
-      "jeNepriznive": true,
+      "pocasi": "Chladno",
+      "jeNepriznive": false,
       "odpocinutoDnes": false
     },
     "keyedScenes": [],
