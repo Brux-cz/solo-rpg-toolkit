@@ -50,6 +50,7 @@ function usage() {
       "setchar <key=value> [key=value...]": "Nastavit postavu (jmeno, str, dex, wil, bo, dobky...)",
       "setslot <slot> <key=value> [key=value...] [--who pomocník]": "Nastavit slot inventáře (nazev, typ, damage, armor, tecky.akt, tecky.max)",
       "clearslot <slot> [--who pomocník]": "Vyprázdnit slot inventáře",
+      "save-throw <name> <str|dex|wil> [advantage|disadvantage]": "Záchranný hod (i mimo boj)",
       "time": "Posuň čas",
       "weather": "Hoď počasí",
       "bestiary": "Seznam tvorů",
@@ -146,7 +147,7 @@ try {
 
     case "fate": {
       const question = args[1] || "?";
-      const odds = args[2] || "50/50";
+      const odds = (args[2] || "50/50").replace(/_/g, " ");
       result = engine.fate(question, odds);
       break;
     }
@@ -235,21 +236,39 @@ try {
       result = engine.eatSupply();
       break;
 
-    case "discovery":
-      result = engine.discovery(parseInt(args[1]) || 0, args[2]);
+    case "discovery": {
+      let dIdx = parseInt(args[1]);
+      let dTable = args[2];
+      if (isNaN(dIdx)) {
+        // Hledej thread podle jména
+        const dName = args.slice(1).filter(a => !a.startsWith("elements:") && a !== "actions" && a !== "descriptions").join(" ").toLowerCase();
+        dTable = args.find(a => a.startsWith("elements:") || a === "actions" || a === "descriptions") || "actions";
+        dIdx = save.game.threads.findIndex(t => t.name.toLowerCase().includes(dName));
+        if (dIdx < 0) { output({ error: `Thread "${dName}" nenalezen` }); process.exit(1); }
+      }
+      result = engine.discovery(dIdx, dTable);
       break;
+    }
 
     case "behavior":
       result = engine.behavior(args.slice(1).join(" "));
       break;
 
-    case "addnpc":
-      result = engine.addNpc(args.slice(1, -1).join(" ") || args[1], parseInt(args[args.length - 1]) || 1);
+    case "addnpc": {
+      const npcWIdx = args.findIndex((a, i) => i > 0 && /^\d+$/.test(a));
+      const npcName = (npcWIdx > 0 ? args.slice(1, npcWIdx) : args.slice(1)).join(" ");
+      const npcW = npcWIdx > 0 ? parseInt(args[npcWIdx]) : 1;
+      result = engine.addNpc(npcName, npcW);
       break;
+    }
 
-    case "addthread":
-      result = engine.addThread(args.slice(1, -1).join(" ") || args[1], parseInt(args[args.length - 1]) || 1);
+    case "addthread": {
+      const thWIdx = args.findIndex((a, i) => i > 0 && /^\d+$/.test(a));
+      const thName = (thWIdx > 0 ? args.slice(1, thWIdx) : args.slice(1)).join(" ");
+      const thW = thWIdx > 0 ? parseInt(args[thWIdx]) : 1;
+      result = engine.addThread(thName, thW);
       break;
+    }
 
     case "removenpc":
       result = engine.removeNpc(parseInt(args[1]));
@@ -320,6 +339,10 @@ try {
       }
       break;
     }
+
+    case "save-throw":
+      result = engine.savingThrow(args[1] || "hráč", args[2] || "str", args[3] || "normal");
+      break;
 
     case "time":
       result = engine.advanceTime();

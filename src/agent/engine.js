@@ -68,8 +68,14 @@ export class GameEngine {
   // --- FATE ---
 
   fate(question, oddsLabel) {
-    const oddsIndex = ODDS_LABELS.indexOf(oddsLabel);
-    const idx = oddsIndex >= 0 ? oddsIndex : 4; // default 50/50
+    let oddsIndex = ODDS_LABELS.indexOf(oddsLabel);
+    if (oddsIndex < 0 && oddsLabel) {
+      const normalized = oddsLabel.replace(/_/g, " ");
+      oddsIndex = ODDS_LABELS.findIndex(l => l.toLowerCase() === normalized.toLowerCase());
+    }
+    const oddsWarning = (oddsIndex < 0 && oddsLabel && oddsLabel !== "50/50")
+      ? `WARNING: Neznámý odds "${oddsLabel}", fallback 50/50. Platné: ${ODDS_LABELS.join(", ")}` : null;
+    const idx = oddsIndex >= 0 ? oddsIndex : 4;
     const result = checkFate(idx, this.game.cf);
     const entry = {
       type: "fate",
@@ -93,6 +99,7 @@ export class GameEngine {
         entry.eventTargetEmpty = target.empty || false;
       }
     }
+    if (oddsWarning) entry.warning = oddsWarning;
     this.addEntry(entry);
     return entry;
   }
@@ -808,13 +815,15 @@ export class GameEngine {
     }
     const before = food.tecky.akt;
     food.tecky.akt--;
-    const result = { ok: true, item: food.nazev, teckyBefore: before, teckyAfter: food.tecky.akt };
+    const itemName = food.nazev;
+    const result = { ok: true, item: itemName, teckyBefore: before, teckyAfter: food.tecky.akt };
     if (food.tecky.akt <= 0) {
       food.nazev = "";
       food.typ = "";
       food.tecky = { akt: 0, max: 0 };
       result.depleted = true;
     }
+    this.addEntry({ type: "eat", item: itemName, teckyBefore: before, teckyAfter: food.tecky.akt, depleted: result.depleted || false });
     return result;
   }
 
@@ -825,7 +834,7 @@ export class GameEngine {
     let healed = {};
 
     if (type === "short") {
-      const heal = roll(6) + 1;
+      const heal = roll(6);
       const before = char.bo.akt;
       char.bo.akt = Math.min(char.bo.max, char.bo.akt + heal);
       healed = { type: "short", boHealed: char.bo.akt - before, roll: heal };
@@ -854,6 +863,31 @@ export class GameEngine {
     const entry = { type: "rest", ...healed };
     this.addEntry(entry);
     return entry;
+  }
+
+  // --- ZÁCHRANNÝ HOD (mimo boj) ---
+
+  savingThrow(name, attr, mode = "normal") {
+    const val = this._getAttrValue(name, attr);
+    if (val === null) return { error: `Atribut "${attr}" nenalezen pro "${name}"` };
+    let d20, rolls;
+    if (mode === "advantage") {
+      const r1 = roll(20), r2 = roll(20);
+      d20 = Math.min(r1, r2); rolls = [r1, r2];
+    } else if (mode === "disadvantage") {
+      const r1 = roll(20), r2 = roll(20);
+      d20 = Math.max(r1, r2); rolls = [r1, r2];
+    } else {
+      d20 = roll(20);
+    }
+    const success = d20 <= val;
+    const label = this._isPlayer(name.toLowerCase()) ? (this.game.character.jmeno || "Hráč") : name;
+    const modeStr = mode !== "normal" ? ` (${mode === "advantage" ? "výhoda" : "nevýhoda"})` : "";
+    const rollStr = rolls ? `2d20=[${rolls.join(",")}]→${d20}` : `d20=${d20}`;
+    const entry = { type: "save", name: label, attr, d20, value: val, success, mode };
+    if (rolls) entry.rolls = rolls;
+    this.addEntry(entry);
+    return { ...entry, log: `${label} ${attr.toUpperCase()} save${modeStr}: ${rollStr} vs ${val} → ${success ? "ÚSPĚCH" : "NEÚSPĚCH"}` };
   }
 
   // --- NPC / THREAD CRUD ---
@@ -889,6 +923,7 @@ export class GameEngine {
   updateNpc(index, patch) {
     const npc = this.game.npcs[index];
     if (!npc) return { error: "NPC neexistuje" };
+    if (patch.weight !== undefined) patch.weight = Math.max(0, Math.min(3, patch.weight));
     Object.assign(npc, patch);
     return { ok: true, npc };
   }
@@ -977,9 +1012,15 @@ export class GameEngine {
     if (h) { h.bo.akt = bo; h.str.akt = str; }
   }
 
+  _isPlayer(lower) {
+    if (lower === "hráč") return true;
+    const charName = this.game.character.jmeno?.toLowerCase();
+    return charName && lower === charName;
+  }
+
   _findCombatant(name) {
     const lower = name.toLowerCase();
-    if (lower === "hráč") return { attacker: this.game.character, isPlayer: true, isHireling: false, isEnemy: false };
+    if (this._isPlayer(lower)) return { attacker: this.game.character, isPlayer: true, isHireling: false, isEnemy: false };
     const hireling = this.game.character.pomocnici[0];
     if (hireling && hireling.jmeno?.toLowerCase() === lower) return { attacker: hireling, isPlayer: false, isHireling: true, isEnemy: false };
     const c = this.game.activeCombat;
@@ -992,7 +1033,7 @@ export class GameEngine {
 
   _findTarget(name) {
     const lower = name.toLowerCase();
-    if (lower === "hráč") return { combatant: this.game.character, isEnemy: false };
+    if (this._isPlayer(lower)) return { combatant: this.game.character, isEnemy: false };
     const hireling = this.game.character.pomocnici[0];
     if (hireling && hireling.jmeno?.toLowerCase() === lower) return { combatant: hireling, isEnemy: false };
     const c = this.game.activeCombat;
@@ -1005,7 +1046,7 @@ export class GameEngine {
 
   _getAttrValue(name, attr) {
     const lower = name.toLowerCase();
-    if (lower === "hráč") return this.game.character[attr]?.akt ?? null;
+    if (this._isPlayer(lower)) return this.game.character[attr]?.akt ?? null;
     const hireling = this.game.character.pomocnici[0];
     if (hireling && hireling.jmeno?.toLowerCase() === lower) return hireling[attr]?.akt ?? null;
     const c = this.game.activeCombat;
@@ -1054,6 +1095,13 @@ export class GameEngine {
       threads: this.game.threads,
       cas: this.game.cas,
       entriesCount: this.game.entries.length,
+      lastEntries: this.game.entries.slice(-5).map(e => ({
+        type: e.type,
+        ...(e.text && { text: e.text.slice(0, 80) }),
+        ...(e.question && { question: e.question.slice(0, 80) }),
+        ...(e.title && { title: e.title }),
+        ...(e.sceneNum && { sceneNum: e.sceneNum }),
+      })),
     };
   }
 }
