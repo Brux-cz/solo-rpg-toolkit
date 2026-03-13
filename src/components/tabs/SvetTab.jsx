@@ -25,17 +25,19 @@ const DatovyModel = lazy(() => import("../../docs/datovy-model.jsx"));
 const SoloRpgDiagram = lazy(() => import("../../docs/solo-rpg-diagram.jsx"));
 const AgentDiagram = lazy(() => import("../../docs/agent-diagram.jsx"));
 
-export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, onGoToLobby, onNpcsChange, onThreadsChange, onKeyedScenesChange, onPerilPointsChange }) {
+export default function SvetTab({ cf, npcs, threads, locations, keyedScenes, perilPoints, onGoToLobby, onNpcsChange, onThreadsChange, onLocationsChange, onKeyedScenesChange, onPerilPointsChange }) {
   const [sub, setSub] = useState("mythic");
   const [newNpc, setNewNpc] = useState("");
   const [newThread, setNewThread] = useState("");
+  const [newLocation, setNewLocation] = useState("");
   const [expandedNpc, setExpandedNpc] = useState(null);
   const [expandedThread, setExpandedThread] = useState(null);
+  const [expandedLocation, setExpandedLocation] = useState(null);
   const [docView, setDocView] = useState("model");
   const [newKsTrigger, setNewKsTrigger] = useState("");
   const [newKsUdalost, setNewKsUdalost] = useState("");
   const [expandedKs, setExpandedKs] = useState(null);
-  const subs = [["mythic","Mythic"],["npc","NPC"],["thready","Thready"],["klicove","Klíčové"],["mapa","Mapa"],["docs","Docs"]];
+  const subs = [["mythic","Mythic"],["npc","NPC"],["thready","Thready"],["mista","Místa"],["klicove","Klíčové"],["mapa","Mapa"],["docs","Docs"]];
 
   const addNpc = () => {
     const name = newNpc.trim();
@@ -91,6 +93,30 @@ export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, o
 
   const updateThread = (idx, patch) => {
     onThreadsChange(threads.map((t, i) => i === idx ? { ...t, ...patch } : t));
+  };
+
+  const addLocation = () => {
+    const nazev = newLocation.trim();
+    if (!nazev) return;
+    if (locations.length >= 50) return;
+    onLocationsChange([...locations, { id: Date.now().toString(36), nazev, typ: "", popis: "", npcNames: [], threadNames: [] }]);
+    setNewLocation("");
+  };
+
+  const updateLocation = (idx, patch) => {
+    onLocationsChange(locations.map((l, i) => i === idx ? { ...l, ...patch } : l));
+  };
+
+  const toggleLocationNpc = (locIdx, npcName) => {
+    const loc = locations[locIdx];
+    const names = loc.npcNames || [];
+    updateLocation(locIdx, { npcNames: names.includes(npcName) ? names.filter(n => n !== npcName) : [...names, npcName] });
+  };
+
+  const toggleLocationThread = (locIdx, threadName) => {
+    const loc = locations[locIdx];
+    const names = loc.threadNames || [];
+    updateLocation(locIdx, { threadNames: names.includes(threadName) ? names.filter(n => n !== threadName) : [...names, threadName] });
   };
 
   const addInputStyle = { flex: 1, border: `1px solid ${C.border}`, borderRadius: 4, padding: "5px 8px", fontSize: 11, fontFamily: FONT, background: "white", color: C.text, outline: "none" };
@@ -474,6 +500,85 @@ export default function SvetTab({ cf, npcs, threads, keyedScenes, perilPoints, o
             <div style={{ display: "flex", gap: 4, marginTop: 8 }}>
               <input value={newThread} onChange={e => setNewThread(e.target.value)} onKeyDown={e => e.key === "Enter" && addThread()} placeholder="Nový Thread..." style={addInputStyle} />
               <button onClick={addThread} style={addBtnStyle}>+ Thread</button>
+            </div>
+          </>
+        )}
+        {sub === "mista" && (
+          <>
+            <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>MÍSTA ({locations.length}/50)</div>
+            {locations.map((loc, i) => {
+              const isExpanded = expandedLocation === i;
+              const linkedNpcCount = (loc.npcNames || []).length;
+              const linkedThreadCount = (loc.threadNames || []).length;
+              return (
+                <div key={loc.id} style={{ marginBottom: 4 }}>
+                  <div
+                    onClick={() => setExpandedLocation(isExpanded ? null : i)}
+                    style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 10px", border: `1px solid ${isExpanded ? C.blue : C.border}`, borderRadius: isExpanded ? "6px 6px 0 0" : 6, fontSize: 11, cursor: "pointer", background: isExpanded ? C.blue + "08" : "transparent" }}
+                  >
+                    <span style={{ flex: 1, fontWeight: isExpanded ? 700 : 400 }}>{loc.nazev}</span>
+                    {loc.typ && <span style={{ fontSize: 8, color: C.muted, border: `1px solid ${C.border}`, borderRadius: 3, padding: "0 4px", lineHeight: "16px" }}>{loc.typ}</span>}
+                    {linkedNpcCount > 0 && <span style={{ fontSize: 8, color: C.green }}>NPC {linkedNpcCount}</span>}
+                    {linkedThreadCount > 0 && <span style={{ fontSize: 8, color: C.purple }}>TH {linkedThreadCount}</span>}
+                    <button onClick={e => { e.stopPropagation(); onLocationsChange(locations.filter((_, j) => j !== i)); if (expandedLocation === i) setExpandedLocation(null); }} style={delBtnStyle}>✕</button>
+                  </div>
+                  {isExpanded && (
+                    <div style={{ border: `1px solid ${C.blue}`, borderTop: "none", borderRadius: "0 0 6px 6px", padding: 10, background: C.bg, fontSize: 10 }}>
+                      <label style={{ display: "block", marginBottom: 6 }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Název</span>
+                        <input value={loc.nazev} onChange={e => updateLocation(i, { nazev: e.target.value })}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                      </label>
+                      <label style={{ display: "block", marginBottom: 6 }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Typ (vesnice, hostinec, jeskyně...)</span>
+                        <input value={loc.typ || ""} onChange={e => updateLocation(i, { typ: e.target.value })}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                      </label>
+                      <label style={{ display: "block", marginBottom: 8 }}>
+                        <span style={{ color: C.muted, fontSize: 9 }}>Popis / Poznámky</span>
+                        <textarea value={loc.popis || ""} onChange={e => updateLocation(i, { popis: e.target.value })} rows={3}
+                          style={{ width: "100%", border: `1px solid ${C.border}`, borderRadius: 4, padding: "4px 6px", fontSize: 10, fontFamily: FONT, background: "white", color: C.text, resize: "vertical", outline: "none", boxSizing: "border-box", marginTop: 2 }} />
+                      </label>
+                      {npcs.length > 0 && (
+                        <div style={{ marginBottom: 8 }}>
+                          <span style={{ color: C.muted, fontSize: 9, display: "block", marginBottom: 4 }}>Propojené NPC</span>
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                            {npcs.map((n) => {
+                              const linked = (loc.npcNames || []).includes(n.name);
+                              return (
+                                <button key={n.name} onClick={() => toggleLocationNpc(i, n.name)}
+                                  style={{ padding: "3px 8px", fontSize: 9, fontFamily: FONT, border: `1px solid ${linked ? C.green : C.border}`, borderRadius: 4, background: linked ? C.green + "20" : "transparent", color: linked ? C.green : C.muted, fontWeight: linked ? 700 : 400, cursor: "pointer" }}>
+                                  {n.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                      {threads.length > 0 && (
+                        <div style={{ marginBottom: 4 }}>
+                          <span style={{ color: C.muted, fontSize: 9, display: "block", marginBottom: 4 }}>Propojené Thready</span>
+                          <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                            {threads.map((t) => {
+                              const linked = (loc.threadNames || []).includes(t.name);
+                              return (
+                                <button key={t.name} onClick={() => toggleLocationThread(i, t.name)}
+                                  style={{ padding: "3px 8px", fontSize: 9, fontFamily: FONT, border: `1px solid ${linked ? C.purple : C.border}`, borderRadius: 4, background: linked ? C.purple + "20" : "transparent", color: linked ? C.purple : C.muted, fontWeight: linked ? 700 : 400, cursor: "pointer" }}>
+                                  {t.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            <div style={{ display: "flex", gap: 4, marginTop: 8 }}>
+              <input value={newLocation} onChange={e => setNewLocation(e.target.value)} onKeyDown={e => e.key === "Enter" && addLocation()} placeholder="Nové místo..." style={addInputStyle} />
+              <button onClick={addLocation} style={{ ...addBtnStyle, background: C.blue, borderColor: C.blue }}>+ Místo</button>
             </div>
           </>
         )}
