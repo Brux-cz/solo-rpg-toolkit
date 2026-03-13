@@ -2,6 +2,7 @@ import { useState } from "react";
 import { C, FONT } from "../constants/theme.js";
 import { loadIndex, saveIndex, loadGameById, saveGameById, deleteGameById, exportGame, formatDate, genId, INITIAL_GAME, CURRENT_VERSION } from "../store/gameStore.js";
 import scenarioRaw from "../agent/saves/okral-scenar.md?raw";
+import novelaRaw from "../agent/saves/okral-novela.md?raw";
 function MdRenderer({ text }) {
   const lines = text.split("\n");
   const elements = [];
@@ -45,7 +46,7 @@ export default function Lobby({ onPlay }) {
   const [creating, setCreating] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [importError, setImportError] = useState(null);
-  const [showScenario, setShowScenario] = useState(false);
+  const [showReading, setShowReading] = useState(null);
 
   const handleCreate = () => {
     const name = newName.trim() || ("Hra " + (index.saves.length + 1));
@@ -120,7 +121,9 @@ export default function Lobby({ onPlay }) {
     input.click();
   };
 
-  if (showScenario) {
+  if (showReading) {
+    const readingText = showReading === "scenar" ? scenarioRaw : novelaRaw;
+    const readingTitle = showReading === "scenar" ? "Scénář" : "Novela";
     return (
       <div style={{ width: "100%", height: "100dvh", background: C.bg, display: "flex", flexDirection: "column", fontFamily: FONT, overflow: "hidden" }}>
         <style>{`
@@ -130,11 +133,11 @@ export default function Lobby({ onPlay }) {
           ::-webkit-scrollbar-thumb { background: #ddd }
         `}</style>
         <div style={{ padding: "12px 16px", flexShrink: 0, borderBottom: `1px solid ${C.border}`, display: "flex", alignItems: "center", gap: 10 }}>
-          <button onClick={() => setShowScenario(false)} style={{ background: "none", border: `1px solid ${C.border}`, borderRadius: 6, padding: "5px 12px", fontSize: 10, fontFamily: FONT, color: C.muted, cursor: "pointer" }}>Zpět</button>
-          <span style={{ fontSize: 12, fontWeight: 700, color: C.text }}>Scénář</span>
+          <button onClick={() => setShowReading(null)} style={{ background: "none", border: `1px solid ${C.border}`, borderRadius: 6, padding: "5px 12px", fontSize: 10, fontFamily: FONT, color: C.muted, cursor: "pointer" }}>Zpět</button>
+          <span style={{ fontSize: 12, fontWeight: 700, color: C.text }}>{readingTitle}</span>
         </div>
         <div style={{ flex: 1, overflowY: "auto", padding: "16px 16px 40px" }}>
-          <MdRenderer text={scenarioRaw} />
+          <MdRenderer text={readingText} />
         </div>
       </div>
     );
@@ -221,10 +224,14 @@ export default function Lobby({ onPlay }) {
         {importError && <div style={{ fontSize: 10, color: C.red, textAlign: "center", marginTop: 6 }}>{importError}</div>}
 
         <div style={{ marginTop: 20, paddingTop: 14, borderTop: `1px solid ${C.border}` }}>
-          <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>SCÉNÁŘE</div>
-          <button onClick={() => setShowScenario(true)} style={{ width: "100%", padding: "10px 14px", border: `1px solid ${C.blue}`, background: C.blue + "10", borderRadius: 8, fontSize: 11, color: C.text, fontFamily: FONT, cursor: "pointer", textAlign: "left" }}>
-            <div style={{ fontWeight: 700, marginBottom: 2 }}>Okřál Trnka</div>
+          <div style={{ fontSize: 9, color: C.muted, marginBottom: 6 }}>KE ČTENÍ</div>
+          <button onClick={() => setShowReading("scenar")} style={{ width: "100%", padding: "10px 14px", border: `1px solid ${C.blue}`, background: C.blue + "10", borderRadius: 8, fontSize: 11, color: C.text, fontFamily: FONT, cursor: "pointer", textAlign: "left", marginBottom: 8 }}>
+            <div style={{ fontWeight: 700, marginBottom: 2 }}>Okřál Trnka — Scénář</div>
             <div style={{ fontSize: 9, color: C.muted }}>Filmový scénář · Prolog + 4 akty</div>
+          </button>
+          <button onClick={() => setShowReading("novela")} style={{ width: "100%", padding: "10px 14px", border: `1px solid ${C.green}`, background: C.green + "10", borderRadius: 8, fontSize: 11, color: C.text, fontFamily: FONT, cursor: "pointer", textAlign: "left" }}>
+            <div style={{ fontWeight: 700, marginBottom: 2 }}>Okřál Trnka — Novela</div>
+            <div style={{ fontSize: 9, color: C.muted }}>Příběh · Prolog + 4 kapitoly</div>
           </button>
         </div>
       </div>
