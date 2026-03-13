@@ -58,15 +58,17 @@ export default function Prototype() {
     let lastSeq = 0;
     const poll = async () => {
       try {
-        const res = await fetch("/agent-live.json?t=" + Date.now());
+        const res = await fetch(import.meta.env.BASE_URL + "agent-live.json?t=" + Date.now());
         if (!res.ok) return;
         const data = await res.json();
         if (data._seq && data._seq > lastSeq) {
+          console.log("[live-sync] seq", lastSeq, "→", data._seq, "entries:", data.game?.entries?.length);
           lastSeq = data._seq;
           setGame(data.game);
         }
       } catch { /* agent neběží */ }
     };
+    poll(); // hned na startu
     const id = setInterval(poll, 2000);
     return () => clearInterval(id);
   }, [screen]);

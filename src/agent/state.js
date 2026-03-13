@@ -1,11 +1,19 @@
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { INITIAL_GAME, applyMigrations } from "../store/migrations.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const LIVE_PATH = join(__dirname, "../../public/agent-live.json");
+
+// Načti poslední _seq z existujícího souboru (aby se neresetoval při každém CLI spuštění)
 let _seq = 0;
+try {
+  if (existsSync(LIVE_PATH)) {
+    const prev = JSON.parse(readFileSync(LIVE_PATH, "utf-8"));
+    _seq = prev._seq || 0;
+  }
+} catch { /* soubor neexistuje nebo je poškozený */ }
 
 export function newGame(name) {
   return { name: name || "Agent hra", game: { ...INITIAL_GAME } };

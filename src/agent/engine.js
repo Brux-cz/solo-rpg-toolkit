@@ -136,7 +136,8 @@ export class GameEngine {
   // --- POZNÁMKA ---
 
   note(text) {
-    const entry = { type: "text", text, editable: true };
+    const clean = text.replace(/\\([!?.])/g, "$1");
+    const entry = { type: "text", text: clean, editable: true };
     this.addEntry(entry);
     return entry;
   }
@@ -849,8 +850,8 @@ export class GameEngine {
 
   _getPlayerArmor() {
     const inv = this.game.character.inventar || [];
-    const armor = inv.find(s => s.typ === "zbroj");
-    return armor ? (armor.tecky?.akt || 0) : 0;
+    const armors = inv.filter(s => s.typ === "zbroj" && s.tecky?.akt > 0);
+    return armors.reduce((sum, a) => sum + (a.armor || 1), 0);
   }
 
   _getHirelingName() {
